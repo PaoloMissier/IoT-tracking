@@ -17,7 +17,7 @@ logger.addHandler(ch)
 
 ## simulates multiple sensors. one is chosen randomly for each new message
 CLIENT_ID_LIST = ["s1", "s2", "s3"]  
-SLEEP_INT = 2
+SLEEP_INT = 5
 
 BROKER_HOST = "localhost"
 
@@ -46,8 +46,7 @@ def genDataID():
 	
 
 def injectMD( md, payload):
-	(CLIENT_ID, dataID, timestamp, topic) = md
-	sep ='|'
+	(CLIENT_ID, dataID, timestamp) = md
 	# add producer ID, dataID, timestamp to  payload into a bytearray
 	return CLIENT_ID + sep + dataID + sep + timestamp + sep + str(payload)
 	## TODO this must become a bytearray encoding 
@@ -95,13 +94,13 @@ while True:
     dt = datetime.utcnow()
     dateTime = datetime.strftime(dt, datetimeFormat)
     msgID = genDataID()
-    md = (currentClient, msgID, dateTime, topic)
-    md1 = (currentClient, msgID, dt, topic)  ## like md but raw datetime for SQL insert
+    md = (currentClient, msgID, dateTime)
+    md1 = (currentClient, msgID, dt, topic)  ## like md but raw datetime for SQL insert, and added topic
     logger.debug("Metadata produced: {}".format(md))
     
     payload = injectMD(md, payload)
     client.publish(topic, str(payload))
-    logger.info("published value {} on topic {}".format(payload,  topic))
+    logger.info("published: {} on topic {}".format(payload,  topic))
     
     DBWrite(cnx, cursor, md1)
     sleep(SLEEP_INT)
