@@ -7,6 +7,9 @@ from datetime import datetime
 import logging
 import mysql.connector
 from uuid import uuid1
+import sys, getopt
+
+
 
 logger = logging.getLogger('Publisher')
 logger.setLevel(logging.INFO)
@@ -16,16 +19,18 @@ ch.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
 logger.addHandler(ch)
 
 ## simulates multiple sensors. one is chosen randomly for each new message
-CLIENT_ID_LIST = ["s1", "s2", "s3"]  
+# default -- see CL options
+CLIENT_COUNT = 3
+CLIENT_ID = "s"
 SLEEP_INT = 5
-
-BROKER_HOST = "localhost"
+TOPIC_COUNT = 5
+TOPIC_ROOT="root/"
 
 sep = '|'
 datetimeFormat = "%y%m%d%H%M%S%f"
-TOPICS = ["root/t1", "root/t2", "root/t3", "root/t4", "root/t5", "root/t6", "root/t7"]
 
-## DB constants
+
+BROKER_HOST = "localhost"
 DB_HOST = "localhost"
 DB_NAME='BrokerTracker'
 
@@ -64,48 +69,92 @@ def DBWrite(cnx, cursor, md):
 	logger.debug("mysql commit successful")
 
 
+def genClients(n):
+	return [ CLIENT_ID+"_"+str(i) for i in range(n)]
 
+def genTopics(n):
+	return [ TOPIC_ROOT+str(i) for i in range(n)]
 
 
 #########
 ##  MAIN BODY
 #########
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_publish = on_publish
+def main(argv):
 
-cnx = DBConnect()
-cursor = cnx.cursor()
-logger.debug("mysql connection successful")
+	#init to default
+	sleepInt = SLEEP_INT  
+	clientCount = CLIENT_COUNT 
+	topicCount = TOPIC_COUNT
+	doDBWrite = True
+	
+	try:
+		opts, args = getopt.getopt(argv,"nt:p:r:",["noWrite","topics=","publishers=","rate="])
+	except getopt.GetoptError:
+		print("publisher.py -n -t <topics count> -p <publishers count> -r <msg generation rate (sec)>")
+		sys.exit(2)
+
+	for opt, arg in opts:
+		if opt in ("-r", "--rate"):
+			sleepInt = float(arg)
+		if opt in ("-p", "--publishers"):
+			clientCount = int(arg)
+		if opt in ("-t", "--topics"):
+			topicCount = int(arg)
+		if opt in ("-n", "--noWrite"):
+			doDBWrite = False
+	
+	print("msg generation rate: {} secs".format(sleepInt))	
+	print("publishers count: {}".format(clientCount))	
+	print("topics count: {}".format(topicCount))	
+	print("writing to DB: {}".format(doDBWrite))	
+
+	clientIdList = genClients(clientCount)
+	topicList = genTopics(topicCount)
+		
+	client = mqtt.Client()
+	client.on_connect = on_connect
+	client.on_publish = on_publish
+
+	cnx = DBConnect()
+	cursor = cnx.cursor()
+	logger.debug("mysql connection successful")
 
 
-logger.debug("connecting to broker host {}".format(BROKER_HOST))
-client.connect(BROKER_HOST)
-client.loop_start()
+	logger.debug("connecting to broker host {}".format(BROKER_HOST))
+	client.connect(BROKER_HOST)
+	client.loop_start()
 
 
-while True:
-	# simulates one sensor generating a msg (random payload) with a random topic
-    payload = random()
-    topic = TOPICS[randint(0,len(TOPICS)-1)]
-    currentClient = CLIENT_ID_LIST[randint(0,len(CLIENT_ID_LIST)-1)]
-    
-    dt = datetime.utcnow()
-    dateTime = datetime.strftime(dt, datetimeFormat)
-    msgID = genDataID()
-    md = (currentClient, msgID, dateTime)
-    md1 = (currentClient, msgID, dt, topic)  ## like md but raw datetime for SQL insert, and added topic
-    logger.debug("Metadata produced: {}".format(md))
-    
-    payload = injectMD(md, payload)
-    client.publish(topic, str(payload))
-    logger.info("published: {} on topic {}".format(payload,  topic))
-    
-    DBWrite(cnx, cursor, md1)
-    sleep(SLEEP_INT)
+	while True:
+		# simulates one sensor generating a msg (random payload) with a random topic
+		payload = random()
+		topic = topicList[randint(0,len(topicList)-1)]
+		currentClient = clientIdList[randint(0,len(clientIdList)-1)]
+	
+		dt = datetime.utcnow()
+		dateTime = datetime.strftime(dt, datetimeFormat)
+		msgID = genDataID()
+		md = (currentClient, msgID, dateTime)
+		md1 = (currentClient, msgID, dt, topic)  ## like md but raw datetime for SQL insert, and added topic
+		logger.debug("Metadata produced: {}".format(md))
+	
+		payload = injectMD(md, payload)
+		client.publish(topic, str(payload))
+		logger.info("published: {} on topic {}".format(payload,  topic))
+	
+		if doDBWrite:
+			DBWrite(cnx, cursor, md1)
+
+		sleep(sleepInt)
+
+	## this goes in some catch clause as we don't have a clean way to exit
+	cursor.close()
+	cnx.close()
 
 
-## this goes in some catch clause as we don't have a clean way to exit
-cursor.close()
-cnx.close()
+
+if __name__ == "__main__":
+   main(sys.argv[1:])
+   
+   

@@ -32,7 +32,7 @@ def DBConnect(h=DB_HOST, db=DB_NAME):
 
 # module util 
 def DBWrite(cnx, cursor, md):
-	add_PROD_msg = ("insert into CONS (`CONSid`, `dataID`, `timestamp`, `topic`) values (%s, %s, %s, %s)")
+	add_PROD_msg = ("insert into CONS (`prodID`, `consID`, `dataID`, `timestamp`, `topic`) values (%s, %s, %s, %s, %s)")
 	cursor.execute(add_PROD_msg, md)
 	cnx.commit()
 	logger.debug("mysql commit successful")
@@ -73,7 +73,7 @@ class Subscriber:
 
 	# The callback for when the client receives a CONNACK response from the server.
 	def on_connect(self, client, userdata, flags, rc):
-		print("Connected with result code "+str(rc))    
+		print("Sub {} connected with result code {}".format(self.workerId, str(rc)))
 		client.subscribe([(t,0) for t in self.tList])   
 
 	def on_disconnect(self, client,  userdata,  rc):
@@ -83,30 +83,24 @@ class Subscriber:
 	def on_message(self, client, userdata, msg):
 		(client_id, dataID, ts, payload) = extractMD(msg.payload)
 	
-		logger.debug("msg from client {c} dataID {d} topic {t} timestamp {ts}".format(c=client_id, d=dataID, t=msg.topic, p=payload, ts=ts))
+		logger.info("msg from client {c} dataID {d} topic {t} timestamp {ts}".format(c=client_id, d=dataID, t=msg.topic, p=payload, ts=ts))
 		logger.debug("generating {} msg...".format(DB_HOST))
 	
-		trackRecord = (self.workerId, dataID, ts, msg.topic)
-		DBWrite(self.cnx, self.cursor, trackRecord)
-
-		
-	def subLoop(self):
-		logger.info("VAS {} connecting to broker host {}".format(self.workerId, BROKER_HOST))
-		self.client.connect(BROKER_HOST)
-		self.client.loop_forever()
+		trackRecord = (client_id, self.workerId, dataID, ts, msg.topic)
+		if self.doDBWrite:
+			DBWrite(self.cnx, self.cursor, trackRecord)
 
 
 	def setTopics(self, tList):
 		self.tList = tList
-		logger.info("VAS {} subscribed to topics ".format(self.workerId))
-		for t in tList:
-			print(t)
 		
+	def setDBWrite(self, doDBWrite):
+		self.doDBWrite = doDBWrite
 		
-		
-
-
-
+	def subLoop(self):
+		logger.debug("VAS {} connecting to broker host {}".format(self.workerId, BROKER_HOST))
+		self.client.connect(BROKER_HOST)
+		self.client.loop_forever()
 
 
 ## test only
