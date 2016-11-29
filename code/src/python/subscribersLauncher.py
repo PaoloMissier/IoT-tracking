@@ -63,7 +63,7 @@ if __name__ == '__main__':
 	try:
 		opts, args = getopt.getopt(argv,"nm:t:s:",["noWrite","maxtopics=","topics=","subscribers="])
 	except getopt.GetoptError:
-		print("publisher.py -n -t <topics count> -s <subscribers count>")
+		print("subscriberLauncher.py -n -t <topics count> -s <subscribers count>")
 		sys.exit(2)
 
 	for opt, arg in opts:
@@ -76,7 +76,6 @@ if __name__ == '__main__':
 		if opt in ("-n", "--noWrite"):
 			doDBWrite = False
 
-	
 	print("subscribers count: {}".format(subCount))	
 	print("topics count: {}".format(topicCount))	
 	print("max topics / subscriber: {}".format(maxTopics))	
