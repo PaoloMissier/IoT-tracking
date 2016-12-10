@@ -6,12 +6,14 @@ import logging
 import mysql.connector
 import pandas as pd
 import matplotlib.pyplot as plt
+from dateutil import parser
+
 
 import numpy as np
 from numpy.random import randn
 
 logger = logging.getLogger('Subscriber')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 logger.handlers = []
 ch = logging.StreamHandler()
 ch.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
@@ -27,8 +29,11 @@ logger.addHandler(ch)
 DB_HOST = "localhost"
 DB_NAME='BrokerTracker'
 
-CNT_QUERY = "SELECT prodID, consID, topic, count(*) as cnt  FROM CONS C group by prodID, consID, topic"
-DF_COLUMNS = [ "prodID", "consID",   "topic", "cnt"]
+MIN_MAX_TS_QERY = "SELECT min(timestamp) as min, max(timestamp) as max FROM CONS"
+
+CNT_QUERY = "SELECT prodID, consID, topic, count(*) as cnt  FROM CONS C  where timestamp between date(%s) and date(%s) group by prodID, consID, topic"
+# DB_COLUMNS = [ "prodID", "consID",   "topic", "cnt"]
+
 
 TOPIC_COUNT = 5
 TOPIC_ROOT="root/"
@@ -36,14 +41,35 @@ TOPIC_ROOT="root/"
 
 def DBConnect(h=DB_HOST, db=DB_NAME):
 	## init DB connection and acquire context
-	return mysql.connector.connect(user='paolo', password='riccardino', host=h, database=db)  # returns connection object
+	return mysql.connector.connect(user='paolo', password='riccardino', host=h, database=db)  # returns connection object 
 
-def DBWRead(db, cursor, parameters):
+def DB_MinMax(cursor):
 	try:
-		readCONS = CNT_QUERY
+		cursor.execute(MIN_MAX_TS_QERY)		
+		row = cursor.fetchone()
+		if row is not None:
+			logger.info(row)
+			return (row[0], row[1])
+
+	except mysql.connector.Error as e:
+		print(e)
+
+
+def DBRead(cursor, query, parameters):
+	try:
+		cursor.execute("SELECT prodID, consID, topic, count(*) as cnt  FROM CONS C  where timestamp between %s and %s group by prodID, consID, topic", ("2016-12-10 11:08:12", "2016-12-10 11:08:22"))		
 		# loads resultSet into a pandas DF
-		df = pd.read_sql(readCONS, con=db)
-		return df
+		# 		df = pd.read_sql(CNT_QUERY, db, parameters)
+	
+		## create a df from the results  -- pandas can do this but couldn't get the parameter passing to work
+		l = list()
+		for (prodID, consID, topic, cnt) in cursor:
+			## create a dict
+			d = { 'prodID': prodID, 'consID': consID, 'topic': topic, 'cnt':cnt } 
+			l.append(d)
+			logger.info("cnt: {}, {}, {}, {}".format(prodID, consID, topic, cnt))
+
+		return pd.DataFrame(l)
 				
 	except mysql.connector.Error as e:
 		print(e)
@@ -62,14 +88,17 @@ if __name__ == '__main__':
 	cursor = db.cursor()
 	logger.debug("mysql connection successful")
 
-	parameters = ("2016-11-25 12:50:01")  # FIXME
-	df  = DBWRead(db, cursor, parameters)
-	print("loaded df with {}  records".format(len(df)))
+	# find min and max timestamps -- this is the largest window we can turn into a counter cube
+	minTS, maxTS = DB_MinMax(cursor)
+	logger.info("min: {}, max: {}".format(minTS, maxTS))
+
+	df  = DBRead(cursor, CNT_QUERY, [minTS, maxTS])
+	logger.info("loaded df with {}  records".format(len(df)))
 
 	# count number of producers  and consumers
 	prodCnt = len(df.groupby(['prodID']))
 	consCnt = len(df.groupby(['consID']))
-	print("{} prod, {} cons".format(prodCnt, consCnt))
+	logger.info("{} prod, {} cons".format(prodCnt, consCnt))
 
 	maxCnt = 0   # scale of Y axis is calibrated on max cnt across all groups
 	allTopics = list()   # xticks common to all plots
@@ -85,19 +114,19 @@ if __name__ == '__main__':
 		gByCons = prodDF.groupby('consID')
 	
 		plotGrid.append(list())  # row of cells		
-		plotRow = plotGrid[i]
 
+		plotRow = plotGrid[i]
 		j = 0
 		for consID, consDF in gByCons:
 		
 			# remove the index from the DF (??)
-			cnt  = [cnt for cnt in consDF['cnt']]  	## cnt are the values plotted on the bar
+			cnt  = [cnt for cnt in consDF['cnt']]  	## cnt are the values plotted on the bar			
 			topics = [topics  for topics in consDF['topic']]
 
-			m = max(cnt)
+			m = max(cnt)						
 			if m > maxCnt:
-				maxCnt = m
-				
+				maxCnt = m				
+			
 			logger.debug("cell ({},{}) has\ntopics: {}\ncnt:{}".format(i,j,topics, cnt))
 
 			topicsCnt = {}

@@ -127,6 +127,7 @@ def main(argv):
 
 
 	while True:
+
 		# simulates one sensor generating a msg (random payload) with a random topic
 		payload = random()
 		topic = topicList[randint(0,len(topicList)-1)]
