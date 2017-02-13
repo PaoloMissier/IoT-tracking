@@ -13,7 +13,7 @@ MAXTOPICS = 2
 DB_HOST = "localhost"
 DB_NAME='BrokerTracker'
 
-BROKER_HOST = "localhost"
+host = None
 
 logger = logging.getLogger('Subscriber')
 logger.setLevel(logging.INFO)
@@ -58,7 +58,7 @@ class Subscriber:
 # workerId
 # tList
 
-	def __init__(self, workerId):
+	def __init__(self, workerId, host, doDBWrite):
 		self.workerId = workerId
 		logger.debug("sub created")
 
@@ -66,14 +66,18 @@ class Subscriber:
 		self.client.on_connect = self.on_connect
 		self.client.on_message = self.on_message
 
-		self.cnx = DBConnect()
-		self.cursor = self.cnx.cursor()
-		logger.debug("mysql connection successful")
+		self.doDBWrite = doDBWrite
+		self.host = host
+		
+		if doDBWrite:
+			self.cnx = DBConnect()
+			self.cursor = self.cnx.cursor()
+			logger.debug("mysql connection successful")
 
 
 	# The callback for when the client receives a CONNACK response from the server.
 	def on_connect(self, client, userdata, flags, rc):
-		print("Sub {} connected with result code {}".format(self.workerId, str(rc)))
+		print("Subscriber {} connected to broker {} with result code {}".format(self.workerId, broker, str(rc)))
 		client.subscribe([(t,0) for t in self.tList])   
 
 	def on_disconnect(self, client,  userdata,  rc):
@@ -98,8 +102,8 @@ class Subscriber:
 		self.doDBWrite = doDBWrite
 		
 	def subLoop(self):
-		logger.debug("VAS {} connecting to broker host {}".format(self.workerId, BROKER_HOST))
-		self.client.connect(BROKER_HOST)
+		logger.debug("VAS {} connecting to broker host {}".format(self.workerId, host))
+		self.client.connect(host, port=1883)
 		self.client.loop_forever()
 
 
