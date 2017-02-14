@@ -1,0 +1,25 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="starter-template">
+    <form class="form-inline" method="post" action="/home/">
+        {% csrf_token %}
+        <input type="text" name="min" class="form-control" placeholder="Minimum Time">
+        <input type="text" name="max" class="form-control" placeholder="Maximum Time">
+        <input type="text" name="int" class="form-control" placeholder="Intervals (s)">
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+    <p class="text-muted small">
+        format. 'yyyy-mm-dd hh:mm:ss' Ex. 2017-01-30 01:34:26
+        <br><i>{{ subheadingl2 }}</i>
+    </p>
+    <h1>Counter Cubes Presentation</h1>
+    <p class="lead" >{{ subheadingl1 }}</p>
+
+    {{ the_div|safe }}
+
+    {{ the_script|safe }}
+    
+</div>
+{% endblock %}
