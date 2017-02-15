@@ -1,0 +1,49 @@
+plen 0
+plen 27
+2017-01-30T06:22:26Z_8.00'c
+ size of payload after calloc 1
+Payload after e23cc6e8-ee28-11e6-9cf6-080027daf1ce_2017-01-30T06:22:26Z_8.00'c
+ size of payload after strcat 1
+At sending publish: >>> mosquitto version 1.4.10!  	>>>> Payload Len : 24
+Substring before: mosquitto version 1.4.10!
+At sending publish: >>> mosquitto version 1.4.10!  	>>>> Payload Len : 24
+Substring before: mosquitto version 1.4.10!
+At sending publish: >>> mosquitto version 1.4.10!  	>>>> Payload Len : 24
+Substring before: mosquitto version 1.4.10!
+At sending publish: >>> mosquitto version 1.4.10!  	>>>> Payload Len : 24
+Substring before: mosquitto version 1.4.10!
+At sending publish: >>> mosquitto version 1.4.10!
+At sending publish: >>> 2017-01-03 12:31:43+0000!  	>>>> Payload Len : 24
+Substring before: 2017-01-03 12:31:43+0000!
+At sending publish: >>> 2017-01-03 12:31:43+0000!
+At sending publish: >>> 0 seconds{lXã  	>>>> Payload Len : 9
+Substring before: 0 seconds{lXã
+At sending publish: >>> 0 seconds{lXã
+At sending publish: >>> 0˜Þ£U  	>>>> Payload Len : 1
+Substring before: 0˜Þ£U
+At sending publish: >>> 0˜Þ£U
+At sending publish: >>> 0šÞ£U  	>>>> Payload Len : 1
+Substring before: 0šÞ£U
+At sending publish: >>> 0šÞ£U
+At sending publish: >>> 0˜Þ£U  	>>>> Payload Len : 1
+Substring before: 0˜Þ£U
+1486578863: mosquitto version 1.4.10 (build date 2017-01-03 12:31:43+0000) starting
+1486578863: Using default config.
+1486578863: Opening ipv4 listen socket on port 1883.
+1486578863: Opening ipv6 listen socket on port 1883.
+1486578870: New connection from 127.0.0.1 on port 1883.
+1486578870: New client connected from 127.0.0.1 as mosqsub/2819-ubuntu64 (c1, k60).
+1486578870: Sending CONNACK to mosqsub/2819-ubuntu64 (0, 0)
+1486578870: Received SUBSCRIBE from mosqsub/2819-ubuntu64
+1486578870: 	/topic (QoS 0)
+1486578870: mosqsub/2819-ubuntu64 0 /topic
+1486578870: Sending SUBACK to mosqsub/2819-ubuntu64
+1486578915: Socket error on client mosqsub/2819-ubuntu64, disconnecting.
+1486578923: New connection from 127.0.0.1 on port 1883.
+1486578923: New client connected from 127.0.0.1 as mosqsub/2857-ubuntu64 (c1, k60).
+1486578923: Sending CONNACK to mosqsub/2857-ubuntu64 (0, 0)
+1486578923: Received SUBSCRIBE from mosqsub/2857-ubuntu64
+1486578923: 	/topic (QoS 0)
+1486578923: mosqsub/2857-ubuntu64 0 /topic
+1486578923: Sending SUBACK to mosqsub/2857-ubuntu64
+1486578939: Socket error on client mosqsub/2857-ubuntu64, disconnecting.

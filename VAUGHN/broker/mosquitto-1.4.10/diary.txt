@@ -1,0 +1,32 @@
+1. use search function to get
+  _mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG, "Denied PUBLISH from %s (d%d, q%d, r%d, m%d, '%s', ... (%ld bytes))",
+                        context->id, dup, qos, retain, mid, topic, (long)payloadlen);
+
+  _mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG, "Received PUBLISH from %s (d%d, q%d, r%d, m%d, '%s', ... (%ld bytes))",
+                        context->id, dup, qos, retain, mid, topic, (long)payloadlen);
+
+2. context->id is coming from client ID. which is input from new MQTTClient("", "","")
+  refer http://www.hivemq.com/blog/mqtt-essentials-part-3-client-broker-connection-establishment
+
+
+3. add SQL into the C code
+    use MYSQL libs #include <mysql.h>
+
+    edit config.mk >> Makefile
+
+    line 111
+    LIB_CFLAGS:=${CFLAGS} ${CPPFLAGS} -I. -I.. -I../lib -I/usr/include/mysql
+                -fdebug-prefix-map=/build/mysql-5.7-L3SQl5/mysql-5.7-5.7.16=. -fabi-version=2 -fno-omit-frame-pointer
+    # got this from command: mysql_config --cflags
+    # need to install this first in ubuntu: sudo apt install libmysqlclient-dev
+    #
+
+    line 123
+    BROKER_LIBS:=-ldl -lm -L/usr/lib/x86_64-linux-gnu -lmysqlclient -lpthread -lz -lm -lrt -latomic -ldl
+    #got this from mysql_config --libs
+
+
+
+two main functions
+-read_handle.c
+-send_mosq.c
