@@ -15,7 +15,6 @@ Contributors:
 */
 
 #include <mysql.h>
-
 #include <time.h>
 #include <uuid/uuid.h>
 #include <assert.h>
@@ -215,10 +214,10 @@ int mqtt3_handle_publish(struct mosquitto_db *db, struct mosquitto *context){
 	}
 
 	/****	START OF INTERCEPT	****/
-
+	_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[read_handle.c] START INTERCEPT");
 	uuid_t uuid;
 	uuid_generate_time(uuid);
-	char *uuid_s = (char*)malloc(36 * sizeof(char));
+	char *uuid_s = _mosquitto_malloc(sizeof(char)*37); //ex. "1b4e28ba-2fa1-11d2-883f-0016d3cca427" + "\0"
 	uuid_unparse(uuid, uuid_s);
 	payloadlen += 37 * sizeof(char);
 	char *temp = payload;
@@ -226,7 +225,8 @@ int mqtt3_handle_publish(struct mosquitto_db *db, struct mosquitto *context){
 	strcat(payload, uuid_s);
 	strcat(payload, "_");
 	strcat(payload, temp);
-	free(temp);
+
+	_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[read_handle.c] Payload modified");
 
 	/* Create DB Connection*/
 	MYSQL *conn;
@@ -239,9 +239,10 @@ int mqtt3_handle_publish(struct mosquitto_db *db, struct mosquitto *context){
 
 	/* Connect to database */
 	if (!mysql_real_connect(conn, server, user, password, database, 0, NULL, 0)) {
-	  _mosquitto_log_printf(NULL, MOSQ_LOG_ERR,"MYSQL ERR: %s\n", mysql_error(conn));
+	  _mosquitto_log_printf(NULL, MOSQ_LOG_ERR,"[read_handle.c] MYSQL ERR: %s\n", mysql_error(conn));
 	  exit(1);
 	}
+	_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[read_handle.c] Database connected");
 
 	/* Send SQL query */
 	MYSQL_RES *mysql_res;
@@ -250,15 +251,18 @@ int mqtt3_handle_publish(struct mosquitto_db *db, struct mosquitto *context){
 	sprintf(consulta,"INSERT INTO PROD VALUES('%s','%s',FROM_UNIXTIME('%d'),'%s')",context->id,uuid_s,now,topic);
 
 	if (mysql_query(conn, consulta)) {
-		_mosquitto_log_printf(NULL, MOSQ_LOG_ERR,"MYSQL ERR: %s\n", mysql_error(conn));
+		_mosquitto_log_printf(NULL, MOSQ_LOG_ERR,"[read_handle.c] MYSQL ERR: %s\n", mysql_error(conn));
 		exit(1);
 	}
 	mysql_res = mysql_use_result(conn);
+	_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[read_handle.c] SQL Query Executed");
 
 	/* Close connection */
 	mysql_free_result(mysql_res);
 	mysql_close(conn);
+	_mosquitto_free(uuid_s);
 
+	_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[read_handle.c] END OF INTERCEPT");
 	/****	END OF INTERCEPT	****/
 
 	_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG, "Received PUBLISH from %s (d%d, q%d, r%d, m%d, '%s', ... (%ld bytes))", context->id, dup, qos, retain, mid, topic, (long)payloadlen);

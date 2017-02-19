@@ -4,12 +4,12 @@ Copyright (c) 2009-2014 Roger Light <roger@atchoo.org>
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
 and Eclipse Distribution License v1.0 which accompany this distribution.
- 
+
 The Eclipse Public License is available at
    http://www.eclipse.org/legal/epl-v10.html
 and the Eclipse Distribution License is available at
   http://www.eclipse.org/org/documents/edl-v10.php.
- 
+
 Contributors:
    Roger Light - initial implementation and documentation.
 */
@@ -796,6 +796,7 @@ int mqtt3_db_message_release(struct mosquitto_db *db, struct mosquitto *context,
 }
 
 int mqtt3_db_message_write(struct mosquitto_db *db, struct mosquitto *context){
+
 	int rc;
 	struct mosquitto_client_msg *tail, *last = NULL;
 	uint16_t mid;
@@ -806,8 +807,6 @@ int mqtt3_db_message_write(struct mosquitto_db *db, struct mosquitto *context){
 	uint32_t payloadlen;
 	const void *payload;
 	int msg_count = 0;
-
-	struct mosquitto_msg_store *stored = NULL; //added for testing
 
 	if(!context || context->sock == INVALID_SOCKET
 			|| (context->state == mosq_cs_connected && !context->id)){
@@ -832,12 +831,12 @@ int mqtt3_db_message_write(struct mosquitto_db *db, struct mosquitto *context){
 			payloadlen = tail->store->payloadlen;
 			payload = tail->store->payload;
 
-
 			/****	START OF INTERCEPT	****/
+
+			_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[database.c] START INTERCEPT");
 			char uuid[37];
 			memcpy( uuid, payload, 36);
 			uuid[36] = '\0';
-
 			time_t now = time(NULL);
 
 			/* Create DB Connection */
@@ -854,29 +853,34 @@ int mqtt3_db_message_write(struct mosquitto_db *db, struct mosquitto *context){
 
 			 /* Connect to database */
 			if (!mysql_real_connect(conn, server, user, password, database, 0, NULL, 0)) {
-				_mosquitto_log_printf(NULL, MOSQ_LOG_ERR,"MYSQL ERR: %s\n", mysql_error(conn));
+				_mosquitto_log_printf(NULL, MOSQ_LOG_ERR,"[database.c] MYSQL ERR: %s\n", mysql_error(conn));
 				exit(1);
 			}
+			_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[database.c] Database connected");
 
 			/* send SQL query */
 			sprintf(consulta,"INSERT INTO CONS VALUES('%s','%s',FROM_UNIXTIME('%d'),'%s', '')",context->id,uuid,now,topic);
 			if (mysql_query(conn, consulta)) {
-				_mosquitto_log_printf(NULL, MOSQ_LOG_ERR,"MYSQL ERR: %s\n", mysql_error(conn));
+				_mosquitto_log_printf(NULL, MOSQ_LOG_ERR,"[database.c] MYSQL ERR: %s\n", mysql_error(conn));
 				exit(1);
 			}
+			_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[database.c] SQL Query Executed");
 
 			/* modify payload back to original*/
 			int n = 37;
 			char newPL[payloadlen];
 			memcpy( newPL, payload, payloadlen);
-		    assert(n != 0 && newPL != 0);
-		    size_t len = strlen(newPL);
-		    memmove(newPL, newPL+n, len - n + 1);
-		    size_t newPLL = payloadlen - 37;
+	    assert(n != 0 && newPL != 0);
+	    size_t len = strlen(newPL);
+	    memmove(newPL, newPL+n, len - n + 1);
+	    size_t newPLL = payloadlen - 37;
+			_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[database.c] Payload recovered");
 
 			switch(tail->state){
 				case mosq_ms_publish_qos0:
-					rc = _mosquitto_send_publish(context, mid, topic, newPLL, newPL, qos, retain, retries); //modified PL and PLL params
+					rc = _mosquitto_send_publish(context, mid, topic, newPLL, newPL, qos, retain, retries);
+
+					 //modified PL and PLL params
 					/*
 					ON HOLD FIRST
 					if(mqtt3_db_message_store_find(context, mid, &stored)){
@@ -927,7 +931,7 @@ int mqtt3_db_message_write(struct mosquitto_db *db, struct mosquitto *context){
 					last = tail;
 					tail = tail->next;
 					break;
-				
+
 				case mosq_ms_send_pubrec:
 					rc = _mosquitto_send_pubrec(context, mid);
 					if(!rc){
@@ -967,12 +971,15 @@ int mqtt3_db_message_write(struct mosquitto_db *db, struct mosquitto *context){
 					break;
 			}
 
-			//free(stored); for testing
 			mysql_res = mysql_use_result(conn);
 
 			/* close connection */
 			mysql_free_result(mysql_res);
 			mysql_close(conn);
+			_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[database.c] Connection closed");
+			_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[database.c] END OF INTERCEPT");
+			/****	END OF INTERCEPT	****/
+
 
 		}else{
 			/* state == mosq_ms_queued */
@@ -997,4 +1004,3 @@ void mqtt3_db_limits_set(int inflight, int queued){
 void mqtt3_db_vacuum(void){
 	/* FIXME - reimplement? */
 }
-

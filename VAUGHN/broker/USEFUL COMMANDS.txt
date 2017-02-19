@@ -1,0 +1,38 @@
+All useful commands
+
+Ubuntu pre-requisites
+40  sudo apt-get install build-essential python quilt devscripts python-setuptools python3
+42  sudo apt-get install libssl-dev
+43  sudo apt-get install cmake
+44  sudo apt-get install libc-ares-dev
+45  sudo apt-get install  uuid-dev
+46  sudo apt-get install uuid-dev
+47  sudo apt-get install daemon
+52  sudo apt install libwebsocket*
+54  sudo apt install libwebsocketpp-dev
+55  sudo apt install libwebsockets7
+257  sudo apt install mysql-server
+275  sudo apt install mysql-client
+378  sudo apt install libmysqlclient-dev
+
+
+To get mysql libs for compiling
+mysql_config --libs
+mysql_config --cflags
+
+
+To delete all .o files recursively
+find . -type f -name '*.o' -delete
+
+raspberry pi pre-requisites
+libs:
+sudo apt-get install build-essential python quilt devscripts python-setuptools python3
+libssl-dev cmake libc-ares-dev uuid-dev daemon libwebsocketpp-dev libwebsocket*
+libwebsockets7 mysql-server mysql-client libmysqlclient-dev
+
+also symlink libmysqlclient before first build
+sudo ln -s /usr/lib/arm-linux-gnueabihf/libmysqlclient.so.18 /usr/local/lib/libmysqlclient.so.18
+sudo ln -s /usr/lib/arm-linux-gnueabihf/libmysqlclient.a /usr/local/lib/libmysqlclient.a
+
+sudo apt-get install xsltproc
+sudo apt-get install docbook-xsl
