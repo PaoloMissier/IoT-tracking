@@ -1,32 +1,38 @@
 
-import paho.mqtt.client as mqtt
-import time
-import sys
+import requests
+from bs4 import BeautifulSoup
 
-BROKER_HOST = ""
-topic = "root/temperature/ext/test"
 
-def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
+def main():
+    l = ["created_at", "field1" , "field2", "name"]
+    fieldList = [field for field in l if "field" in field]
+    print(fieldList)
 
-def on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.payload))
 
-def main(argv):
-    BROKER_HOST = str(argv)
-    client = mqtt.Client(client_id="Thingspeak_Public_IoT", clean_session=True, userdata=None, protocol="MQTTv31")
-    client.on_connect = on_connect
-    client.on_message = on_message
-    client.connect(BROKER_HOST)
+    # tag = 'temp'
+    # # requests.get('https://github.com', verify='/path/to/certfile') // need to verify cert for later
+    # fullList = list()
+    # pageIncrement = 1
+    # while True:
+    #     pageList = list()
+    #     url = 'https://thingspeak.com/channels/public?page={}&tag={}'.format(pageIncrement, tag)
+    #     r = requests.get(url, verify=False) #skip cert check for now
+    #     soup = BeautifulSoup(r.text, "html.parser")
+    #     data = soup.find_all('a', class_='link-no-hover')
+    #     for link in soup.find_all('a', class_='link-no-hover'):
+    #         # get link only the channel link
+    #         pageList.append(link.get('href'))
+    #
+    #     if not pageList:
+    #         break
+    #     fullList.extend(pageList)
+    #     print(pageList)
+    #     pageIncrement += 1
+    #
+    # print(fullList)[fieldList for fieldList in webCh["channel"].keys() if "field" not in fieldList]
 
-    while True:
-        client.publish(topic, str("2017-01-30T06:22:26Z"+"_"+"8.00'c"))
-        client.loop(timeout=1.0, max_packets=1)
-        time.sleep(30)
+
+
 
 if __name__ == '__main__':
-   main(sys.argv[1])
-
-
-
-
+    main()  # bring in ipaddress of the broker
