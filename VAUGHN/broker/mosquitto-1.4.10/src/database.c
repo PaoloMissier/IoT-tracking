@@ -843,7 +843,8 @@ int mqtt3_db_message_write(struct mosquitto_db *db, struct mosquitto *context){
 			MYSQL *conn;
 			MYSQL_RES *mysql_res;
 
-			char *server = "192.168.137.202";
+			// char *server = "192.168.137.202";
+			char *server = "10.58.40.187";
 			char *user = "root";
 			char *password = "";
 			char *database = "BrokerTracker";

@@ -232,7 +232,9 @@ int mqtt3_handle_publish(struct mosquitto_db *db, struct mosquitto *context){
 	MYSQL *conn;
 	conn = mysql_init(NULL);
 
-	char *server = "192.168.137.202";
+	// char *server = "192.168.137.202";
+	char *server = "10.58.40.187";
+
 	char *user = "root";
 	char *password = ""; /* set me first */
 	char *database = "BrokerTracker";

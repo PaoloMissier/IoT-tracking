@@ -3,13 +3,16 @@ from bs4 import BeautifulSoup
 import json
 import time
 import logger
-import sys
+import certifi
 import requests
-from datetime import datetime
+import urllib3
 
-BROKER_HOST = ""
+# http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
+
+BROKER_HOST = "10.58.46.30"
 
 log = logger.create_logger(__name__)
+
 
 def initClient(clientName):
     client = mqtt.Client(client_id=clientName,
@@ -30,7 +33,7 @@ def on_message(client, userdata, msg):
 
 
 def getJSON(url):
-    response = requests.get(url, verify=False)
+    response = requests.get(url, verify=True)
     data = response.json()
     return data
 
@@ -38,21 +41,22 @@ def getJSON(url):
 # input: param tag, scrap webpage to get channel link return
 # return: dict {tag : [channels]}
 def getChannelLinks(tag):
-    # requests.get('https://github.com', verify='/path/to/certfile') // need to verify cert for later
     fullList = list()
     pageIncrement = 1
     while True:
         pageList = list()
         url = 'https://thingspeak.com/channels/public?page={}&tag={}'.format(pageIncrement, tag)
-        r = requests.get(url, verify=False) #skip cert check for now
+        log.info("[HTTPS REQUEST] {}".format(url))
+        r = requests.get(url, verify=True) #pip installed certifi
         soup = BeautifulSoup(r.text, "html.parser")
-        # data = soup.find_all('a', class_='link-no-hover')
         for link in soup.find_all('a', class_='link-no-hover'):
             # get link only the channel link
             pageList.append(str(link.get('href')))
         if not pageList:
+            log.info("[HTML PARSER] page empty")
             break
         fullList.extend(pageList)
+        log.info("[HTTPS RESULT PARSED] {} ".format(pageList))
         pageIncrement += 1
     return {tag: fullList}
 
@@ -65,8 +69,8 @@ def machineGun(ammo):
     for tag in ammo.keys():
         for channelLink in ammo[tag]:
             clientName = 'Thinkspeak{}'.format(channelLink.replace("/","_"))
-            # client = initClient(clientName)
-            # client.connect(BROKER_HOST)
+            client = initClient(clientName)
+            client.connect(BROKER_HOST)
 
             url = "https://thingspeak.com{}/feed.json".format(channelLink)
             webCh = getJSON(url)
@@ -75,7 +79,7 @@ def machineGun(ammo):
             try:
                 webChLastEntry = int(webCh["channel"]["last_entry_id"])
             except TypeError:
-                log.error("webChLastEntry: None")
+                log.error("[Type Error] webChLastEntry: None")
 
 
             fieldMap = {}
@@ -92,11 +96,11 @@ def machineGun(ammo):
 
                 localChLastEntry = int(json_decoded["data"][str(tag)][str(webChID)]["last_entry_id"])
             except ValueError:
-                log.error("JSON decode failed (ValErr)")
+                log.error("[Value Error] JSON decode failed")
             except KeyError:
-                log.error("JSON decode failed (KeyErr)")
+                log.error("[Key Error] JSON decode failed")
 
-            log.info("Compare web {} vs local {}".format(webChLastEntry, localChLastEntry))
+            log.info("Comparing [Web Last Entry]{} vs [Local Last Entry]{}".format(webChLastEntry, localChLastEntry))
             if webChLastEntry <= localChLastEntry: continue
 
             for feedCounter in range(0, len(webCh["feeds"])):
@@ -105,8 +109,8 @@ def machineGun(ammo):
                     for f in fieldMap.keys():
                         topic = '{}/{}/{}'.format(tag, webEntryID, fieldMap[f])
                         print("C: {} T: {}  M: {}".format(clientName, topic, str(webCh["feeds"][feedCounter][f])))
-                        # client.publish(topic, str(webCh["feeds"][feedCounter][f]))
-                        # client.loop(timeout=1.0, max_packets=1)
+                        client.publish(topic, str(webCh["feeds"][feedCounter][f]))
+                        client.loop(timeout=1.0, max_packets=1)
 
             # update local json
             if "data" not in json_decoded: json_decoded["data"] = {}
@@ -121,7 +125,7 @@ def machineGun(ammo):
 
 
 def main():
-    #BROKER_HOST = str(argv) # set the ipaddress of the brokerhost
+    BROKER_HOST = str(argv) # set the ipaddress of the brokerhost
     while True:
         ammo = {}
         tags = list()  # get from text file
@@ -131,11 +135,10 @@ def main():
 
         for tag in tags:
             ammo.update(getChannelLinks(tag))
-        log.info("ammo: {}".format(ammo))
         if machineGun(ammo) == 0:
             time.sleep(40)
 
 
 if __name__ == '__main__':
-   #main(sys.argv[1]) #bring in ipaddress of the broker
-    main()
+   main(sys.argv[1]) #bring in ipaddress of the broker
+   #main()
