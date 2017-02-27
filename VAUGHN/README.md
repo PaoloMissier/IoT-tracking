@@ -10,7 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 Install Prerequisites through terminal
 
-### Ubuntu VM / Raspberry Pi for Mosquitto Broer
+### Ubuntu VM / Raspberry Pi for Mosquitto Broker
 For Raspberry Pi use 'sudo apt-get'
 ```
 sudo apt install build-essential python quilt devscripts python-setuptools python3
