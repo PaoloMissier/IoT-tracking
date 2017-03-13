@@ -5,7 +5,8 @@ import datetime
 
 def strToDT(ts):
     try:
-        dt = datetime.datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
+        # datepicker format : 'mm/dd/yyyy hh:mm PM'
+        dt = datetime.datetime.strptime(ts, '%m/%d/%Y %H:%M %p')
     except ValueError:
         dt = None
     except TypeError:

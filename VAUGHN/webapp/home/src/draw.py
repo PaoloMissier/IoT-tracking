@@ -6,7 +6,7 @@ from matplotlib.dates import DateFormatter
 from bokeh.embed import components
 from bokeh.charts import Bar
 from bokeh.layouts import gridplot
-from . import db
+from . import home
 
 
 def drawFigure():
@@ -59,10 +59,11 @@ def drawBar(dictPG):
     return bar_charts
 
 
-def drawGrid(minTS, maxTS, interval):
+def drawGrid(minTS, maxTS, pub, sub, topic, interval):
     gridList = list()
 
-    for i in db.generatePlotGrid(minTS, maxTS, interval):
+    for i in home.generatePlotGrid(minTS, maxTS, pub, sub, topic, interval):
+
         for k in drawBar(i):
             gridList.append(k)
 

@@ -1,42 +1,57 @@
 
-from home.src.home import *
+from home.src import database
 from django.shortcuts import render
+from home.src.home import *
 
 
 def home(request):
 
+    data = {'topic': ["t1","t2","t3"] , 'publisher':["p1","p2","p3","p4"] , 'subscriber':["s1","s2","s3"] }
     subheadingL1 = "Enter min, max time interval."
+
+    # generate data. call db
+    data['topic'] = database.getTopics()
+    data['publisher'] = database.getPublisher()
+    data['subscriber'] = database.getSubscribers()
 
     if request.method == 'POST':
 
-        sMinTS = minTS = request.POST.get('min')
-        sMaxTS = maxTS =request.POST.get('max')
+        sMinDT = minDT = request.POST.get('minDT')
+        sMaxDT = maxDT =request.POST.get('maxDT')
         sInterval = interval = request.POST.get('int')
+        topic = request.POST.getlist('topics')
+        pub = request.POST.getlist('pub')
+        sub = request.POST.getlist('sub')
 
-        if sMinTS == "":
-            sMinTS = "minimum"
-            minTS = None
-        if sMaxTS == "":
-            sMaxTS = "maximum"
-            maxTS = None
-        if sInterval == "":
-            sInterval = "one hour"
-            interval = None
+        if sMinDT == "" or \
+            sMaxDT == "" or \
+            sInterval == "" or \
+            len(topic) == 0 or \
+            len(pub) == 0 or \
+            len(sub) == 0:
+                subheadingL1 = "Please check required inputs."
+                return render(request, 'home/home.html', {"the_script": "",
+                                                          "the_div": "",
+                                                          "subheadingL1": subheadingL1,
+                                                          "subheadingL2": "",
+                                                          "data": data})
+
+
 
         # generate graph
-        script, div = submit(minTS, maxTS, interval)
+        script, div = submit(minDT, maxDT, pub, sub, topic, interval)
 
         # fault tolerance
-        if minTS is None or maxTS is None or interval is None:
+        if minDT is None or maxDT is None or interval is None:
             subheadingL2 = "*Some value not given. Default value for min time is earliest possible, " \
                            "maximum time is latest possible and interval is 3600 secs*"
         else:
             subheadingL2 = ""
 
-        subheadingL1 = "Below are the counter cubes from {} to {} at interval {}".format(sMinTS, sMaxTS, sInterval)
+        subheadingL1 = "Below are the counter cubes from {} to {} at interval {}".format(sMinDT, sMaxDT, sInterval)
         return render(request, 'home/home.html', {"the_script": script,
                                                   "the_div": div,
                                                   "subheadingL1":subheadingL1,
                                                   "subheadingL2":subheadingL2})
 
-    return render(request, 'home/home.html', {"the_script": "", "the_div": "", "subheadingL1":subheadingL1})
+    return render(request, 'home/home.html', {"the_script": "", "the_div": "", "subheadingL1":subheadingL1, "data":data})
