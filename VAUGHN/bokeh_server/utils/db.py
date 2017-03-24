@@ -1,8 +1,9 @@
 import mysql.connector
-from mysql.connector import errorcode
-from . import logger
-from dateutil.relativedelta import relativedelta
 import pandas as pd
+from dateutil.relativedelta import relativedelta
+from mysql.connector import errorcode
+
+from utils import logger
 
 ###
 ### periodically query the derived MSGCNT(MSG counter) table and extracts:
@@ -17,6 +18,12 @@ MIN_MAX_TS_QUERY = "SELECT min(PROD.timestamp) as min, max(PROD.timestamp) as ma
 CNT_QUERY = "SELECT PROD.prodID, CONS.consID, CONS.topic , count(*) as cnt " \
             "FROM PROD JOIN CONS ON CONS.dataID=PROD.dataID  " \
             "where CONS.timestamp between %s and %s " \
+            "group by PROD.prodID, CONS.consID, CONS.topic"
+
+
+CNT_QUERY_CLIENTS = "SELECT PROD.prodID, CONS.consID, CONS.topic , count(*) as cnt " \
+            "FROM PROD JOIN CONS ON CONS.dataID=PROD.dataID  " \
+            "where PROD.prodID=%s and CONS.consID=%s " \
             "group by PROD.prodID, CONS.consID, CONS.topic"
 
 # DB constants
@@ -67,7 +74,7 @@ def getJoinCntDF(cursor, query, params):
             # create a dict
             d = {'prodID': prodID, 'consID': consID, 'topic': topic, 'cnt': cnt}
             l.append(d)
-            log.info("cnt: {}, {}, {}, {}".format(prodID, consID, topic, cnt))
+            log.debug("cnt: {}, {}, {}, {}".format(prodID, consID, topic, cnt))
 
     except mysql.connector.Error as e:
         print(e)
@@ -127,6 +134,15 @@ def getPublisher():
     for row in cursor:
         l.append(row[0])
     return l
+
+
+def getJoinCntDFClients(pub, sub):
+
+    params = [pub, sub]
+    conn = DBConnect()
+    cursor = conn.cursor()
+
+    return getJoinCntDF(cursor, CNT_QUERY_CLIENTS, params)
 
 
 

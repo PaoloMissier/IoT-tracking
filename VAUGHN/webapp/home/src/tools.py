@@ -28,4 +28,4 @@ def openFile(path):
     logfile = open("run/foo/access-log","r")
     loglines = follow(logfile)
     for line in loglines:
-        return line,
+        return line

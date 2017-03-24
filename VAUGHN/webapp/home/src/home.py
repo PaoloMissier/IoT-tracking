@@ -30,7 +30,6 @@ def generatePlotGrid(minTS=None, maxTS=None, pub=None, sub=None, top=None, inter
     if minTS is None:
         # if minTS not given
         minTS, _ = db.getMinMax(cursor)
-        print(minTS)
 
     allPlots = list()
 
@@ -43,7 +42,7 @@ def generatePlotGrid(minTS=None, maxTS=None, pub=None, sub=None, top=None, inter
         else:
             tempMaxTS = db.getNextWindow(cursor, minTS, maxTS, interval)
 
-        df = db.getJoinCntDF(cursor, [minTS, tempMaxTS])
+        df = db.getJoinCntDF(cursor, db.CNT_QUERY, [minTS, tempMaxTS])
 
         if len(df) == 0:  # skip next time frame
             minTS = tempMaxTS

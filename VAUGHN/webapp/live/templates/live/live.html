@@ -2,17 +2,111 @@
 <!--{% load static %}-->
 
 {% block navbar %}
-    <li><a href="/home/">Home</a></li>
-    <li class="active"><a href="/live/">Live Logs</a></li>
-    <li><a href="/about/">About</a></li>
-    <li><a href="/contact/">Contact</a></li>
+<li>
+    <a href="/home/"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+</li>
+<li class="active">
+    <a href="/live/"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
+</li>
+<!--
+<li>
+    <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tables</a>
+</li>
+<li>
+    <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Forms</a>
+</li>
+<li>
+    <a href="bootstrap-elements.html"><i class="fa fa-fw fa-desktop"></i> Bootstrap Elements</a>
+</li>
+<li>
+    <a href="bootstrap-grid.html"><i class="fa fa-fw fa-wrench"></i> Bootstrap Grid</a>
+</li>
+<li>
+    <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Dropdown <i class="fa fa-fw fa-caret-down"></i></a>
+    <ul id="demo" class="collapse">
+        <li>
+            <a href="#">Dropdown Item</a>
+        </li>
+        <li>
+            <a href="#">Dropdown Item</a>
+        </li>
+    </ul>
+</li>
+<li>
+    <a href="blank-page.html"><i class="fa fa-fw fa-file"></i> Blank Page</a>
+</li>
+<li>
+    <a href="index-rtl.html"><i class="fa fa-fw fa-dashboard"></i> RTL Dashboard</a>
+</li>
+-->
 {% endblock %}
 
 
 {% block content %}
-<div class="starter-template">
-    
-    <h1>Live Logs</h1>
+<div class="container-fluid">
+    <div style="height:100vh">
+        
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Filter
+        </button>
+        <div class="collapse" id="collapseExample">
+            <div class="container">
+                <form class="form-inline" method="post" action="/live/">
+                {% csrf_token %}
+                    <div class="row">
+                        <h4>Filter</h4>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            Publishers:
+                            <select class="selectpicker" data-live-search="true" name="pub">
+                                {% for pub in data.publisher %}
+                                    <option value="{{ pub }}">{{ pub }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            Subscribers:
+                            <select class="selectpicker" data-live-search="true" name="sub">
+                                {% for sub in data.subscriber %}
+                                    <option value="{{ sub }}">{{ sub }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <button type="reset" class="btn btn-default">Reset</button>
+                        <button type="submit" class="btn btn-default">Show</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="starter-template">
+            <h1>Live Plot</h1>
+            <p class="lead" >{{ subheadingL1 }}</p>
+            
+            
+
+            {{ the_div|safe }}
+
+            <div class=“bk-root">
+            <div class=“plotdiv">
+            {{the_script | safe }}
+            </div>
+            </div>
+
+        
+        </div>
+        
+    </div>
     
 </div>
 {% endblock %}
+
+

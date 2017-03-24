@@ -1,4 +1,3 @@
-
 import logging
 import types
 import textwrap
@@ -36,7 +35,7 @@ def create_logger(name):
 
     # Create a logger, with the previously-defined handler
     logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     logger.addHandler(console_handler)
 
     # Save some data and add a method to logger object
@@ -45,3 +44,4 @@ def create_logger(name):
     logger.newline = types.MethodType(log_newline, logger)
 
     return logger
+

@@ -6,10 +6,9 @@ import logger
 import certifi
 import requests
 import urllib3
+import sys
 
 # http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
-
-BROKER_HOST = "10.58.46.30"
 
 log = logger.create_logger(__name__)
 
@@ -64,11 +63,13 @@ def getChannelLinks(tag):
 # input: dict {tag:[list of channels]}
 # return : result code
 # desc: publish all channels given in the dict {tag:[list of channels]}
-def machineGun(ammo):
+def machineGun(ammo, BROKER_HOST):
 
     for tag in ammo.keys():
         for channelLink in ammo[tag]:
             clientName = 'Thinkspeak{}'.format(channelLink.replace("/","_"))
+            print (BROKER_HOST)
+            # broker code
             client = initClient(clientName)
             client.connect(BROKER_HOST)
 
@@ -109,6 +110,8 @@ def machineGun(ammo):
                     for f in fieldMap.keys():
                         topic = '{}/{}/{}'.format(tag, webEntryID, fieldMap[f])
                         print("C: {} T: {}  M: {}".format(clientName, topic, str(webCh["feeds"][feedCounter][f])))
+
+                        # broker code
                         client.publish(topic, str(webCh["feeds"][feedCounter][f]))
                         client.loop(timeout=1.0, max_packets=1)
 
@@ -124,7 +127,7 @@ def machineGun(ammo):
     return 0
 
 
-def main():
+def main(argv):
     BROKER_HOST = str(argv) # set the ipaddress of the brokerhost
     while True:
         ammo = {}
@@ -135,7 +138,7 @@ def main():
 
         for tag in tags:
             ammo.update(getChannelLinks(tag))
-        if machineGun(ammo) == 0:
+        if machineGun(ammo, BROKER_HOST) == 0:
             time.sleep(40)
 
 

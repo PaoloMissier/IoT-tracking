@@ -135,13 +135,14 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
+                    {% block navbar %}
                     <li class="active">
                         <a href="/home/"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
-                    <!--
                     <li>
-                        <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
+                        <a href="/live/"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
                     </li>
+                    <!--
                     <li>
                         <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tables</a>
                     </li>
@@ -172,6 +173,7 @@
                         <a href="index-rtl.html"><i class="fa fa-fw fa-dashboard"></i> RTL Dashboard</a>
                     </li>
                     -->
+                    {% endblock %}
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
