@@ -1,3 +1,1 @@
-temp
-sensor
-humidity
+light

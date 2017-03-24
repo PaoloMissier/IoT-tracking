@@ -7,6 +7,7 @@ import certifi
 import requests
 import urllib3
 import sys
+from datetime import datetime, timedelta
 
 # http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 
@@ -68,10 +69,13 @@ def machineGun(ammo, BROKER_HOST):
     for tag in ammo.keys():
         for channelLink in ammo[tag]:
             clientName = 'Thinkspeak{}'.format(channelLink.replace("/","_"))
-            print (BROKER_HOST)
             # broker code
             client = initClient(clientName)
-            client.connect(BROKER_HOST)
+
+            try :
+                client.connect(BROKER_HOST)
+            except ConnectionRefusedError:
+                continue
 
             url = "https://thingspeak.com{}/feed.json".format(channelLink)
             webCh = getJSON(url)
@@ -102,7 +106,9 @@ def machineGun(ammo, BROKER_HOST):
                 log.error("[Key Error] JSON decode failed")
 
             log.info("Comparing [Web Last Entry]{} vs [Local Last Entry]{}".format(webChLastEntry, localChLastEntry))
-            if webChLastEntry <= localChLastEntry: continue
+            if webChLastEntry <= localChLastEntry:
+                client.disconnect()
+                continue
 
             for feedCounter in range(0, len(webCh["feeds"])):
                 webEntryID = webCh["feeds"][feedCounter]["entry_id"]
@@ -114,6 +120,7 @@ def machineGun(ammo, BROKER_HOST):
                         # broker code
                         client.publish(topic, str(webCh["feeds"][feedCounter][f]))
                         client.loop(timeout=1.0, max_packets=1)
+                        time.sleep(1)  # prevent publisher too fast
 
             # update local json
             if "data" not in json_decoded: json_decoded["data"] = {}
@@ -129,15 +136,19 @@ def machineGun(ammo, BROKER_HOST):
 
 def main(argv):
     BROKER_HOST = str(argv) # set the ipaddress of the brokerhost
+    past = datetime.now() - timedelta(hours=2)
     while True:
+        now = datetime.now()
         ammo = {}
         tags = list()  # get from text file
         file = open("tags.txt", "r")
         for line in file:
             tags.append(line.rstrip())
 
-        for tag in tags:
-            ammo.update(getChannelLinks(tag))
+        if (now - past).seconds // 3600 >= 2:
+            for tag in tags:
+                ammo.update(getChannelLinks(tag))
+            past = now
         if machineGun(ammo, BROKER_HOST) == 0:
             time.sleep(40)
 

@@ -52,6 +52,7 @@ def home(request):
         return render(request, 'home/home.html', {"the_script": script,
                                                   "the_div": div,
                                                   "subheadingL1":subheadingL1,
-                                                  "subheadingL2":subheadingL2})
+                                                  "subheadingL2":subheadingL2,
+                                                  "data":data})
 
     return render(request, 'home/home.html', {"the_script": "", "the_div": "", "subheadingL1":subheadingL1, "data":data})

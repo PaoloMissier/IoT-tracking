@@ -74,10 +74,10 @@ def getJoinCntDF(cursor, query, params):
             # create a dict
             d = {'prodID': prodID, 'consID': consID, 'topic': topic, 'cnt': cnt}
             l.append(d)
-            log.debug("cnt: {}, {}, {}, {}".format(prodID, consID, topic, cnt))
+            log.info("cnt: {}, {}, {}, {}".format(prodID, consID, topic, cnt))
 
     except mysql.connector.Error as e:
-        print(e)
+        log.error(e)
 
     return pd.DataFrame(l)
 
@@ -143,6 +143,3 @@ def getJoinCntDFClients(pub, sub):
     cursor = conn.cursor()
 
     return getJoinCntDF(cursor, CNT_QUERY_CLIENTS, params)
-
-
-

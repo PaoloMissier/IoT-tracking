@@ -86,6 +86,7 @@ Add additional notes about how to deploy this on a live system
 ## Built With
 
 * [Django](https://www.djangoproject.com) - The python web framework
+* [Bokeh](http://bokeh.pydata.org/en/latest/) - Python Interactive Visualization Library
 * [Bootstrap](http://getbootstrap.com) - Front end web template
 * [Python3](https://www.python.org/download/releases/3.0/) - Python 3
 * [Paho](https://eclipse.org/paho/) - MQTT Client Library
