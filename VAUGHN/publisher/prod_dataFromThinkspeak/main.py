@@ -75,6 +75,7 @@ def machineGun(ammo, BROKER_HOST):
             try :
                 client.connect(BROKER_HOST)
             except ConnectionRefusedError:
+                client.disconnect()
                 continue
 
             url = "https://thingspeak.com{}/feed.json".format(channelLink)
@@ -84,7 +85,9 @@ def machineGun(ammo, BROKER_HOST):
             try:
                 webChLastEntry = int(webCh["channel"]["last_entry_id"])
             except TypeError:
+                client.disconnect()
                 log.error("[Type Error] webChLastEntry: None")
+                continue
 
 
             fieldMap = {}
@@ -118,10 +121,19 @@ def machineGun(ammo, BROKER_HOST):
                         print("C: {} T: {}  M: {}".format(clientName, topic, str(webCh["feeds"][feedCounter][f])))
 
                         # broker code
-                        client.publish(topic, str(webCh["feeds"][feedCounter][f]))
-                        client.loop(timeout=1.0, max_packets=1)
-                        time.sleep(1)  # prevent publisher too fast
 
+                        # make sure don't send (null) terminate to broker, it will mess with my broker memory address
+                        # (need to add this fault tolerance in broker side)
+                        if str(webCh["feeds"][feedCounter][f]) == "":
+                            payload = "Empty"
+                        else:
+                            payload = str(webCh["feeds"][feedCounter][f])
+
+                        client.publish(topic, payload)
+                        client.loop(timeout=1.0, max_packets=1)
+                        # time.sleep(1)  # prevent publisher too fast
+
+            client.disconnect()
             # update local json
             if "data" not in json_decoded: json_decoded["data"] = {}
             if tag not in json_decoded["data"]: json_decoded["data"][tag] = {}
@@ -137,9 +149,9 @@ def machineGun(ammo, BROKER_HOST):
 def main(argv):
     BROKER_HOST = str(argv) # set the ipaddress of the brokerhost
     past = datetime.now() - timedelta(hours=2)
+    ammo = {}
     while True:
         now = datetime.now()
-        ammo = {}
         tags = list()  # get from text file
         file = open("tags.txt", "r")
         for line in file:

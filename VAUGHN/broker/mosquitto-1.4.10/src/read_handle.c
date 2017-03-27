@@ -215,8 +215,14 @@ int mqtt3_handle_publish(struct mosquitto_db *db, struct mosquitto *context){
 
 	/****	START OF INTERCEPT	****/
 	_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[read_handle.c] START INTERCEPT");
+
+	// prevent null terminator cause memory fault
+	if (payload == '\0'){
+		payload = " ";
+	}
+
 	uuid_t uuid;
-	uuid_generate_time(uuid);
+	uuid_generate_time_safe(uuid);
 	char *uuid_s = _mosquitto_malloc(sizeof(char)*37); //ex. "1b4e28ba-2fa1-11d2-883f-0016d3cca427" + "\0"
 	uuid_unparse(uuid, uuid_s);
 	payloadlen += 37 * sizeof(char);
@@ -233,10 +239,12 @@ int mqtt3_handle_publish(struct mosquitto_db *db, struct mosquitto *context){
 	conn = mysql_init(NULL);
 
 	// char *server = "192.168.137.202";
-	char *server = "10.58.40.187";
+	//char *server = "10.58.40.187";
+	char *server = "localhost";
 
-	char *user = "root";
-	char *password = ""; /* set me first */
+
+	char *user = "vaughn";
+	char *password = "zxczxczxc"; /* set me first */
 	char *database = "BrokerTracker";
 
 	/* Connect to database */
@@ -263,6 +271,8 @@ int mqtt3_handle_publish(struct mosquitto_db *db, struct mosquitto *context){
 	mysql_free_result(mysql_res);
 	mysql_close(conn);
 	_mosquitto_free(uuid_s);
+	_mosquitto_free(temp);
+	uuid_clear(uuid);
 
 	_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,"[read_handle.c] END OF INTERCEPT");
 	/****	END OF INTERCEPT	****/
