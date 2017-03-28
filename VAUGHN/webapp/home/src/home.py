@@ -110,14 +110,15 @@ def generatePlotGrid(minTS=None, maxTS=None, pub=None, sub=None, top=None, inter
         if maxConsCnt < j:
             maxConsCnt = j
         prodCnt = i
-        minTS = tempMaxTS
+
         plot = {'minTS': minTS,
-                'maxTS': maxTS,
+                'maxTS': tempMaxTS,
                 'maxConsCnt': maxConsCnt,
                 'prodCnt': prodCnt,
                 'allTopics': allTopics,
                 'plotGrid': plotGrid
                 }
+        minTS = tempMaxTS
         allPlots.append(plot)
         logger.log_textWithIndent(log, "added into AllPlots"+str(plot))
         logger.log_newline(log)

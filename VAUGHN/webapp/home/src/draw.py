@@ -7,7 +7,8 @@
 from bokeh.embed import components
 from bokeh.charts import Bar
 from bokeh.layouts import gridplot
-from . import home
+from bokeh.models import HoverTool, BoxSelectTool
+from . import home, tools
 
 
 # def drawFigure():
@@ -29,16 +30,20 @@ from . import home
 
 
 def drawBar(dictPG):
-    # dictPG format {'prodCnt': prodCnt,
-    #               'maxConsCnt': maxConsCnt,
-    #               'allTopics': allTopics,
-    #               'plotGrid': plotGrid
-    #               }
+    # plot = {'minTS': minTS,
+    #         'maxTS': maxTS,
+    #         'maxConsCnt': maxConsCnt,
+    #         'prodCnt': prodCnt,
+    #         'allTopics': allTopics,
+    #         'plotGrid': plotGrid
+    #         }
 
     prodCnt = dictPG['prodCnt']
     maxConsCnt = dictPG['maxConsCnt']
     allTopics = dictPG['allTopics']
     plotGrid = dictPG['plotGrid']
+    minTS = tools.dtToStr(dictPG['minTS'])
+    maxTS = tools.dtToStr(dictPG['maxTS'])
     bar_charts = list()
 
     for i in range(prodCnt):
@@ -53,9 +58,30 @@ def drawBar(dictPG):
                     'keys': list(topicsCnt.keys())
                     }
 
+            # Tootips Init
+            hover = HoverTool(
+                tooltips=[
+                    ("Pub", prodID),
+                    ("Sub", consID),
+                    ("Topic", "$x"),
+                    ("Cnt", "@height"),
+                    ("MinTS", minTS),
+                    ("MaxTS", maxTS)
+                ]
+            )
+            TOOLS = [BoxSelectTool(), hover]
 
-            bar = Bar(data, values='data', label='keys', title=prodID + "_" + consID,
-                      bar_width=0.2, width=200, height=300, max_height=0.6, legend=False)
+            bar = Bar(data,
+                      values='data',
+                      label='keys',
+                      title=dictPG['minTS'].strftime('%m/%d/%Y %H:%M:%S')+"_" + dictPG['maxTS'].strftime('%H:%M:%S'),
+                      title_text_font_size='7.5pt',
+                      bar_width=0.2,
+                      width=200,
+                      height=300,
+                      max_height=0.6,
+                      legend=False,
+                      tools=TOOLS)
             bar_charts.append(bar)
 
     return bar_charts

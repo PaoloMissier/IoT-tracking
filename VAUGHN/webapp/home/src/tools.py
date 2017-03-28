@@ -14,6 +14,10 @@ def strToDT(ts):
     return dt
 
 
+def dtToStr(dt):
+    return dt.strftime('%m/%d/%Y %H:%M %p')
+
+
 def follow(thefile):
     thefile.seek(0,2)
     while True:
