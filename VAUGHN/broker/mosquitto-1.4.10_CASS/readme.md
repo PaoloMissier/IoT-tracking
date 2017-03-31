@@ -5,8 +5,8 @@ These instructions will get you to build this patched Mosquitto Broker. Original
 
 ## Prerequisites
 
-*[Cassandra C/CPP Driver from DataStax](https://datastax.github.io/cpp-driver/)
-*[Cassandra](http://cassandra.apache.org/)
+* [Cassandra C/CPP Driver from DataStax](https://datastax.github.io/cpp-driver/)
+* [Cassandra](http://cassandra.apache.org/)
 
 ### Ubuntu
 ```
