@@ -1,4 +1,4 @@
-from home.src import logger
+from src.utils import logger
 from bokeh.embed import autoload_server
 
 log = logger.create_logger(__name__)

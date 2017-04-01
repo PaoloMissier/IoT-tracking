@@ -1,12 +1,32 @@
 
-from home.src import database
+from src.utils import database_mysql as database
 from django.shortcuts import render
 from home.src.home import *
+from django.http import HttpResponse
+import datetime
+import json
+
+def cubes(request):
+    if request.method == 'GET':
+
+        print(request.GET)
+        minTS = request.GET.get('mints', '')
+        maxTS = request.GET.get('maxts', '')
+        print(minTS)
+        print(maxTS)
+        minTS = datetime.datetime.strptime(minTS, '%m/%d/%Y%H:%M%p')
+        maxTS = datetime.datetime.strptime(maxTS, '%m/%d/%Y%H:%M%p')
+        print(minTS)
+        print(maxTS)
+        l = generateAllCubes(minTS=minTS, maxTS=maxTS)
+        data = {'data': l}
+
+        return HttpResponse(json.dumps(data))
 
 
 def home(request):
 
-    data = {'topic': ["t1","t2","t3"] , 'publisher':["p1","p2","p3","p4"] , 'subscriber':["s1","s2","s3"] }
+    data = {'topic': ["t1","t2","t3"] , 'publisher':["p1","p2","p3","p4"], 'subscriber':["s1","s2","s3"] }
     subheadingL1 = "Enter min, max time interval."
 
     # generate data. call db

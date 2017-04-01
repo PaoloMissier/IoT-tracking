@@ -1,0 +1,118 @@
+
+{% extends 'base.html' %}
+
+{% block navbar %}
+<li>
+    <a href="/home/"><i class="fa fa-fw fa-home"></i> Home</a>
+</li>
+<li class="active">
+    <a href="/plots/"><i class="fa fa-fw fa-bar-chart-o"></i> Plots</a>
+</li>
+<li>
+    <a href="/live/"><i class="fa fa-fw fa-globe"></i> Live</a>
+</li>
+
+{% endblock %}
+
+{% block content %}
+        
+<div class="container-fluid">
+    <div style="height:100vh">
+        
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Filter
+        </button>
+        <div class="collapse" id="collapseExample">
+            <div class="container">
+                <form class="form-inline" method="post" action="/home">
+                {% csrf_token %}
+                    <div class="row">
+                        <h4>Filter</h4>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            Minimum DateTime
+                            <input type='text' name="minDT" class="form-control" id='minDT' width="auto" />
+                        </div>
+                        <div class="col-md-4">
+                            Maximum DateTime
+                            <input type='text' name="maxDT" class="form-control" id='maxDT' />
+                        </div>
+                    </div>
+
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#minDT').datetimepicker();
+                            $('#maxDT').datetimepicker();
+                        });
+                    </script>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            Intervals
+                            <input type="number" name="int" class="form-control" placeholder="Intervals (s)">
+                        </div>
+                        <div class="col-md-4">
+                            Topics
+                            <select class="selectpicker" multiple data-live-search="true" name="topics">
+                                {% for topic in data.topic %}
+                                    <option value="{{ topic }}">{{ topic }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                    <div class="col-md-4">
+                        Publishers
+                        <select class="selectpicker" multiple data-live-search="true" name="pub">
+                            {% for pub in data.publisher %}
+                                <option value="{{ pub }}">{{ pub }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        Subscribers
+                        <select class="selectpicker" multiple data-live-search="true" name="sub">
+                            {% for sub in data.subscriber %}
+                                <option value="{{ sub }}">{{ sub }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                    <div class="row">
+                        <button type="reset" class="btn btn-default">Reset</button>
+                        <button type="submit" class="btn btn-default">Show</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="starter-template">
+            <i>{{ subheadingL2 }}</i>
+            <h1>Counter Cubes Presentation</h1>
+            <p class="lead" >{{ subheadingL1 }}</p>
+            
+            
+
+            {{ the_div|safe }}
+
+            {{ the_script|safe }}
+        
+        </div>
+        <p>         
+            Sample Data<br>
+            # MinDT "2017-03-10 12:52:35"<br>
+            # MaxDT "2017-03-10 13:11:45"<br>
+            # pub = ["Thinkspeak_channels_211224"] <br>
+            # sub = ["mosqsub/21027-ubuntu64"] <br>
+            # topic = ["temp/233/Humidity_1", "temp/233/Temperature_1"]
+        </p>
+        
+    </div>
+    
+</div>
+{% endblock %}

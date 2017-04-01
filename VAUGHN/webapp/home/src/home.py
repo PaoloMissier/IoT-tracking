@@ -1,5 +1,6 @@
-from . import draw, tools, logger
-from . import database as db
+from . import draw
+from src.utils import tools, logger
+from src.utils import database_mysql as db
 
 log = logger.create_logger(__name__)
 
@@ -12,6 +13,28 @@ def submit(minTS, maxTS, pub ,sub ,topic , interval):
 
     script, div = draw.drawGrid(minTS, maxTS, pub, sub ,topic ,interval)
     return script, div
+
+
+def generateAllCubes(minTS = None, maxTS = None):
+    try:
+        conn = db.DBConnect()
+        cursor = conn.cursor()
+    except:
+        log.error("Error connecting database.")
+
+    l = list()
+    try:
+        cursor.execute(db.CNT_QUERY, (minTS, maxTS))
+        for (prodID, consID, topic, cnt) in cursor:
+            # create a dict
+            d = {'prodID': prodID, 'consID': consID, 'topic': topic, 'cnt': cnt}
+            l.append(d)
+            log.info("cnt: {}, {}, {}, {}".format(prodID, consID, topic, cnt))
+
+    except :
+        log.error("Failed to execute query")
+
+    return l
 
 
 def generatePlotGrid(minTS=None, maxTS=None, pub=None, sub=None, top=None, interval=None, cursor=None):

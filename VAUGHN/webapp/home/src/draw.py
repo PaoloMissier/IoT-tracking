@@ -1,14 +1,9 @@
-# import random
-# import datetime
-# from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-# from matplotlib.figure import Figure
-# from matplotlib.dates import DateFormatter
-
 from bokeh.embed import components
 from bokeh.charts import Bar
 from bokeh.layouts import gridplot
 from bokeh.models import HoverTool, BoxSelectTool
-from . import home, tools
+from . import home
+from src.utils import tools
 
 
 # def drawFigure():

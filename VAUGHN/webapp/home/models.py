@@ -1,12 +1,11 @@
 from django.db import models
 
-
-class PlotSession(object):
-
-    def __init__(self, plot_session_id, plot_thread):
-        """Return a Customer object whose name is *name* and starting
-        balance is *balance*."""
-        self.bokeh_session_id = plot_session_id
-        self.thread = plot_thread
-
-
+# Not required at the moment
+# class Cubes(models.Model):
+#     prodID = models.CharField(max_length=255, unique=False)
+#     consID = models.CharField(max_length=255, unique=False)
+#     topic = models.CharField(max_length=255, unique=False)
+#     cnt = models.IntegerField(unique=False)
+#
+#     def __str__(self):
+#         return "{} {} {} {}".format(self.prodID, self.consID, self.topic, self.cnt)
