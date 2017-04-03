@@ -5,7 +5,7 @@ from bokeh.core.properties import value
 from utils.dictdiffer import *
 from bokeh.palettes import Viridis256
 from bokeh.models import HoverTool, BoxSelectTool, Legend
-from utils.db import getJoinCntDFClients
+from utils.db_cass import getJoinCntDFClients
 from utils.logger import *
 import random
 

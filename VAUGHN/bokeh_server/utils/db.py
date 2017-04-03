@@ -82,24 +82,6 @@ def getJoinCntDF(cursor, query, params):
     return pd.DataFrame(l)
 
 
-# blocks if not enough records in the next window
-def getNextWindow(cursor, fromTS, maxTS, interval):
-    while True:
-        if maxTS is None:
-            _, maxTS = getMinMax(cursor)  # get current latest timestamp
-
-            log.info("available window size: {}".format(maxTS - fromTS))
-        soughtMaxTS = fromTS + relativedelta(seconds=interval)
-        if soughtMaxTS <= maxTS:
-            log.info("next window is complete. From {} to {}".format(fromTS, soughtMaxTS))
-            return soughtMaxTS
-        else:
-            return fromTS
-            # logger.info(
-            #     "next window is Incomplete. From {} to {} but max is {}".format(fromTS, soughtMaxTS, maxTS))
-            # time.sleep(REPLOT_INTERVAL)
-
-
 def getTopics():
     l = []
     db = DBConnect()
