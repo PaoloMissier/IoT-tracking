@@ -6,7 +6,7 @@ log = logger.create_logger(__name__)
 
 def submit(pub, sub):
 
-    script = autoload_server(model = None, app_path="/bokeh_server")
+    script = autoload_server(model=None, app_path="/bokeh_server")
     script_list = script.split("\n")
     script_list[2] = script_list[2][:-1]
 

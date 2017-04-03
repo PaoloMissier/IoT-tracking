@@ -1,6 +1,28 @@
 from django.shortcuts import render
-from plots.src import plots
+from django.http import HttpResponse
 from src.utils import database_cass as database
+from plots.src.plots import *
+import json
+import datetime
+
+
+def cubes(request):
+    if request.method == 'GET':
+
+        print(request.GET)
+        minTS = request.GET.get('mints', '')
+        maxTS = request.GET.get('maxts', '')
+        print(minTS)
+        print(maxTS)
+        minTS = datetime.datetime.strptime(minTS, '%m/%d/%Y%H:%M:%S')
+        maxTS = datetime.datetime.strptime(maxTS, '%m/%d/%Y%H:%M:%S')
+        print(minTS)
+        print(maxTS)
+        l = generateAllCubes(minTS=minTS, maxTS=maxTS)
+        data = {'data': l}
+
+        return HttpResponse(json.dumps(data))
+
 
 def plots(request):
 
@@ -12,9 +34,36 @@ def plots(request):
     data['publisher'] = database.getPublisher()
     data['subscriber'] = database.getSubscribers()
 
-
     if request.method == 'POST':
-        return render(request, 'plots/plots.html',
-                      {"the_script": "", "the_div": "", "subheadingL1": subheadingL1, "data": data})
+
+        sMinDT = minDT = request.POST.get('minDT')
+        sMaxDT = maxDT =request.POST.get('maxDT')
+        sInterval = interval = request.POST.get('int')
+        topic = request.POST.getlist('topics')
+        pub = request.POST.getlist('pub')
+        sub = request.POST.getlist('sub')
+
+        if sMinDT == "" or \
+            sMaxDT == "" or \
+            sInterval == "" or \
+            len(topic) == 0 or \
+            len(pub) == 0 or \
+            len(sub) == 0:
+                subheadingL1 = "Please check required inputs."
+                return render(request, 'plots/plots.html', {"the_script": "",
+                                                          "the_div": "",
+                                                          "subheadingL1": subheadingL1,
+                                                          "subheadingL2": "",
+                                                          "data": data})
+
+        # generate graph
+        script, div = submit(minDT, maxDT, pub, sub, topic, interval)
+
+        subheadingL1 = "Below are the counter cubes from {} to {} at interval {}".format(sMinDT, sMaxDT, sInterval)
+        return render(request, 'plots/plots.html', {"the_script": script,
+                                                  "the_div": div,
+                                                  "subheadingL1":subheadingL1,
+                                                  "subheadingL2":"",
+                                                  "data":data})
 
     return render(request, 'plots/plots.html', {"the_script": "", "the_div": "", "subheadingL1": subheadingL1, "data": data})

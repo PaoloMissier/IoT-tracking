@@ -867,27 +867,54 @@ int mqtt3_db_message_write(struct mosquitto_db *db, struct mosquitto *context)
 			printf("Connect result: %s\n", cass_error_desc(rc));
 
 			for (int x=0; x<tail->store->dest_id_count; x++){
+
+				/*** INSERT INTO CNT ***/
 				CassStatement* statement
-				  = cass_statement_new("INSERT INTO CNT (prodID, consID, date, time, topic) VALUES (?, ?, ?, ?, ?)", 5);
+				  = cass_statement_new("INSERT INTO CNT (id, prodID, consID, topic, ts) VALUES (now(),?, ?, ?, toTimestamp(now()))", 3);
 				cass_statement_bind_string(statement, 0, tail->store->source_id);
 				cass_statement_bind_string(statement, 1, tail->store->dest_ids[x]);
-				cass_statement_bind_uint32 (statement, 2, cass_date_from_epoch(now));
-				cass_statement_bind_int64 (statement, 3, cass_time_from_epoch(now));
-				cass_statement_bind_string(statement, 4, topic);
-
+				cass_statement_bind_string(statement, 2, topic);
 				CassFuture* query_future = cass_session_execute(session, statement);
 				cass_statement_free(statement);
+				CassError rc = cass_future_error_code(query_future);
+				printf("QUERY INSERT_CNT result: %s\n", cass_error_desc(rc));
+				cass_future_free(query_future);
+
+				/*** INSERT INTO CONS_LIST ***/
+				CassStatement* statement_cl
+					= cass_statement_new("INSERT INTO cons_list (cons) VALUES (?) IF NOT EXISTS", 1);
+				cass_statement_bind_string(statement_cl, 0, tail->store->dest_ids[x]);
+				CassFuture* query_future_cl = cass_session_execute(session, statement_cl);
+				cass_statement_free(statement_cl);
+				CassError rc_cl = cass_future_error_code(query_future_cl);
+				printf("QUERY INSERT_CONS_LIST result: %s\n", cass_error_desc(rc_cl));
+				cass_future_free(query_future_cl);
 
 				_mosquitto_log_printf(NULL, MOSQ_LOG_DEBUG,
 					"INSERT INTO CNT(P_%s, S_%s, T_%s)", tail->store->source_id, tail->store->dest_ids[x], topic);
 
-				// This will block until the query has finished
-				CassError rc = cass_future_error_code(query_future);
-
-				printf("Query result: %s\n", cass_error_desc(rc));
-
-				cass_future_free(query_future);
 			}
+
+			/*** INSERT INTO TOPIC_LIST ***/
+			CassStatement* statement_tl
+				= cass_statement_new("INSERT INTO topic_list (topic) VALUES (?) IF NOT EXISTS", 1);
+			cass_statement_bind_string(statement_tl, 0, topic);
+			CassFuture* query_future_tl = cass_session_execute(session, statement_tl);
+			cass_statement_free(statement_tl);
+			CassError rc_tl = cass_future_error_code(query_future_tl);
+			printf("QUERY INSERT_TOPIC_LIST result: %s\n", cass_error_desc(rc_tl));
+			cass_future_free(query_future_tl);
+
+			/*** INSERT INTO PROD_LIST ***/
+			CassStatement* statement_pl
+				= cass_statement_new("INSERT INTO prod_list (prod) VALUES (?) IF NOT EXISTS", 1);
+			cass_statement_bind_string(statement_pl, 0, tail->store->source_id);
+			CassFuture* query_future_pl = cass_session_execute(session, statement_pl);
+			cass_statement_free(statement_pl);
+			CassError rc_pl = cass_future_error_code(query_future_pl);
+			printf("QUERY INSERT_PROD_LIST result: %s\n", cass_error_desc(rc_pl));
+			cass_future_free(query_future_pl);
+
 
 			cass_future_free(connect_future);
 			cass_session_free(session);

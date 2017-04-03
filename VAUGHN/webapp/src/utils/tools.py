@@ -6,7 +6,7 @@ import datetime
 def strToDT(ts):
     try:
         # datepicker format : 'mm/dd/yyyy hh:mm PM'
-        dt = datetime.datetime.strptime(ts, '%m/%d/%Y %H:%M %p')
+        dt = datetime.datetime.strptime(ts,'%m/%d/%Y %I:%M %p')
     except ValueError:
         dt = None
     except TypeError:
@@ -16,6 +16,16 @@ def strToDT(ts):
 
 def dtToStr(dt):
     return dt.strftime('%m/%d/%Y %H:%M %p')
+
+
+def parseDatetime(datetime):
+    return {'date': datetime.strftime('%Y-%m-%d'), 'time': datetime.microsecond}
+
+
+### input (date: %Y-%m-%d ; time: %H:%M:%S)
+def joinDatetime(date, time):
+    date+" "+time
+    return
 
 
 def follow(thefile):

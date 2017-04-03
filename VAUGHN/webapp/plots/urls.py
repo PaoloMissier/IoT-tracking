@@ -10,4 +10,5 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.plots, name='plots'),
+    url(r'^get/cubes/$', views.cubes, name='plots'),
 ]

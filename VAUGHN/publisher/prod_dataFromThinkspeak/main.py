@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 
 log = logger.create_logger(__name__)
 
+
 def initClient(clientName):
     client = mqtt.Client(client_id=clientName,
                          clean_session=True,

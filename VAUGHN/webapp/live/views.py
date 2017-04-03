@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from live.src.live import *
-from src.utils.database_mysql import getPublisher, getSubscribers
+from src.utils.database_cass import getPublisher, getSubscribers
 
 log = logger.create_logger(__name__)
 

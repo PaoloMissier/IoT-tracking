@@ -1,5 +1,4 @@
-from src.utils import logger
-from dateutil.relativedelta import relativedelta
+from src.utils import logger, tools
 from cassandra.cluster import Cluster
 import pandas as pd
 
@@ -7,11 +6,9 @@ log = logger.create_logger(__name__)
 
 CNT_QUERY = "SELECT prodID, consID, topic, count(*) as cnt " \
             "FROM CNT  " \
-            "WHERE date >= %s " \
-            "AND date <= %s " \
-            "AND time >= %s" \
-            "AND time <= %s"\
-            "GROUP BY prodID, consID, topic"
+            "WHERE ts >= %s " \
+            "AND ts <= %s"\
+            "GROUP BY id, prodID, consID, topic ALLOW FILTERING"
 
 
 CASS_CONTACT_POINTS = ["127.0.0.1"]
@@ -28,49 +25,49 @@ def connect():
         log.error("Error connecting to Cassandra.")
 
 
-def getNextWindow(fromTS, maxTS, interval):
-    while True:
-        log.info("available window size: {}".format(maxTS - fromTS))
-        soughtMaxTS = fromTS + relativedelta(seconds=interval)
-        if soughtMaxTS <= maxTS:
-            log.info("next window is complete. From {} to {}".format(fromTS, soughtMaxTS))
-            return soughtMaxTS
-        else:
-            log.info("next window unavailable, return fromTS")
-            return fromTS
-
-
 def getJoinCntDF(session, query, params):
+    l = []
+    minTS = params[0].strftime('%Y-%m-%d %H:%M:%S')
+    maxTS = params[1].strftime('%Y-%m-%d %H:%M:%S')
     try:
-        rows = session.execute(query, (params[0], params[1], params[2], params[3]))
-        # for (prodID, consID, topic, cnt) in cursor:
-        #     # create a dict
-        #     d = {'prodID': prodID, 'consID': consID, 'topic': topic, 'cnt': cnt}
-        #     l.append(d)
-        #     log.info("cnt: {}, {}, {}, {}".format(prodID, consID, topic, cnt))
+        rows = session.execute(query=query, parameters=(minTS, maxTS), trace=True)
+        print(rows.get_query_trace())
+        for row in rows:
+            d = {'prodID': row.prodid, 'consID': row.consid, 'topic': row.topic, 'cnt': row.cnt}
+            l.append(d)
+            log.info("cnt: {}, {}, {}, {}".format(row.prodid, row.consid, row.topic, row.cnt))
 
-    except:
+    except :
         log.error("Error while executing JoinCntDF query")
 
-    return pd.DataFrame(rows)
+    return l
 
 
 def getTopics():
+    topics = []
     session = connect()
-    QUERY = "SELECT DISTINCT id,topic FROM CNT"
+    QUERY = "SELECT DISTINCT topic FROM topic_list"
     rows = session.execute(QUERY)
-    return rows
+    for row in rows:
+        topics.append(row.topic)
+    return topics
 
 
 def getSubscribers():
+    subs = []
     session = connect()
-    QUERY = "SELECT DISTINCT id,consID FROM CNT"
+    QUERY = "SELECT DISTINCT cons FROM cons_list"
     rows = session.execute(QUERY)
-    return rows
+    for row in rows:
+        subs.append(row.cons)
+    return subs
 
 
 def getPublisher():
+    pubs = []
     session = connect()
-    QUERY = "SELECT DISTINCT id,prodID FROM CNT"
+    QUERY = "SELECT DISTINCT prod FROM prod_list"
     rows = session.execute(QUERY)
-    return rows
+    for row in rows:
+        pubs.append(row.prod)
+    return pubs
