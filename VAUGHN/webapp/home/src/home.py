@@ -1,4 +1,4 @@
-from . import draw
+from home.src import draw
 from src.utils import tools, logger
 from src.utils import database_mysql as db
 

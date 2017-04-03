@@ -3,7 +3,7 @@ from bokeh.charts import Bar
 from bokeh.layouts import gridplot
 from bokeh.models import HoverTool, BoxSelectTool
 from src.utils import tools
-from . import plots
+from plots.src import plots
 
 
 # def drawFigure():

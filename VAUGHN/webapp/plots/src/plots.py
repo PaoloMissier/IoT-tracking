@@ -1,5 +1,5 @@
 
-from . import draw
+from plots.src import draw
 from src.utils import tools, logger
 from src.utils import database_cass as db
 from dateutil.relativedelta import relativedelta

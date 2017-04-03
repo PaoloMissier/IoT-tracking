@@ -6,6 +6,7 @@ from django.http import HttpResponse
 import datetime
 import json
 
+
 def cubes(request):
     if request.method == 'GET':
 
