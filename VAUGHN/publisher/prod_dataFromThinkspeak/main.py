@@ -85,7 +85,9 @@ def publishAll(ammo, BROKER_HOST):
 
             # this will result https://thingspeak.com/channels/<channel_id>/feed.json
             url = "https://thingspeak.com{}/feed.json".format(channelLink)
-            webCh = getJSON(url)
+
+            webCh = requests.get(url).json() # use this instead of json lib, more friendly, prevent jsondecodeerror
+
             webChID = webCh["channel"]["id"]
             try:
                 webChLastEntry = int(webCh["channel"]["last_entry_id"])  # retrieve lastEntryID from thingspeak json
