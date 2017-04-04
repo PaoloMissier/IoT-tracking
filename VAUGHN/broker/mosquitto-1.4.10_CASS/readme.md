@@ -12,7 +12,7 @@ These instructions will get you to build this patched Mosquitto Broker. Original
 ```
 $sudo apt install libssl-dev uuid-dev libc-ares-dev cmake libuv-dev build-essential
 $sudo apt install libwebsocket* libwebsocketpp-dev libwebsockets7
-$sudo apt install cassandra
+$sudo apt install cassandra xsltproc docbook-xsl
 ```
 
 Download and Build the Cassandra C/cpp-driver

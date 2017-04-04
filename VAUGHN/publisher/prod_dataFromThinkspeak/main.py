@@ -9,6 +9,7 @@ import urllib3
 import sys
 from datetime import datetime, timedelta
 
+BROKER_HOST = "tharvester.eastus.cloudapp.azure.com"
 # http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 
 log = logger.create_logger(__name__)
@@ -73,6 +74,11 @@ def publishAll(ammo, BROKER_HOST):
             client = initClient(clientName)
             try:
                 client.connect(BROKER_HOST)
+
+            except OSError:
+                client.disconnect()
+                print(BROKER_HOST)
+                continue
             except ConnectionRefusedError:
                 client.disconnect()
                 continue
@@ -131,7 +137,7 @@ def publishAll(ammo, BROKER_HOST):
                 webEntryID = webCh["feeds"][feedCounter]["entry_id"]  # get the entry_id for all the current feeds
                 if webEntryID > localChLastEntry:  # on webEntryID > localLastEntryID
                     for f in fieldMap.keys():  # for all the field in fieldMap publish message to broker
-                        topic = '{}/{}/{}'.format(tag, webEntryID, fieldMap[f])
+                        topic = '{}/{}/{}'.format(tag, webChID, fieldMap[f])
                         print("C: {} T: {}  M: {}".format(clientName, topic, str(webCh["feeds"][feedCounter][f])))
 
                         # make sure don't send (null) terminate to broker, it will mess with my broker memory address
@@ -141,8 +147,12 @@ def publishAll(ammo, BROKER_HOST):
                         else:
                             payload = str(webCh["feeds"][feedCounter][f])
 
-                        client.publish(topic, payload)
-                        client.loop(timeout=1.0, max_packets=1)
+                        try :
+                            client.publish(topic, payload)
+                            # client.loop(timeout=1.0, max_packets=1)
+                        except:
+                            client.disconnect()
+                            continue
                         # time.sleep(1)  # prevent publisher too fast
 
             client.disconnect()
@@ -158,8 +168,8 @@ def publishAll(ammo, BROKER_HOST):
     return 0
 
 
-def main(argv):
-    BROKER_HOST = str(argv) # set the ipaddress of the brokerhost
+def main():
+    # BROKER_HOST = str(argv) # set the ipaddress of the brokerhost
     past = datetime.now() - timedelta(hours=2)
     dictOfTagsToChID = {}
     while True:  # infinite loop
@@ -183,5 +193,5 @@ def main(argv):
 
 
 if __name__ == '__main__':
-   main(sys.argv[1]) #bring in ipaddress of the broker
-   #main()
+   # main(sys.argv[1]) #bring in ipaddress of the broker
+   main()

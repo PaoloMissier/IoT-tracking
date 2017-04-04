@@ -865,8 +865,8 @@ int mqtt3_db_message_write(struct mosquitto_db *db, struct mosquitto *context)
 			CassError rc = cass_future_error_code(connect_future);
 
 			printf("Connect result: %s\n", cass_error_desc(rc));
-
-			for (int x=0; x<tail->store->dest_id_count; x++){
+			int x;
+			for (x=0; x<tail->store->dest_id_count; x++){
 
 				/*** INSERT INTO CNT ***/
 				CassStatement* statement
