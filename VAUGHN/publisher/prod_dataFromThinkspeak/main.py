@@ -75,25 +75,21 @@ def publishAll(ammo, BROKER_HOST):
             try:
                 client.connect(BROKER_HOST)
 
-            except OSError:
+            except (OSError, ConnectionRefusedError) as e:
                 client.disconnect()
-                print(BROKER_HOST)
-                continue
-            except ConnectionRefusedError:
-                client.disconnect()
+                log.error("Error connecting to broker: {}".format(e))
                 continue
 
             # this will result https://thingspeak.com/channels/<channel_id>/feed.json
             url = "https://thingspeak.com{}/feed.json".format(channelLink)
 
-            webCh = requests.get(url).json() # use this instead of json lib, more friendly, prevent jsondecodeerror
-
-            webChID = webCh["channel"]["id"]
             try:
+                webCh = requests.get(url).json()  # use this instead of json lib, more friendly, prevent jsondecodeerror
+                webChID = webCh["channel"]["id"]
                 webChLastEntry = int(webCh["channel"]["last_entry_id"])  # retrieve lastEntryID from thingspeak json
-            except TypeError:
+            except (TypeError, ConnectionError) as e:
                 client.disconnect()
-                log.error("[Type Error] webChLastEntry: None")
+                log.error("Error getting JSON from Thingspeak: {}".format(e))
                 continue
 
             # retrieve fields name
