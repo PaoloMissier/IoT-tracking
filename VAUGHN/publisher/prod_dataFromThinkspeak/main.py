@@ -87,7 +87,7 @@ def publishAll(ammo, BROKER_HOST):
                 webCh = requests.get(url).json()  # use this instead of json lib, more friendly, prevent jsondecodeerror
                 webChID = webCh["channel"]["id"]
                 webChLastEntry = int(webCh["channel"]["last_entry_id"])  # retrieve lastEntryID from thingspeak json
-            except (TypeError, ConnectionError) as e:
+            except (TypeError, ConnectionError,requests.exceptions.ConnectionError) as e:
                 client.disconnect()
                 log.error("Error getting JSON from Thingspeak: {}".format(e))
                 continue
