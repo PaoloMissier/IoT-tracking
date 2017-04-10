@@ -40,6 +40,7 @@ fig = Figure(title="{}   ->   {}".format(str(pub), str(sub)),
              tools=TOOLS)
 fig.add_layout(Legend(location=(0, -30)), 'right')
 
+
 # callback function for periodic update on document
 def update_data():
     if pub == "" or sub == "":
