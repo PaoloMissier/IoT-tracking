@@ -163,7 +163,7 @@ def updateDay():
 
 def main():
     global last_update_quarter, last_update_half, last_update_hour, last_update_day
-
+    time.sleep(60)
     while True:
 
         if updateQuarter():
