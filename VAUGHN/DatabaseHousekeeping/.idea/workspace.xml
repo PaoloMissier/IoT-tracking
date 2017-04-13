@@ -18,11 +18,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="417">
-              <caret line="172" column="24" lean-forward="true" selection-start-line="172" selection-start-column="24" selection-end-line="172" selection-end-column="24" />
+            <state relative-caret-position="568">
+              <caret line="50" column="20" lean-forward="false" selection-start-line="50" selection-start-column="20" selection-end-line="50" selection-end-column="20" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
                 <marker date="1491954745000" expanded="true" signature="1780:1836" ph="INSERT INTO quarter... " />
@@ -30,6 +30,34 @@
                 <marker date="1491954745000" expanded="true" signature="3579:3705" ph="INSERT INTO half_cnt... " />
                 <marker date="1491954745000" expanded="true" signature="5232:5358" ph="INSERT INTO hour_cnt... " />
                 <marker date="1491954745000" expanded="true" signature="6835:6960" ph="INSERT INTO day_cnt... " />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="db.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/utils/db.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="452">
+              <caret line="134" column="8" lean-forward="false" selection-start-line="134" selection-start-column="10" selection-end-line="134" selection-end-column="30" />
+              <folding>
+                <element signature="e#0#60#0" expanded="true" />
+                <marker date="1491967854000" expanded="true" signature="204:238" ph="SELECT prodI... CNT" />
+                <marker date="1491967854000" expanded="true" signature="204:286" ph="SELECT prodI... CNT" />
+                <marker date="1491967854000" expanded="true" signature="204:302" ph="SELECT prodI... CNTWHERE" />
+                <marker date="1491967854000" expanded="true" signature="204:303" ph="SELECT prodI... CNT" />
+                <marker date="1491967854000" expanded="true" signature="325:427" ph="SELECT prodI... ts" />
+                <marker date="1491967854000" expanded="true" signature="452:501" ph="DELETE FROM " />
+                <marker date="1491967854000" expanded="true" signature="452:503" ph="DELETE FROM " />
+                <marker date="1491967854000" expanded="true" signature="520:549" ph="SELECT MIN(t... " />
+                <marker date="1491967854000" expanded="true" signature="520:551" ph="SELECT MIN(t... " />
+                <marker date="1491967854000" expanded="true" signature="526:549" ph="select min(t... cnt" />
+                <marker date="1491967854000" expanded="true" signature="1089:1225" ph="SELECT * FRO... CNT" />
+                <marker date="1491967854000" expanded="true" signature="1098:1209" ph="DELETE FROM " />
+                <marker date="1491967854000" expanded="true" signature="1296:1370" ph="DELETE FROM " />
+                <marker date="1491967854000" expanded="true" signature="2138:2273" ph="SELECT * FRO... ts" />
+                <marker date="1491967854000" expanded="true" signature="2363:2440" ph="DELETE FROM " />
+                <marker date="1491967854000" expanded="true" signature="2363:2480" ph="DELETE FROM " />
               </folding>
             </state>
           </provider>
@@ -52,8 +80,8 @@
         <option value="$PROJECT_DIR$/src/utils/tools.py" />
         <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/code.py" />
-        <option value="$PROJECT_DIR$/src/utils/db.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/src/utils/db.py" />
       </list>
     </option>
   </component>
@@ -83,8 +111,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -145,6 +171,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -444,7 +472,7 @@
     <frame x="0" y="23" width="1440" height="836" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1702432" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17238913" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -493,6 +521,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+            <marker date="1491954745000" expanded="true" signature="1780:1836" ph="INSERT INTO quarter... " />
+            <marker date="1491954745000" expanded="true" signature="1780:1909" ph="INSERT INTO quarter... " />
+            <marker date="1491954745000" expanded="true" signature="3579:3705" ph="INSERT INTO half_cnt... " />
+            <marker date="1491954745000" expanded="true" signature="5232:5358" ph="INSERT INTO hour_cnt... " />
+            <marker date="1491954745000" expanded="true" signature="6835:6960" ph="INSERT INTO day_cnt... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -523,7 +566,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4504">
           <caret line="125" column="4" lean-forward="false" selection-start-line="125" selection-start-column="4" selection-end-line="125" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -537,32 +579,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/db.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="371">
-          <caret line="63" column="0" lean-forward="true" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#60#0" expanded="true" />
-            <marker date="1491949233000" expanded="true" signature="204:238" ph="SELECT prodI... CNT" />
-            <marker date="1491949233000" expanded="true" signature="204:286" ph="SELECT prodI... CNT" />
-            <marker date="1491949233000" expanded="true" signature="204:302" ph="SELECT prodI... CNTWHERE" />
-            <marker date="1491949233000" expanded="true" signature="204:303" ph="SELECT prodI... CNT" />
-            <marker date="1491949233000" expanded="true" signature="325:427" ph="SELECT prodI... ts" />
-            <marker date="1491949233000" expanded="true" signature="452:501" ph="DELETE FROM " />
-            <marker date="1491949233000" expanded="true" signature="452:503" ph="DELETE FROM " />
-            <marker date="1491949233000" expanded="true" signature="520:549" ph="SELECT MIN(t... " />
-            <marker date="1491949233000" expanded="true" signature="520:551" ph="SELECT MIN(t... " />
-            <marker date="1491949233000" expanded="true" signature="526:549" ph="select min(t... cnt" />
-            <marker date="1491949233000" expanded="true" signature="1089:1225" ph="SELECT * FRO... CNT" />
-            <marker date="1491949233000" expanded="true" signature="1098:1209" ph="DELETE FROM " />
-            <marker date="1491949233000" expanded="true" signature="1296:1370" ph="DELETE FROM " />
-            <marker date="1491949233000" expanded="true" signature="2138:2273" ph="SELECT * FRO... ts" />
-            <marker date="1491949233000" expanded="true" signature="2363:2440" ph="DELETE FROM " />
-            <marker date="1491949233000" expanded="true" signature="2363:2480" ph="DELETE FROM " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -572,8 +588,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="417">
-          <caret line="172" column="24" lean-forward="true" selection-start-line="172" selection-start-column="24" selection-end-line="172" selection-end-column="24" />
+        <state relative-caret-position="568">
+          <caret line="50" column="20" lean-forward="false" selection-start-line="50" selection-start-column="20" selection-end-line="50" selection-end-column="20" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
             <marker date="1491954745000" expanded="true" signature="1780:1836" ph="INSERT INTO quarter... " />
@@ -581,6 +597,32 @@
             <marker date="1491954745000" expanded="true" signature="3579:3705" ph="INSERT INTO half_cnt... " />
             <marker date="1491954745000" expanded="true" signature="5232:5358" ph="INSERT INTO hour_cnt... " />
             <marker date="1491954745000" expanded="true" signature="6835:6960" ph="INSERT INTO day_cnt... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/db.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="452">
+          <caret line="134" column="8" lean-forward="false" selection-start-line="134" selection-start-column="10" selection-end-line="134" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#60#0" expanded="true" />
+            <marker date="1491967854000" expanded="true" signature="204:238" ph="SELECT prodI... CNT" />
+            <marker date="1491967854000" expanded="true" signature="204:286" ph="SELECT prodI... CNT" />
+            <marker date="1491967854000" expanded="true" signature="204:302" ph="SELECT prodI... CNTWHERE" />
+            <marker date="1491967854000" expanded="true" signature="204:303" ph="SELECT prodI... CNT" />
+            <marker date="1491967854000" expanded="true" signature="325:427" ph="SELECT prodI... ts" />
+            <marker date="1491967854000" expanded="true" signature="452:501" ph="DELETE FROM " />
+            <marker date="1491967854000" expanded="true" signature="452:503" ph="DELETE FROM " />
+            <marker date="1491967854000" expanded="true" signature="520:549" ph="SELECT MIN(t... " />
+            <marker date="1491967854000" expanded="true" signature="520:551" ph="SELECT MIN(t... " />
+            <marker date="1491967854000" expanded="true" signature="526:549" ph="select min(t... cnt" />
+            <marker date="1491967854000" expanded="true" signature="1089:1225" ph="SELECT * FRO... CNT" />
+            <marker date="1491967854000" expanded="true" signature="1098:1209" ph="DELETE FROM " />
+            <marker date="1491967854000" expanded="true" signature="1296:1370" ph="DELETE FROM " />
+            <marker date="1491967854000" expanded="true" signature="2138:2273" ph="SELECT * FRO... ts" />
+            <marker date="1491967854000" expanded="true" signature="2363:2440" ph="DELETE FROM " />
+            <marker date="1491967854000" expanded="true" signature="2363:2480" ph="DELETE FROM " />
           </folding>
         </state>
       </provider>

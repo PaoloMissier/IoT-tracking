@@ -56,7 +56,10 @@ def generateAllCubes(minTS=None, maxTS=None):
     if datetime.datetime.now() - maxTS <= datetime.timedelta(hours=1):
         max_list = db.getJoinCntDF(session, [minTS, maxTS])
 
-    return min_list.append(max_list)
+    print(str(len(min_list)))
+    print(str(len(max_list)))
+
+    return min_list + max_list
 
 
 def generatePlotGrid(minTS=None, maxTS=None, pub=None, sub=None, top=None, interval=None, session=None):
