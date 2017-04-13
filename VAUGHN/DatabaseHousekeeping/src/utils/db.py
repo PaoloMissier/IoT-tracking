@@ -132,8 +132,8 @@ def getMinTimestamp(session, tableName):
 def insertCnt(session, statement, df, ts):
     batch = BatchStatement()
     for index, row in df.iterrows():
-        print(row['prodID'])
-        print("\n {} {} {} {}\n".format(row['prodID'], row['consID'], row['topic'], row['cnt']))
+        # print(row['prodID'])
+        # print("\n {} {} {} {}\n".format(row['prodID'], row['consID'], row['topic'], row['cnt']))
             # session.execute(query=statement, parameters=(row.prodid, row.consid, row.topic, row.ts, int(row.cnt)))
         batch.add(statement, (row['prodID'], row['consID'], row['topic'], ts, int(row['cnt'])))
     session.execute(batch)

@@ -4,6 +4,7 @@ from src.utils import tools, logger
 from src.utils import database_cass as db
 from dateutil.relativedelta import relativedelta
 import pandas as pd
+import datetime
 
 log = logger.create_logger(__name__)
 
@@ -21,8 +22,41 @@ def submit(minTS, maxTS, pub ,sub ,topic , interval):
 
 def generateAllCubes(minTS=None, maxTS=None):
     print("in generate all cubes\n")
+    min_list = []
+    max_list = []
     session = db.connect()
-    return db.getJoinCntDF(session, db.CNT_QUERY, [minTS, maxTS])
+
+    if datetime.datetime.now() - minTS > datetime.timedelta(hours=1):
+        min_list = db.getJoinCntFromX(session, [minTS, maxTS, "quarter_cnt"])
+
+    if datetime.datetime.now() - minTS > datetime.timedelta(hours=6):
+        min_list = db.getJoinCntFromX(session, [minTS, maxTS, "half_cnt"])
+
+    if datetime.datetime.now() - minTS > datetime.timedelta(hours=12):
+        min_list = db.getJoinCntFromX(session, [minTS, maxTS, "hour_cnt"])
+
+    if datetime.datetime.now() - minTS > datetime.timedelta(days=2):
+        min_list = db.getJoinCntFromX(session, [minTS, maxTS, "day_cnt"])
+
+    if datetime.datetime.now() - minTS <= datetime.timedelta(hours=1):
+        min_list = db.getJoinCntDF(session, [minTS, maxTS])
+
+    if datetime.datetime.now() - maxTS > datetime.timedelta(hours=1):
+        max_list = db.getJoinCntFromX(session, [minTS, maxTS, "quarter_cnt"])
+
+    if datetime.datetime.now() - maxTS > datetime.timedelta(hours=6):
+        max_list = db.getJoinCntFromX(session, [minTS, maxTS, "half_cnt"])
+
+    if datetime.datetime.now() - maxTS > datetime.timedelta(hours=12):
+        max_list = db.getJoinCntFromX(session, [minTS, maxTS, "hour_cnt"])
+
+    if datetime.datetime.now() - maxTS > datetime.timedelta(days=2):
+        max_list = db.getJoinCntFromX(session, [minTS, maxTS, "day_cnt"])
+
+    if datetime.datetime.now() - maxTS <= datetime.timedelta(hours=1):
+        max_list = db.getJoinCntDF(session, [minTS, maxTS])
+
+    return min_list.append(max_list)
 
 
 def generatePlotGrid(minTS=None, maxTS=None, pub=None, sub=None, top=None, interval=None, session=None):
@@ -44,7 +78,7 @@ def generatePlotGrid(minTS=None, maxTS=None, pub=None, sub=None, top=None, inter
         else:
             tempMaxTS = getNextWindow(minTS, maxTS, interval)
 
-        l = db.getJoinCntDF(session, db.CNT_QUERY, [minTS, tempMaxTS])
+        l = db.getJoinCntDF(session, [minTS, tempMaxTS])
         df = pd.DataFrame(l)
         if len(df) == 0:  # skip next time frame
             minTS = tempMaxTS

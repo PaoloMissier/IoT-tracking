@@ -12,12 +12,9 @@ def cubes(request):
         print(request.GET)
         minTS = request.GET.get('mints', '')
         maxTS = request.GET.get('maxts', '')
-        print(minTS)
-        print(maxTS)
         minTS = datetime.datetime.strptime(minTS, '%m/%d/%Y%H:%M:%S')
         maxTS = datetime.datetime.strptime(maxTS, '%m/%d/%Y%H:%M:%S')
-        print(minTS)
-        print(maxTS)
+
         l = generateAllCubes(minTS=minTS, maxTS=maxTS)
         data = {'data': l}
 

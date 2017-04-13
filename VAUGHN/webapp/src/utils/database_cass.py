@@ -11,6 +11,11 @@ CNT_QUERY = "SELECT prodID, consID, topic, count(*) as cnt " \
             "GROUP BY id, prodID, consID, topic ALLOW FILTERING"
 
 
+CNT_QUERY_FROM_X = "SELECT prodID, consID, topic, cnt FROM {} WHERE ts >= %s " \
+            "AND ts <= %s ALLOW FILTERING"
+
+
+
 CASS_CONTACT_POINTS = ["127.0.0.1"]
 CASS_KEYSPACE = "brokertracker"
 
@@ -25,12 +30,12 @@ def connect():
         log.error("Error connecting to Cassandra.")
 
 
-def getJoinCntDF(session, query, params):
+def getJoinCntDF(session, params):
     l = []
     minTS = params[0].strftime('%Y-%m-%d %H:%M:%S')
     maxTS = params[1].strftime('%Y-%m-%d %H:%M:%S')
     try:
-        rows = session.execute(query=query, parameters=(minTS, maxTS), trace=True)
+        rows = session.execute(query=CNT_QUERY, parameters=(minTS, maxTS), trace=True)
         print(rows.get_query_trace())
         for row in rows:
             d = {'prodID': row.prodid, 'consID': row.consid, 'topic': row.topic, 'cnt': row.cnt}
@@ -39,6 +44,24 @@ def getJoinCntDF(session, query, params):
 
     except :
         log.error("Error while executing JoinCntDF query")
+
+    return l
+
+
+def getJoinCntFromX(session, params):
+    l = []
+    minTS = params[0].strftime('%Y-%m-%d %H:%M:%S')
+    maxTS = params[1].strftime('%Y-%m-%d %H:%M:%S')
+    try:
+        rows = session.execute(query=CNT_QUERY_FROM_X.format(params[2]), parameters=(minTS, maxTS), trace=True)
+        print(rows.get_query_trace())
+        for row in rows:
+            d = {'prodID': row.prodid, 'consID': row.consid, 'topic': row.topic, 'ts': row.ts, 'cnt': row.cnt}
+            l.append(d)
+            log.info("cnt: {}, {}, {}".format(row.prodid, row.consid, row.topic))
+
+    except :
+        log.error("Error while executing JoinCntFromX query")
 
     return l
 
