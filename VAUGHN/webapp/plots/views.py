@@ -15,8 +15,8 @@ def cubes(request):
         minTS = datetime.datetime.strptime(minTS, '%m/%d/%Y%H:%M:%S')
         maxTS = datetime.datetime.strptime(maxTS, '%m/%d/%Y%H:%M:%S')
 
-        l = generateAllCubes(minTS=minTS, maxTS=maxTS)
-        data = {'data': l}
+        df = generateAllCubes(minTS=minTS, maxTS=maxTS)
+        data = {'data': df.to_dict('records')}
 
         return HttpResponse(json.dumps(data))
 
@@ -35,14 +35,13 @@ def plots(request):
 
         sMinDT = minDT = request.POST.get('minDT')
         sMaxDT = maxDT =request.POST.get('maxDT')
-        sInterval = interval = request.POST.get('int')
+        # sInterval = interval = request.POST.get('int')
         topic = request.POST.getlist('topics')
         pub = request.POST.getlist('pub')
         sub = request.POST.getlist('sub')
 
         if sMinDT == "" or \
             sMaxDT == "" or \
-            sInterval == "" or \
             len(topic) == 0 or \
             len(pub) == 0 or \
             len(sub) == 0:
@@ -54,9 +53,9 @@ def plots(request):
                                                           "data": data})
 
         # generate graph
-        script, div = submit(minDT, maxDT, pub, sub, topic, interval)
+        script, div = submit(minTS=minDT, maxTS=maxDT, pub=pub, sub=sub, topic=topic)
 
-        subheadingL1 = "Below are the counter cubes from {} to {} at interval {}".format(sMinDT, sMaxDT, sInterval)
+        subheadingL1 = "Below are the counter cubes from {} to {} at interval 3600".format(sMinDT, sMaxDT)
         return render(request, 'plots/plots.html', {"the_script": script,
                                                   "the_div": div,
                                                   "subheadingL1":subheadingL1,

@@ -82,10 +82,10 @@ def drawBar(dictPG):
     return bar_charts
 
 
-def drawGrid(minTS, maxTS, pub, sub, topic, interval):
+def drawGrid(minTS, maxTS, pub, sub, topic):
     gridList = list()
 
-    for i in plots.generatePlotGrid(minTS, maxTS, pub, sub, topic, interval):
+    for i in plots.generatePlotGrid(minTS, maxTS, pub, sub, topic):
 
         for k in drawBar(i):
             gridList.append(k)

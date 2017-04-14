@@ -30,35 +30,31 @@ def connect():
         log.error("Error connecting to Cassandra.")
 
 
-def getJoinCntDF(session, params):
+def getJoinCnt(session, params):
     l = []
     minTS = params[0].strftime('%Y-%m-%d %H:%M:%S')
     maxTS = params[1].strftime('%Y-%m-%d %H:%M:%S')
-    try:
-        rows = session.execute(query=CNT_QUERY, parameters=(minTS, maxTS), trace=True)
-        print(rows.get_query_trace())
-        for row in rows:
-            d = {'prodID': row.prodid, 'consID': row.consid, 'topic': row.topic, 'cnt': row.cnt}
-            l.append(d)
-            log.info("cnt: {}, {}, {}, {}".format(row.prodid, row.consid, row.topic, row.cnt))
-
-    except :
-        log.error("Error while executing JoinCntDF query")
+    rows = session.execute(query=CNT_QUERY, parameters=(minTS, maxTS), trace=True)
+    print(rows.get_query_trace())
+    for row in rows:
+        d = {'prodID': row.prodid, 'consID': row.consid, 'topic': row.topic, 'cnt': row.cnt}
+        l.append(d)
+        log.info("cnt: {}, {}, {}, {}".format(row.prodid, row.consid, row.topic, row.cnt))
 
     return l
 
 
 def getJoinCntFromX(session, params):
+    if session is None:
+        session = connect()
     l = []
     minTS = params[0].strftime('%Y-%m-%d %H:%M:%S')
     maxTS = params[1].strftime('%Y-%m-%d %H:%M:%S')
     rows = session.execute(query=CNT_QUERY_FROM_X.format(params[2]), parameters=(minTS, maxTS), trace=True)
-    print(rows.get_query_trace())
     for row in rows:
         d = {'prodID': row.prodid, 'consID': row.consid, 'topic': row.topic, 'cnt': row.cnt}
         l.append(d)
         log.info("cnt: {}, {}, {}".format(row.prodid, row.consid, row.topic))
-    print(params[2])
     return l
 
 
