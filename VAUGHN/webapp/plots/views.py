@@ -23,7 +23,7 @@ def cubes(request):
 
 def plots(request):
 
-    data = {'topic': ["t1","t2","t3"] , 'publisher':["p1","p2","p3","p4"] , 'subscriber':["s1","s2","s3"] }
+    data = {}
     subheadingL1 = "Enter min, max time interval."
 
     # generate data. call db
@@ -62,4 +62,5 @@ def plots(request):
                                                   "subheadingL2":"",
                                                   "data":data})
 
-    return render(request, 'plots/plots.html', {"the_script": "", "the_div": "", "subheadingL1": subheadingL1, "data": data})
+    return render(request, 'plots/plots.html', {"the_script": "", "the_div": "", "subheadingL1": subheadingL1,
+                                                "data": data})
