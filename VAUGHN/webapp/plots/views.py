@@ -6,7 +6,7 @@ import json
 import datetime
 
 
-def cubes(request):
+def cubesJSON(request):
     if request.method == 'GET':
 
         print(request.GET)
@@ -19,6 +19,23 @@ def cubes(request):
         data = {'data': df.to_dict('records')}
 
         return HttpResponse(json.dumps(data))
+
+
+def cubesCSV(request):
+    if request.method == 'GET':
+        minTS = request.GET.get('mints', '')
+        maxTS = request.GET.get('maxts', '')
+        minTS = datetime.datetime.strptime(minTS, '%m/%d/%Y%H:%M:%S')
+        maxTS = datetime.datetime.strptime(maxTS, '%m/%d/%Y%H:%M:%S')
+
+        df = generateAllCubes(minTS=minTS, maxTS=maxTS)
+        row_list = df.to_csv(None, header=False, index=False)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="output.csv"'
+        # writer = csv.writer(response)
+        # writer.writerow(df.to_csv(None, header=False, index=False))
+        response.write(row_list)
+        return response
 
 
 def plots(request):

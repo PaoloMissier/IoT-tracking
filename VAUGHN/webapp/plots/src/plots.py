@@ -56,10 +56,12 @@ def generateAllCubes(minTS=None, maxTS=None):
         max_list = db.getJoinCnt(session, [minTS, maxTS])
 
     df = pd.DataFrame(min_list + max_list)
-
+    # print(min_list)
+    # print(max_list)
     if not df.empty:
-        df = df.groupby(['prodID', 'consID', 'topic']).sum().reset_index()
+        df = df.groupby(['prodID', 'consID', 'topic', 'ts']).sum().reset_index()
 
+    print(df.to_string())
     return df
 
 

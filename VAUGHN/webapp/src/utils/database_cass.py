@@ -4,7 +4,7 @@ import pandas as pd
 
 log = logger.create_logger(__name__)
 
-CNT_QUERY = "SELECT prodID, consID, topic, count(*) as cnt " \
+CNT_QUERY = "SELECT prodID, consID, topic, ts,count(*) as cnt " \
             "FROM CNT  " \
             "WHERE ts >= %s " \
             "AND ts <= %s"\
@@ -37,9 +37,9 @@ def getJoinCnt(session, params):
     rows = session.execute(query=CNT_QUERY, parameters=(minTS, maxTS), trace=True)
     print(rows.get_query_trace())
     for row in rows:
-        d = {'prodID': row.prodid, 'consID': row.consid, 'topic': row.topic, 'cnt': row.cnt}
+        d = {'prodID': row.prodid, 'consID': row.consid, 'topic': row.topic, 'cnt': row.cnt, 'ts':(row.ts).strftime("%Y-%m-%d %H:%M:%S")}
         l.append(d)
-        log.info("cnt: {}, {}, {}, {}".format(row.prodid, row.consid, row.topic, row.cnt))
+        log.info("cnt: {}, {}, {}, {}, {}".format(row.prodid, row.consid, row.topic, row.cnt, row.ts))
 
     return l
 
@@ -52,9 +52,9 @@ def getJoinCntFromX(session, params):
     maxTS = params[1].strftime('%Y-%m-%d %H:%M:%S')
     rows = session.execute(query=CNT_QUERY_FROM_X.format(params[2]), parameters=(minTS, maxTS), trace=True)
     for row in rows:
-        d = {'prodID': row.prodid, 'consID': row.consid, 'topic': row.topic, 'cnt': row.cnt}
+        d = {'prodID': row.prodid, 'consID': row.consid, 'topic': row.topic, 'cnt': row.cnt, 'ts':(row.ts).strftime("%Y-%m-%d %H:%M:%S")}
         l.append(d)
-        log.info("cnt: {}, {}, {}".format(row.prodid, row.consid, row.topic))
+        log.info("cntX: {}, {}, {}, {}".format(row.prodid, row.consid, row.topic, row.ts))
     return l
 
 

@@ -10,5 +10,6 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.plots, name='plots'),
-    url(r'^get/cubes/$', views.cubes, name='plots'),
+    url(r'^get/cubes_json/$', views.cubesJSON, name='plots'),
+    url(r'^get/cubes_csv/$', views.cubesCSV, name='plots')
 ]

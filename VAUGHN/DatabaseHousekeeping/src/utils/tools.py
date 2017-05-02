@@ -51,8 +51,6 @@ def follow(thefile):
         yield line
 
 
-def openFile(path):
-    logfile = open("run/foo/access-log","r")
-    loglines = follow(logfile)
-    for line in loglines:
-        return line
+def logfile(text):
+    with open("log.txt", "a") as f:
+        f.write(text)
