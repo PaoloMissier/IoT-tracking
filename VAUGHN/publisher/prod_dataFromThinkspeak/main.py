@@ -9,7 +9,8 @@ import urllib3
 import sys
 from datetime import datetime, timedelta
 
-BROKER_HOST = "tharvester.eastus.cloudapp.azure.com"
+# BROKER_HOST = "tharvester.eastus.cloudapp.azure.com"
+BROKER_HOST = "localhost"
 # http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 
 log = logger.create_logger(__name__)

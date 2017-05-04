@@ -6,6 +6,11 @@ from home.src import home
 from src.utils import tools
 
 
+########################################################################################
+### THIS FILE IS FOR REFERENCE / MARKING ONLY (VERSION 1 MOSQUITTO BROKER MYSQL) #######
+##################### THIS FILE IS NOT NEEDED ANYMORE  #################################
+########################################################################################
+
 def drawBar(dictPG):
     # plot = {'minTS': minTS,
     #         'maxTS': maxTS,

@@ -15,57 +15,52 @@ def submit(minTS, maxTS, pub ,sub ,topic):
     maxTS = tools.strToDT(maxTS)
     print(minTS, maxTS)
 
-    script, div = draw.drawGrid(minTS, maxTS, pub, sub, topic)
-    return script, div
+    gridList = draw.drawGrid(minTS, maxTS, pub, sub, topic)
+    return gridList
 
 
 def generateAllCubes(minTS=None, maxTS=None):
     log.info("Generating Cubes")
+    min_list_check = ""
     min_list = []
     max_list = []
     session = db.connect()
 
-    if datetime.datetime.now() - minTS > datetime.timedelta(hours=1):
-        min_list = db.getJoinCntFromX(session, [minTS, maxTS, "quarter_cnt"])
-
-    if datetime.datetime.now() - minTS > datetime.timedelta(hours=6):
-        min_list = db.getJoinCntFromX(session, [minTS, maxTS, "half_cnt"])
-
-    if datetime.datetime.now() - minTS > datetime.timedelta(hours=12):
-        min_list = db.getJoinCntFromX(session, [minTS, maxTS, "hour_cnt"])
-
-    if datetime.datetime.now() - minTS > datetime.timedelta(days=2):
+    if datetime.datetime.now() - minTS > datetime.timedelta(days=1):
         min_list = db.getJoinCntFromX(session, [minTS, maxTS, "day_cnt"])
-
-    if datetime.datetime.now() - minTS <= datetime.timedelta(hours=1):
+        min_list_check = "day_cnt"
+    elif datetime.datetime.now() - minTS > datetime.timedelta(hours=12):
+        min_list = db.getJoinCntFromX(session, [minTS, maxTS, "hour_cnt"])
+        min_list_check = "hour_cnt"
+    elif datetime.datetime.now() - minTS > datetime.timedelta(hours=3):
+        min_list = db.getJoinCntFromX(session, [minTS, maxTS, "half_cnt"])
+        min_list_check = "half_cnt"
+    elif datetime.datetime.now() - minTS > datetime.timedelta(minutes=15):
+        min_list = db.getJoinCntFromX(session, [minTS, maxTS, "quarter_cnt"])
+        min_list_check = "quarter_cnt"
+    else:
         min_list = db.getJoinCnt(session, [minTS, maxTS])
+        min_list_check = "cnt"
 
-    if datetime.datetime.now() - maxTS > datetime.timedelta(hours=1):
-        max_list = db.getJoinCntFromX(session, [minTS, maxTS, "quarter_cnt"])
-
-    if datetime.datetime.now() - maxTS > datetime.timedelta(hours=6):
-        max_list = db.getJoinCntFromX(session, [minTS, maxTS, "half_cnt"])
-
-    if datetime.datetime.now() - maxTS > datetime.timedelta(hours=12):
-        max_list = db.getJoinCntFromX(session, [minTS, maxTS, "hour_cnt"])
-
-    if datetime.datetime.now() - maxTS > datetime.timedelta(days=2):
+    if datetime.datetime.now() - maxTS > datetime.timedelta(days=1) and min_list_check != "day_cnt":
         max_list = db.getJoinCntFromX(session, [minTS, maxTS, "day_cnt"])
-
-    if datetime.datetime.now() - maxTS <= datetime.timedelta(hours=1):
+    elif datetime.datetime.now() - maxTS > datetime.timedelta(hours=12) and min_list_check != "hour_cnt":
+        max_list = db.getJoinCntFromX(session, [minTS, maxTS, "hour_cnt"])
+    elif datetime.datetime.now() - maxTS > datetime.timedelta(hours=3) and min_list_check != "half_cnt":
+        max_list = db.getJoinCntFromX(session, [minTS, maxTS, "half_cnt"])
+    elif datetime.datetime.now() - maxTS > datetime.timedelta(minutes=15) and min_list_check != "quarter_cnt":
+        max_list = db.getJoinCntFromX(session, [minTS, maxTS, "quarter_cnt"])
+    elif min_list_check != "cnt":
         max_list = db.getJoinCnt(session, [minTS, maxTS])
 
     df = pd.DataFrame(min_list + max_list)
-    # print(min_list)
-    # print(max_list)
     if not df.empty:
         df = df.groupby(['prodID', 'consID', 'topic', 'ts']).sum().reset_index()
 
-    print(df.to_string())
     return df
 
 
-def generatePlotGrid(minTS=None, maxTS=None, pub=None, sub=None, top=None, session=None):
+def generatePlotGrid(minTS=None, maxTS=None, pub=None, sub=None, top=None):
 
     if datetime.datetime.now() - minTS > datetime.timedelta(days=2):
         interval = 3600 * 24
@@ -74,9 +69,6 @@ def generatePlotGrid(minTS=None, maxTS=None, pub=None, sub=None, top=None, sessi
 
     # create a copy of maxTS
     tempMaxTS = maxTS
-
-    if session is None:
-        session = db.connect()
 
     allPlots = list()
 
@@ -90,6 +82,9 @@ def generatePlotGrid(minTS=None, maxTS=None, pub=None, sub=None, top=None, sessi
             tempMaxTS = getNextWindow(minTS, maxTS, interval)
 
         df = generateAllCubes(minTS, tempMaxTS)
+        if not df.empty:
+            df = df.drop('ts', 1)
+            df = df.groupby(['prodID', 'consID', 'topic']).sum().reset_index()
         if len(df) == 0:  # skip next time frame
             minTS = tempMaxTS
             continue
@@ -97,16 +92,23 @@ def generatePlotGrid(minTS=None, maxTS=None, pub=None, sub=None, top=None, sessi
             df = df[df['prodID'].isin(pub)]
             df = df[df['consID'].isin(sub)]
             df = df[df['topic'].isin(top)]
+            # df = df[df.isin({'prodID': pub,
+            #                  'consID': sub,
+            #                  'topic': top})]
+            print(df.to_string())
+            # print(df['prodID'].to_string())
 
             if len(df) == 0:
                 minTS = tempMaxTS
                 continue
 
-        log.info("loaded df with {}  records".format(len(df)))
+        log.info("loaded df with {} records".format(len(df)))
 
         # count number of producers  and consumers
         prodCnt = len(df.groupby(['prodID']))
+        print(df.groupby(['prodID']))
         consCnt = len(df.groupby(['consID']))
+        print(df.groupby(['consID']))
         log.warning("{} prod, {} cons".format(prodCnt, consCnt))
 
         maxCnt = 0  # scale of Y axis is calibrated on max cnt across all groups

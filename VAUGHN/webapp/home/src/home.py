@@ -4,9 +4,15 @@ from src.utils import database_mysql as db
 
 log = logger.create_logger(__name__)
 
+########################################################################################
+### THIS FILE IS FOR REFERENCE / MARKING ONLY (VERSION 1 MOSQUITTO BROKER MYSQL) #######
+##################### THIS FILE IS NOT NEEDED ANYMORE  #################################
+########################################################################################
 
-def submit(minTS, maxTS, pub ,sub ,topic , interval):
-    if interval is not None: interval = int(interval)
+
+def submit(minTS, maxTS, pub, sub, topic, interval):
+    if interval is not None:
+        interval = int(interval)
 
     minTS = tools.strToDT(minTS)
     maxTS = tools.strToDT(maxTS)
@@ -15,24 +21,17 @@ def submit(minTS, maxTS, pub ,sub ,topic , interval):
     return script, div
 
 
-def generateAllCubes(minTS = None, maxTS = None):
-    try:
-        conn = db.DBConnect()
-        cursor = conn.cursor()
-    except:
-        log.error("Error connecting database.")
+def generateAllCubes(minTS=None, maxTS=None):
+    conn = db.DBConnect()
+    cursor = conn.cursor()
 
     l = list()
-    try:
-        cursor.execute(db.CNT_QUERY, (minTS, maxTS))
-        for (prodID, consID, topic, cnt) in cursor:
-            # create a dict
-            d = {'prodID': prodID, 'consID': consID, 'topic': topic, 'cnt': cnt}
-            l.append(d)
-            log.info("cnt: {}, {}, {}, {}".format(prodID, consID, topic, cnt))
-
-    except :
-        log.error("Failed to execute query")
+    cursor.execute(db.CNT_QUERY, (minTS, maxTS))
+    for (prodID, consID, topic, cnt) in cursor:
+        # create a dict
+        d = {'prodID': prodID, 'consID': consID, 'topic': topic, 'cnt': cnt}
+        l.append(d)
+        log.info("cnt: {}, {}, {}, {}".format(prodID, consID, topic, cnt))
 
     return l
 

@@ -32,11 +32,11 @@
                     
                     <div class="row">
                         <div class="col-md-4">
-                            Minimum DateTime
+                            Minimum DateTime (UTC)
                             <input type='text' name="minDT" class="form-control" id='minDT' width="auto" />
                         </div>
                         <div class="col-md-4">
-                            Maximum DateTime
+                            Maximum DateTime (UTC)
                             <input type='text' name="maxDT" class="form-control" id='maxDT' />
                         </div>
                     </div>
@@ -47,21 +47,6 @@
                             $('#maxDT').datetimepicker();
                         });
                     </script>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            Intervals
-                            <input type="number" name="int" class="form-control" placeholder="Intervals (s)">
-                        </div>
-                        <div class="col-md-4">
-                            Topics
-                            <select class="selectpicker" multiple data-live-search="true" name="topics">
-                                {% for topic in data.topic %}
-                                    <option value="{{ topic }}">{{ topic }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
 
                     <div class="row">
                     <div class="col-md-4">
@@ -81,6 +66,15 @@
                             {% endfor %}
                         </select>
                     </div>
+
+                    <div class="col-md-4">
+                            Topics
+                            <select class="selectpicker" multiple data-live-search="true" name="topics">
+                                {% for topic in data.topic %}
+                                    <option value="{{ topic }}">{{ topic }}</option>
+                                {% endfor %}
+                            </select>
+                    </div>
                 </div>
 
                     <div class="row">
@@ -95,22 +89,18 @@
             <i>{{ subheadingL2 }}</i>
             <h1>Counter Cubes Presentation</h1>
             <p class="lead" >{{ subheadingL1 }}</p>
-            
-            
 
-            {{ the_div|safe }}
+            {% for grid in gridList %}
+                <h3>{{ grid.time }} </h3>
+                {{ grid.the_div|safe }}
 
-            {{ the_script|safe }}
+                {{ grid.the_script|safe }}
+
+            {% endfor %}
+
+
         
         </div>
-{#        <p>         #}
-{#            Sample Data<br>#}
-{#            # MinDT "2017-03-10 12:52:35"<br>#}
-{#            # MaxDT "2017-03-10 13:11:45"<br>#}
-{#            # pub = ["Thinkspeak_channels_211224"] <br>#}
-{#            # sub = ["mosqsub/21027-ubuntu64"] <br>#}
-{#            # topic = ["temp/233/Humidity_1", "temp/233/Temperature_1"]#}
-{#        </p>#}
         
     </div>
     

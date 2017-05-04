@@ -4,11 +4,11 @@ from . import logger
 from dateutil.relativedelta import relativedelta
 import pandas as pd
 
-###
-### periodically query the derived MSGCNT(MSG counter) table and extracts:
-### for each window W and consumer C, the tuples (prod,topic, cnt) of msg cnt for each producer P and topic top
-### updates a plot to show the msgcnt per topic and global (sum over all topics)
-###
+
+########################################################################################
+### THIS FILE IS FOR REFERENCE / MARKING ONLY (VERSION 1 MOSQUITTO BROKER MYSQL) #######
+##################### THIS FILE IS NOT NEEDED ANYMORE  #################################
+########################################################################################
 
 ## QUERIES
 MIN_MAX_TS_QUERY = "SELECT min(PROD.timestamp) as min, max(PROD.timestamp) as max " \
@@ -88,9 +88,6 @@ def getNextWindow(cursor, fromTS, maxTS, interval):
             return soughtMaxTS
         else:
             return fromTS
-            # logger.info(
-            #     "next window is Incomplete. From {} to {} but max is {}".format(fromTS, soughtMaxTS, maxTS))
-            # time.sleep(REPLOT_INTERVAL)
 
 
 def getTopics():

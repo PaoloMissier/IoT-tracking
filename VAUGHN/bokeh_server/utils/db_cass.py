@@ -27,16 +27,13 @@ def connect():
 
 def getJoinCntDF(session, query, params):
     l = []
-    try:
-        rows = session.execute(query=query, parameters=(params[0], params[1]), trace=True)
-        print(rows.get_query_trace())
-        for row in rows:
-            d = {'prodID': row.prodid, 'consID': row.consid, 'topic': row.topic, 'cnt': row.cnt}
-            l.append(d)
-            log.info("cnt: {}, {}, {}, {}".format(row.prodid, row.consid, row.topic, row.cnt))
+    rows = session.execute(query=query, parameters=(params[0], params[1]), trace=True)
+    print(rows.get_query_trace())
+    for row in rows:
+        d = {'prodID': row.prodid, 'consID': row.consid, 'topic': row.topic, 'cnt': row.cnt}
+        l.append(d)
+        log.info("cnt: {}, {}, {}, {}".format(row.prodid, row.consid, row.topic, row.cnt))
 
-    except :
-        log.error("Error while executing JoinCntDF query")
     return pd.DataFrame(l)
 
 

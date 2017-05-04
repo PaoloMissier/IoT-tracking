@@ -50,6 +50,8 @@ def update_data():
     global ct, source, fig
     ct += 1
     pd = getJoinCntDFClients(pub, sub)
+    if not pd.empty:
+        pd = pd.groupby(['prodID', 'consID', 'topic']).sum().reset_index()
     dt = dict(x=[ct])
     for cnt, topic in pd[['cnt', 'topic']].values:
         dt[topic] = [cnt]

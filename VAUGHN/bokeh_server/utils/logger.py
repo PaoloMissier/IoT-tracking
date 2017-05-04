@@ -25,17 +25,17 @@ def log_newline(self, how_many_lines=1):
 def create_logger(name):
     # Create a handler
     console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.WARNING)
+    console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(logging.Formatter(fmt="%(name)s %(levelname)s [%(asctime)s]\t: %(message)s"))
 
     # Create a "blank line" handler
     blank_handler = logging.StreamHandler()
-    blank_handler.setLevel(logging.WARNING)
+    blank_handler.setLevel(logging.INFO)
     blank_handler.setFormatter(logging.Formatter(fmt=''))
 
     # Create a logger, with the previously-defined handler
     logger = logging.getLogger(name)
-    logger.setLevel(logging.WARNING)
+    logger.setLevel(logging.INFO)
     logger.addHandler(console_handler)
 
     # Save some data and add a method to logger object

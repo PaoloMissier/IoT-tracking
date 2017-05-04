@@ -1,4 +1,4 @@
-from cassandra.query import BatchStatement, ConsistencyLevel
+from cassandra.query import BatchStatement
 from src.utils import logger, tools
 from cassandra.cluster import Cluster
 from cassandra import ReadFailure
@@ -35,12 +35,10 @@ def deleteFromCNT(session, params):
     try:
         minTS = params[0].strftime('%Y-%m-%d %H:%M:%S')
         maxTS = params[1].strftime('%Y-%m-%d %H:%M:%S')
-        rows = session.execute(query="SELECT * FROM CNT  " \
-                                    "WHERE ts >= %s " \
-                                    "AND ts <= %s ALLOW FILTERING", parameters=(minTS, maxTS))
+        rows = session.execute(query="SELECT * FROM CNT WHERE ts >= %s AND ts <= %s ALLOW FILTERING",
+                               parameters=(minTS, maxTS))
 
-        DELETE_CNT_QUERY = session.prepare("DELETE FROM CNT  " \
-                                            "WHERE id = ? ")
+        DELETE_CNT_QUERY = session.prepare("DELETE FROM CNT WHERE id = ?")
         batch = BatchStatement()
         for row in rows:
             batch.add(DELETE_CNT_QUERY, (row.id,))

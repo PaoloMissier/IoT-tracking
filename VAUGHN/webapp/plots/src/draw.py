@@ -6,24 +6,6 @@ from src.utils import tools
 from plots.src import plots
 
 
-# def drawFigure():
-#     fig = Figure()
-#     ax = fig.add_subplot(111)
-#     x = []
-#     y = []
-#     now = datetime.datetime.now()
-#     delta = datetime.timedelta(days=1)
-#     for i in range(10):
-#         x.append(now)
-#         now += delta
-#         y.append(random.randint(0, 1000))
-#     ax.plot_date(x, y, '-')
-#     ax.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
-#     fig.autofmt_xdate()
-#     canvas = FigureCanvas(fig)
-#     return canvas
-
-
 def drawBar(dictPG):
     # plot = {'minTS': minTS,
     #         'maxTS': maxTS,
@@ -69,11 +51,11 @@ def drawBar(dictPG):
             bar = Bar(data,
                       values='data',
                       label='keys',
-                      title=dictPG['minTS'].strftime('%m/%d/%Y %H:%M:%S')+"_" + dictPG['maxTS'].strftime('%H:%M:%S'),
-                      title_text_font_size='7.5pt',
+                      title=prodID+" → "+consID,
+                      title_text_font_size='8pt',
                       bar_width=0.2,
-                      width=200,
-                      height=300,
+                      width=350,
+                      height=350,
                       max_height=0.6,
                       legend=False,
                       tools=TOOLS)
@@ -86,10 +68,13 @@ def drawGrid(minTS, maxTS, pub, sub, topic):
     gridList = list()
 
     for i in plots.generatePlotGrid(minTS, maxTS, pub, sub, topic):
-
+        bars = []
         for k in drawBar(i):
-            gridList.append(k)
+            bars.append(k)
 
-    grid = gridplot(gridList, ncols=5, toolbar_location=None)
+        script, div = components(gridplot(bars, ncols=3, toolbar_location=None))
+        gridList.append({'the_script': script,
+                         'the_div': div,
+                         'time': tools.dtToStr(i['minTS']) + "-" + tools.dtToStr(i['maxTS'])})
 
-    return components(grid)
+    return gridList
