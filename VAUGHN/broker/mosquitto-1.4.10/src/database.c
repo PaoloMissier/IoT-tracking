@@ -882,25 +882,6 @@ int mqtt3_db_message_write(struct mosquitto_db *db, struct mosquitto *context){
 				case mosq_ms_publish_qos0:
 					rc = _mosquitto_send_publish(context, mid, topic, newPLL, newPL, qos, retain, retries);
 
-					 //modified PL and PLL params
-					/*
-					ON HOLD FIRST
-					if(mqtt3_db_message_store_find(context, mid, &stored)){
-						printf("source ID HERE  %s",(*stored).source_id);
-						//printf("\n\nfound search\n\n");
-						if (stored != NULL) {
-							printf("source ID HERE  %s",stored->source_id);
-							printf("stored not null");
-						}
-						else {
-							printf("stored null");
-						}
-					}
-					else {
-						printf("failed to search store");
-					}
-					*/
-
 					if(!rc){
 						_message_remove(db, context, &tail, last);
 					}else{

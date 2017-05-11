@@ -8,19 +8,20 @@ last_update_quarter = None
 last_update_half = None
 last_update_hour = None
 last_update_day = None
+session = None
 
 
 def updateQuarter():
-    global last_update_quarter
-    session = None
+    global last_update_quarter, session
 
     # first time execution
     if last_update_quarter is None:
         log.info("last_update_quarter is None")
 
-        session = db.connect()  # connect to database
         if session is None:
-            return False
+            session = db.connect()  # connect to database
+            if session is None:
+                return False
 
         last_update_quarter = db.getMinTimestamp(session, "cnt")  # get minTS
         if last_update_quarter is None:
@@ -69,16 +70,16 @@ def updateQuarter():
 
 
 def updateHalf():
-    global last_update_half
-    session = None
+    global last_update_half, session
 
     # first time execution
     if last_update_half is None:
         log.info("last_update_half is None")
 
-        session = db.connect()
         if session is None:
-            return False
+            session = db.connect()  # connect to database
+            if session is None:
+                return False
 
         last_update_half = db.getMinTimestamp(session, "quarter_cnt")
         if last_update_half is None:
@@ -126,16 +127,16 @@ def updateHalf():
 
 
 def updateHour():
-    global last_update_hour
-    session = None
+    global last_update_hour, session
 
     # first time execution
     if last_update_hour is None:
         log.info("last_update_hour is None")
 
-        session = db.connect()
         if session is None:
-            return False
+            session = db.connect()  # connect to database
+            if session is None:
+                return False
 
         last_update_hour = db.getMinTimestamp(session, "half_cnt")
         if last_update_hour is None:
@@ -178,16 +179,16 @@ def updateHour():
 
 
 def updateDay():
-    global last_update_day
-    session = None
+    global last_update_day, session
 
     # first time execution
     if last_update_day is None:
         log.info("last_update_day is None")
 
-        session = db.connect()
         if session is None:
-            return False
+            session = db.connect()  # connect to database
+            if session is None:
+                return False
 
         last_update_day = db.getMinTimestamp(session, "hour_cnt")
         if last_update_day is None:
@@ -229,8 +230,9 @@ def updateDay():
 
 
 def main():
-    global last_update_quarter, last_update_half, last_update_hour, last_update_day
+    global last_update_quarter, last_update_half, last_update_hour, last_update_day, session
     time.sleep(60)
+    session = db.connect()
     while True:
 
         if updateQuarter():
@@ -249,7 +251,7 @@ def main():
             log.info("Executed updateDay")
             continue
 
-        log.info("Sleep 1hour")
+        log.info("Sleep")
         time.sleep(10 * 60)
 
 if __name__ == '__main__':

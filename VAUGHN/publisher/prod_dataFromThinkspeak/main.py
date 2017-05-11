@@ -3,15 +3,13 @@ from bs4 import BeautifulSoup
 import json
 import time
 import logger
-import certifi
 import requests
-import urllib3
-import sys
+
+
 from datetime import datetime, timedelta
 
 # BROKER_HOST = "tharvester.eastus.cloudapp.azure.com"
 BROKER_HOST = "localhost"
-# http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 
 log = logger.create_logger(__name__)
 
@@ -21,8 +19,8 @@ def initClient(clientName):
                          clean_session=True,
                          userdata=None,
                          protocol="MQTTv31")  # init
-    client.on_connect = on_connect #set connect callback
-    client.on_message = on_message #set message callback
+    client.on_connect = on_connect  #set connect callback
+    client.on_message = on_message  #set message callback
     return client
 
 
