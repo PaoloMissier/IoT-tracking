@@ -1,0 +1,610 @@
+
+
+%% bare_conf.tex
+%% V1.4b
+%% 2015/08/26
+%% by Michael Shell
+%% See:
+%% http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.8b or later) with an IEEE
+%% conference paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/pkg/ieeetran
+%% and
+%% http://www.ieee.org/
+
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE! 
+%% User assumes all risk.
+%% In no event shall the IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%*************************************************************************
+
+
+% *** Authors should verify (and, if needed, correct) their LaTeX system  ***
+% *** with the testflow diagnostic prior to trusting their LaTeX platform ***
+% *** with production work. The IEEE's font choices and paper sizes can   ***
+% *** trigger bugs that do not appear when using other class files.       ***                          ***
+% The testflow support page is at:
+% http://www.michaelshell.org/tex/testflow/
+
+
+
+\documentclass[conference]{IEEEtran}
+% Some Computer Society conferences also require the compsoc mode option,
+% but others use the standard conference format.
+%
+% If IEEEtran.cls has not been installed into the LaTeX system files,
+% manually specify the path to it like:
+% \documentclass[conference]{../sty/IEEEtran}
+
+
+
+
+
+% Some very useful LaTeX packages include:
+% (uncomment the ones you want to load)
+
+
+% *** MISC UTILITY PACKAGES ***
+%
+%\usepackage{ifpdf}
+% Heiko Oberdiek's ifpdf.sty is very useful if you need conditional
+% compilation based on whether the output is pdf or dvi.
+% usage:
+% \ifpdf
+%   % pdf code
+% \else
+%   % dvi code
+% \fi
+% The latest version of ifpdf.sty can be obtained from:
+% http://www.ctan.org/pkg/ifpdf
+% Also, note that IEEEtran.cls V1.7 and later provides a builtin
+% \ifCLASSINFOpdf conditional that works the same way.
+% When switching from latex to pdflatex and vice-versa, the compiler may
+% have to be run twice to clear warning/error messages.
+
+
+
+
+
+
+% *** CITATION PACKAGES ***
+%
+%\usepackage{cite}
+% cite.sty was written by Donald Arseneau
+% V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
+% \cite{} output to follow that of the IEEE. Loading the cite package will
+% result in citation numbers being automatically sorted and properly
+% "compressed/ranged". e.g., [1], [9], [2], [7], [5], [6] without using
+% cite.sty will become [1], [2], [5]--[7], [9] using cite.sty. cite.sty's
+% \cite will automatically add leading space, if needed. Use cite.sty's
+% noadjust option (cite.sty V3.8 and later) if you want to turn this off
+% such as if a citation ever needs to be enclosed in parenthesis.
+% cite.sty is already installed on most LaTeX systems. Be sure and use
+% version 5.0 (2009-03-20) and later if using hyperref.sty.
+% The latest version can be obtained at:
+% http://www.ctan.org/pkg/cite
+% The documentation is contained in the cite.sty file itself.
+
+
+
+
+
+
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\ifCLASSINFOpdf
+  % \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../pdf/}{../jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+  % \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../eps/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.eps}
+\fi
+% graphicx was written by David Carlisle and Sebastian Rahtz. It is
+% required if you want graphics, photos, etc. graphicx.sty is already
+% installed on most LaTeX systems. The latest version and documentation
+% can be obtained at: 
+% http://www.ctan.org/pkg/graphicx
+% Another good source of documentation is "Using Imported Graphics in
+% LaTeX2e" by Keith Reckdahl which can be found at:
+% http://www.ctan.org/pkg/epslatex
+%
+% latex, and pdflatex in dvi mode, support graphics in encapsulated
+% postscript (.eps) format. pdflatex in pdf mode supports graphics
+% in .pdf, .jpeg, .png and .mps (metapost) formats. Users should ensure
+% that all non-photo figures use a vector format (.eps, .pdf, .mps) and
+% not a bitmapped formats (.jpeg, .png). The IEEE frowns on bitmapped formats
+% which can result in "jaggedy"/blurry rendering of lines and letters as
+% well as large increases in file sizes.
+%
+% You can find documentation about the pdfTeX application at:
+% http://www.tug.org/applications/pdftex
+
+
+
+
+
+% *** MATH PACKAGES ***
+%
+%\usepackage{amsmath}
+% A popular package from the American Mathematical Society that provides
+% many useful and powerful commands for dealing with mathematics.
+%
+% Note that the amsmath package sets \interdisplaylinepenalty to 10000
+% thus preventing page breaks from occurring within multiline equations. Use:
+%\interdisplaylinepenalty=2500
+% after loading amsmath to restore such page breaks as IEEEtran.cls normally
+% does. amsmath.sty is already installed on most LaTeX systems. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/pkg/amsmath
+
+
+
+
+
+% *** SPECIALIZED LIST PACKAGES ***
+%
+%\usepackage{algorithmic}
+% algorithmic.sty was written by Peter Williams and Rogerio Brito.
+% This package provides an algorithmic environment fo describing algorithms.
+% You can use the algorithmic environment in-text or within a figure
+% environment to provide for a floating algorithm. Do NOT use the algorithm
+% floating environment provided by algorithm.sty (by the same authors) or
+% algorithm2e.sty (by Christophe Fiorio) as the IEEE does not use dedicated
+% algorithm float types and packages that provide these will not provide
+% correct IEEE style captions. The latest version and documentation of
+% algorithmic.sty can be obtained at:
+% http://www.ctan.org/pkg/algorithms
+% Also of interest may be the (relatively newer and more customizable)
+% algorithmicx.sty package by Szasz Janos:
+% http://www.ctan.org/pkg/algorithmicx
+
+
+
+
+% *** ALIGNMENT PACKAGES ***
+%
+%\usepackage{array}
+% Frank Mittelbach's and David Carlisle's array.sty patches and improves
+% the standard LaTeX2e array and tabular environments to provide better
+% appearance and additional user controls. As the default LaTeX2e table
+% generation code is lacking to the point of almost being broken with
+% respect to the quality of the end results, all users are strongly
+% advised to use an enhanced (at the very least that provided by array.sty)
+% set of table tools. array.sty is already installed on most systems. The
+% latest version and documentation can be obtained at:
+% http://www.ctan.org/pkg/array
+
+
+% IEEEtran contains the IEEEeqnarray family of commands that can be used to
+% generate multiline equations as well as matrices, tables, etc., of high
+% quality.
+
+
+
+
+% *** SUBFIGURE PACKAGES ***
+%\ifCLASSOPTIONcompsoc
+%  \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+%\else
+%  \usepackage[caption=false,font=footnotesize]{subfig}
+%\fi
+% subfig.sty, written by Steven Douglas Cochran, is the modern replacement
+% for subfigure.sty, the latter of which is no longer maintained and is
+% incompatible with some LaTeX packages including fixltx2e. However,
+% subfig.sty requires and automatically loads Axel Sommerfeldt's caption.sty
+% which will override IEEEtran.cls' handling of captions and this will result
+% in non-IEEE style figure/table captions. To prevent this problem, be sure
+% and invoke subfig.sty's "caption=false" package option (available since
+% subfig.sty version 1.3, 2005/06/28) as this is will preserve IEEEtran.cls
+% handling of captions.
+% Note that the Computer Society format requires a larger sans serif font
+% than the serif footnote size font used in traditional IEEE formatting
+% and thus the need to invoke different subfig.sty package options depending
+% on whether compsoc mode has been enabled.
+%
+% The latest version and documentation of subfig.sty can be obtained at:
+% http://www.ctan.org/pkg/subfig
+
+
+
+
+% *** FLOAT PACKAGES ***
+%
+%\usepackage{fixltx2e}
+% fixltx2e, the successor to the earlier fix2col.sty, was written by
+% Frank Mittelbach and David Carlisle. This package corrects a few problems
+% in the LaTeX2e kernel, the most notable of which is that in current
+% LaTeX2e releases, the ordering of single and double column floats is not
+% guaranteed to be preserved. Thus, an unpatched LaTeX2e can allow a
+% single column figure to be placed prior to an earlier double column
+% figure.
+% Be aware that LaTeX2e kernels dated 2015 and later have fixltx2e.sty's
+% corrections already built into the system in which case a warning will
+% be issued if an attempt is made to load fixltx2e.sty as it is no longer
+% needed.
+% The latest version and documentation can be found at:
+% http://www.ctan.org/pkg/fixltx2e
+
+
+%\usepackage{stfloats}
+% stfloats.sty was written by Sigitas Tolusis. This package gives LaTeX2e
+% the ability to do double column floats at the bottom of the page as well
+% as the top. (e.g., "\begin{figure*}[!b]" is not normally possible in
+% LaTeX2e). It also provides a command:
+%\fnbelowfloat
+% to enable the placement of footnotes below bottom floats (the standard
+% LaTeX2e kernel puts them above bottom floats). This is an invasive package
+% which rewrites many portions of the LaTeX2e float routines. It may not work
+% with other packages that modify the LaTeX2e float routines. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/pkg/stfloats
+% Do not use the stfloats baselinefloat ability as the IEEE does not allow
+% \baselineskip to stretch. Authors submitting work to the IEEE should note
+% that the IEEE rarely uses double column equations and that authors should try
+% to avoid such use. Do not be tempted to use the cuted.sty or midfloat.sty
+% packages (also by Sigitas Tolusis) as the IEEE does not format its papers in
+% such ways.
+% Do not attempt to use stfloats with fixltx2e as they are incompatible.
+% Instead, use Morten Hogholm'a dblfloatfix which combines the features
+% of both fixltx2e and stfloats:
+%
+% \usepackage{dblfloatfix}
+% The latest version can be found at:
+% http://www.ctan.org/pkg/dblfloatfix
+
+
+
+
+% *** PDF, URL AND HYPERLINK PACKAGES ***
+%
+\usepackage{url}
+% url.sty was written by Donald Arseneau. It provides better support for
+% handling and breaking URLs. url.sty is already installed on most LaTeX
+% systems. The latest version and documentation can be obtained at:
+% http://www.ctan.org/pkg/url
+% Basically, \url{my_url_here}.
+
+
+
+
+% *** Do not adjust lengths that control margins, column widths, etc. ***
+% *** Do not use packages that alter fonts (such as pslatex).         ***
+% There should be no need to do such things with IEEEtran.cls V1.6 and later.
+% (Unless specifically asked to do so by the journal or conference you plan
+% to submit to, of course. )
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\input{preamble}
+
+\begin{document}
+%
+% paper title
+% Titles are generally capitalized except for words such as a, an, and, as,
+% at, but, by, for, in, nor, of, on, or, the, to and up, which are usually
+% not capitalized unless they are the first or last word of the title.
+% Linebreaks \\ can be used within to get better formatting as desired.
+% Do not put math or special symbols in the title.
+\title{Towards a decentralized, trustless infrastructure for brokered data traffic metering to enable IoT data marketplaces}
+
+
+% author names and affiliations
+% use a multiple column layout for up to three different
+% affiliations
+\author{\IEEEauthorblockN{someone else}
+\IEEEauthorblockA{School of Computing \\
+Newcastle University \\
+Email: paolo.missier@ncl.ac.uk}
+\and
+\IEEEauthorblockN{Homer Simpson}
+\IEEEauthorblockA{Twentieth Century Fox\\
+Springfield, USA\\
+Email: homer@thesimpsons.com}
+\and
+\IEEEauthorblockN{James Kirk\\ and Montgomery Scott}
+\IEEEauthorblockA{Starfleet Academy\\
+San Francisco, California 96678--2391\\
+Telephone: (800) 555--1212\\
+Fax: (888) 555--1212}}
+
+% conference papers do not typically use \thanks and this command
+% is locked out in conference mode. If really needed, such as for
+% the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
+% after \documentclass
+
+% for over three affiliations, or if they all won't fit within the width
+% of the page, use this alternative format:
+% 
+%\author{\IEEEauthorblockN{Michael Shell\IEEEauthorrefmark{1},
+%Homer Simpson\IEEEauthorrefmark{2},
+%James Kirk\IEEEauthorrefmark{3}, 
+%Montgomery Scott\IEEEauthorrefmark{3} and
+%Eldon Tyrell\IEEEauthorrefmark{4}}
+%\IEEEauthorblockA{\IEEEauthorrefmark{1}School of Electrical and Computer Engineering\\
+%Georgia Institute of Technology,
+%Atlanta, Georgia 30332--0250\\ Email: see http://www.michaelshell.org/contact.html}
+%\IEEEauthorblockA{\IEEEauthorrefmark{2}Twentieth Century Fox, Springfield, USA\\
+%Email: homer@thesimpsons.com}
+%\IEEEauthorblockA{\IEEEauthorrefmark{3}Starfleet Academy, San Francisco, California 96678-2391\\
+%Telephone: (800) 555--1212, Fax: (888) 555--1212}
+%\IEEEauthorblockA{\IEEEauthorrefmark{4}Tyrell Inc., 123 Replicant Street, Los Angeles, California 90210--4321}}
+
+
+
+
+% use for special paper notices
+%\IEEEspecialpapernotice{(Invited Paper)}
+
+
+
+
+% make the title area
+\maketitle
+
+% As a general rule, do not put math, special symbols or citations
+% in the abstract
+\begin{abstract}
+The abstract goes here.
+\end{abstract}
+
+% no keywords
+
+
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+
+
+\section{Introduction}
+
+Individuals who own and operate “personal” IoT edge devices (wearables, smart home etc) should be able to retain some control over the data that is continuously generated by those devices.
+Increasingly, such data are considered valuable digital assets that could be traded with third parties:  “There are third parties that could benefit from using that data, and the challenge is in allowing them to access it under the conditions that data owners find acceptable.” [Misura, Kresimir, and Mario Zagar. 2016]
+Such value can be found both in aggregate form, through analytics over large number of data streams, on a per-individual basis. 
+For example, the density of personal travel card swipes over time at metro stations in London will be of interest not only to the transportation authority, but also to taxi companies who need to decide how to position their cars outside mero stations. Similarly, aggregate smart metering of commodities (water, energy) may enable providers to optimise their delivery.
+On the other hand, an indvidual’s fitness data, as recorded by smart phones or dedicated fitness devices, may be of interest to health insurance companies \note{[CITE the case of UK insurance and applewatch deal]}.
+
+
+
+In this paper, we explore the idea of a marketplace for IoT data which enables device owners not only to control the distribution of the data produced by their devices, but to trade them with third parties.
+Initially 
+As in any marketplace, IoT data trading should be governed by an agreed-upon set of rules, set upfront by some trusted authority, which determine what kinds of contract and transactions are acceptable, and stipulate sanctions when the rules are not met.
+The main novel element of the proposed marketplace is its decentralized, authority-free,  self-regulating nature. This is reflected in the way rules are automatically enforced,  fairness of the transaction guaranteed, and sanctions imposed. This proposition is based on two technology elements. The first is an ehancement to IoT inrastructure, to enable the systematic monitoring of data streams as they flow from devices at the edge of the nework to analytics consumers, or Value Added Services (VAS), somewhere in the core cloud infrastructure.
+The second is the use of emerging consensus-based distributed transaction ledgers, specifically blockchain technology to create a transparent and open audit trail of granular data flow through the network, as well as of smart contracts to enforce marketplace rules, resolve disputes, and settle payments.
+
+\subsection{Related work}
+
+
+\subsection{Contributions}
+
+Firstly, we propose a new model and software infrastructure to enable the next generation of IoT data marketplaces through granular metering of IoT data exchanges. These exchanges may occur either through a broker, using a publish-subscribe pattern, or through network servers.
+In traditional marketplaces, a trusted authority oversees data exchanges as well as guarantees the identity of the paritcipants. The key novel aspect of our contribution is that our model relies upon blockchain technology and smart contracts to remove the need for centralised trust. We discuss the challenges and limitations of using smart contracts for automatic dispute resolution.
+
+Secondly, we present a prototype realisation of the marketplace for both brokered data exchanges, i.e., using the MQTT protocol, and non-brokered exchanges using core network servers and application servers. We use blockchain technology and smart contracts (Ethereum) for enforcing the contracts definition and providing dispute resolution capabilities.
+
+Finally, we evaluate the flexbility of our solution, i.e., the ability for smart contracts to accommodate a variety of contract types, as well as its techical capability to handle a stream of blockchain transactions at varying arrival rate.
+
+\section{Brokered IoT data as tradeable assets}
+
+Initially, we are going to assume a baseline scenario in which ground rules for governance of a marketplace are set in advance, data exchanges are mediated by brokers, a brokered message constitutes a unit value of digital goods, whose value is determined solely by the type of the message, and the marketplace is controlled by a trusted authority that is able to ensure its fairness.
+
+Our reference architecture for brokered IoT data exchanges is sketched in Fig. \note{xx}
+
+\begin{figure}
+\fbox{basic brokered data exchanges	-- fig may be redundant}
+\caption{Brokered data exchanges.}
+\label{fig:BDE}
+\end{figure}
+
+In line with common IoT network architectures \note{[... on using brokers for data exchanges…]}, we assume that data produced by edge devices $ P $ are routed to consumers $ C $, which we may refer to as \textit{Value Added Services} (VAS), through message brokers. Concretely, in our prototype we have used MQTT… \note{[...standard etc. …]}
+
+Data producers may be, for example, wearables (accelerometers, glucose monitors, heart monitors, smart energy meters in the home), personal or home monitoring sensors, etc.
+VAS are analytics applications, for example to detect activity levels of a cohort of individuals over time for health care monitoring or for commercial purposes, detect the current traffic within a building, etc.
+
+Aa raw data stream consists either of individual data tokens, for example each individual swipe of every Oyster card on the London tube, or of windowed aggregations from a stream, for instance a few seconds’ worth of accelerometry data, or the average GPS position within the window.
+
+VAS may aggregate data from multiple $ P $s over time. Although VAS may themselves produce new data that can potentially be traded, for the purpose of this paper we only consider the first level, from $ P $ to $ C $. We assume that $ P $s are network edge devices, while the VAS are located in a cloud.
+
+Gateways are responsible for forwarding multiple data streams generated by IoT edge devices to one or more brokers.
+We assume that participants in the brokered exchange will have agreed on a hierarchy of topics, and that each data type in a stream is associated with one topic. For example, leaf-level topics may be ''heart rate``,''GPS track``, ''glucose reading``, ''energy reading`` and so forth. Note that topics are the only type of descriptive metadata associated with the messages.
+The gateways generate a stream of messages from the raw stream of tokens, by encapsulating each token into a MQTT message payload and adding the topic corresponding to the stream type.
+
+VAS (see right side of the figure) subscribe to topics, possibly just for a set time interval. 
+In line with the pub/sub model, providers (the devices) are unaware of which consumers (the VAS on the right) subscribe to their message streams.
+This model results in a many-to-many broker-mediated message exchange, where each VAS may subscribe to data from multiple Ps, and each message from one PP or P may be delivered to multiple VAS. As MQTT supports multiple QoS levels, we are going to assume complete and accurate delivery of each message.
+
+In this model, each individual message is a tradeable asset, with a value that is defined by marketplace rules. In this work our focus is solely on the enabling infrastructure to ensure fair trading, and we are not concerned with the mechanisms deployed to set and update the price of these assets. Instead, we are going to assume that a pre-defined unit value $ V_k $ is associated with each topic $ T_k $. Thus, for $ n $ messages with topic $ T_k $ sent by producer $ P_i $ to the broker during time interval $ [t_1, t_2] $, $ P_i $ should receive $ n \cdot V_k $ units in compensation from each subscriber to $ T_k $, to which the broker will have forwarded the messages. 
+The reward model is therefore very simple:
+
+\note{FIXME}
+\begin{equation}
+ \mathit{reward}(P_i, t_1, t_2) = sum_{T_k, C_j} n \cdot \mathit{count}(P_i, T_k, C_j)   
+\label{eq:reward}
+ \end{equation}
+ 
+
+\note{[note that there may be multiple brokers so this needs adjusting].}
+Our goal is to monitor the traffic through each of the brokers, to the extent needed to keep track of, and settle, the balance owed by each VAS to each $ Pi $.
+
+In the next section we describe a centralised model where settlement is performed by a trusted element in the IoT architecture.
+We are then going to show how removing the assumption that the settlement element is trusted exposes the model to potential attacks, and how introducing settlement through smart contracts helps addressing such attacks.
+
+\section{Granular traffic metering through trusted brokers}
+
+\subsection{Traffic cubes}
+
+As we have seen, in our model the reward for a producer $ P_i $ is determined only by the number of messages that flow from $ P_i $ to each of its subscribers $ C_j $ and each topic $ T_k $.
+In order to ascribe credit to each producer for traffic exchanged in a window $ W = [t_1, t_2] $ is therefore sufficient, in principle, to maintain a count $ N_{ijk} $ of such messages for each combination of provider $ P_i $, consumer $ C_j $, and topic $ T_k $ that are observed within $ W $.
+Thus, for each $ W $ we want to generate a report consisting of a set of 4-tuples:
+\[  \langle P_i, C_j, T_k, N_{ijk} \rangle  \]
+We denote this set of counts as a \textit{traffic cube}, borrowing terminology from OLAP database practice where a ''cube`` is a table with $ N $ attributes, in which the first $ N-1 $ attributes are  dimensions in a database schema (in our case, these are the Producers, Consumers, and Topics) and the last is an aggregation over values in the database for each combination of the dimensions -- in our case, a count().
+Thus, a traffic cube contains a summary  of all data flows observed by a broker. Notice that these cubes only contain metadata, ie the counts, but they disregard the content of the messages.
+
+\subsection{Basic architecture}
+
+Using this simple aggregation as a model, we extend a  MQTT-based IoT platform to provide the traffic monitoring capability that underpins reward settlement and thus basic marketplace functionality, as shown in Fig. \ref{fig:cubes}.
+
+\begin{figure}
+	\fbox{Vaughn's arch figure}
+	\caption{Generating traffic cubes}
+	\label{fig:cubes}
+\end{figure}
+
+Firstly, we enhance the MQTT broker continuously logs a summary of each message it observes into a dedicated database, which we call \textit{TrackerDB}.  In our initial prototyping we have used the open source Mosquitto MQTT broker and a Cassandra NoSQL database to ensure scalability. 
+
+Secondly, a traffic reporting service generates cubes on demand by querying the \textit{TrackerDB}, in response to requests issued by client applications (including possibly independent third party clients). The service is accessible through a REST interface. A request that only specifies a window $ W $ will return the most general traffic cube involving all producers, consumers, and topics. Clients may optionally also define a slice through this potentially large cube, by specifying a subset of the available producers, consumers, and topics.
+
+Finally, a settlement service uses the cubes provided by the traffic reporting service to create, for each window $ W $, a set of payment transactions from each consumer to each producer, based on the reward model (\ref{eq:reward}).
+In the baseline scenario we have been presenting, where we have assumed there is only one broker, which is a trusted component, setllement is straightforward, as the settlement service has complete visibility of the entire traffic over time, and it can assume that the cubes are complete and correct.
+Note that, under the same trust assumptions, settlement extends easily to a more realistic scenario where multiple brokers are deployed, each enhanced with the same logging capabilities and local traffic reporting service, as in Fig. \ref{fig:cubes-in-context}.
+
+\begin{figure}
+	\fbox{Cubes in context}
+	\caption{REDO}
+	\label{fig:cubes-in-context}
+\end{figure}
+
+\subsection{Removing trust using blockchain and smart contracts}
+
+Any marketplace where the reward model is based on message counts is vulnerable to malicious behaviour by any of the participants. Specifically, the suppliers (the publishers) have an incentive to claim to have produced more messages than in reality, while conversely, subscribers have an incentive to under-report the number of messages they receive.
+
+If we remove the assumption that the broker(s) are trusted, we must also accept that they may be prepared to collude with any of the participants, and thus deliver traffic cubes that may not be correct or complete.
+Discovering such collusions may not be possible when the broker is the only source of traffic counts available to the settlement service.  At the same time, resolving any disputes amongst pairs of participants requires a public and irrefutable record of the reported traffic.
+
+We propose a two-steps approach to address both these problems.
+Firstly, we remove the assumption that traffic cubes are generated by the broker alone, and instead require each marketplace participant to provide to the settlement service their own view of the data traffic they have sent (publishers) and received (subscribers).
+Note that each such view, even when it is faithful and not malicious, will not be complete, as it can only reflect the partial traffic information as viewed by each publisher and each subscriber.
+Secondly, we use Smart Contracts to realise the settlement service itself, in such a way that every traffic cube received by any of the participants is posted on a blockchain as part of a transaction.
+
+This  approach provides at the same time transparency and accountability, because the content of the blockchain is public and can be inspected, and a way to address disputes, because for each window W, multiple (partial) views of each cube are made available to the settlement service.
+
+Our initial, and partial, Proof of Concept realisation of this approach aims to show the potential of smart contracts technology in this setting. Methods for addressing disputes are briefly discussed in the last section, but are still at the experimental stage.
+
+\note{[ explain the concept of eth transactions as extension of bitcoin transaction]}
+
+\note{[say what is a transaction in this setting -- ie between a marketplace coordinator and the settlement service, how it works in practice, how much it costs.  Traffic cube are the message payload…]}
+
+
+\section{Initial proof-of-concept realisation}
+
+\note{Proof of Concept using Eth}
+
+
+\authornote{We need reference to ETH architecture, with APIs call and a snippet of the code. We can add some numbers on how much this will cost to run and consequently set up a minimum cost for each data in order to keep infrastructure sustainable.
+Logic: “data” is a “count cube”. The platform generates a stream of these cubes at a certain rate, which is tunable using the window size on the TrackerDB. The arrival rate of the cubes determines the frequency at which contracts are executed, and therefore the cost over time.
+}
+
+\section{Evaluation and Lessons learnt}
+
+\authornote{
+	\begin{itemize}
+		\item Are smart contracts an adequate implementation model to realise a fair marketplace?
+\item Are there limitations in the reconciliation phase?
+\item Cost of operating and marketplace: executing transactions and how to control them -- contract activated in an adaptive mode.  Who owns the contracts?  (ideal answer: nobody. Participants share the cost of transactions)
+\item Scalability: how the cubes decouple the data flow rates from the transaction frequency
+\item Data marketplace model is preliminary and not validated on real world use cases. It is based on minimal data semantics (ie the topic) and has no notion of more sophisticated contract models.
+	\end{itemize}
+
+}
+
+
+\section{Conclusion and future work}
+
+
+
+
+% conference papers do not normally have an appendix
+
+
+% use section* for acknowledgment
+\section*{Acknowledgment}
+
+
+The authors would like to thank...
+
+
+
+
+
+% trigger a \newpage just before the given reference
+% number - used to balance the columns on the last page
+% adjust value as needed - may need to be readjusted if
+% the document is modified later
+%\IEEEtriggeratref{8}
+% The "triggered" command can be changed if desired:
+%\IEEEtriggercmd{\enlargethispage{-5in}}
+
+% references section
+
+% can use a bibliography generated by BibTeX as a .bbl file
+% BibTeX documentation can be easily obtained at:
+% http://mirror.ctan.org/biblio/bibtex/contrib/doc/
+% The IEEEtran BibTeX style support page is at:
+% http://www.michaelshell.org/tex/ieeetran/bibtex/
+%\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+%\bibliography{IEEEabrv,../bib/paper}
+%
+% <OR> manually copy in the resultant .bbl file
+% set second argument of \begin to the number of references
+% (used to reserve space for the reference number labels box)
+\begin{thebibliography}{1}
+
+\bibitem{IEEEhowto:kopka}
+H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
+  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+
+\end{thebibliography}
+
+
+
+
+% that's all folks
+\end{document}
+
+

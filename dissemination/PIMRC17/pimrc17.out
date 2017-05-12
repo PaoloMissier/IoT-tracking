@@ -1,0 +1,12 @@
+\BOOKMARK [1][-]{section.1}{I Introduction}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{I-A Related work}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{I-B Contributions}{section.1}% 3
+\BOOKMARK [1][-]{section.2}{II Brokered IoT data as tradeable assets}{}% 4
+\BOOKMARK [1][-]{section.3}{III Granular traffic metering through trusted brokers}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{III-A Traffic cubes}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.2}{III-B Basic architecture}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.3}{III-C Removing trust using blockchain and smart contracts}{section.3}% 8
+\BOOKMARK [1][-]{section.4}{IV Initial proof-of-concept realisation}{}% 9
+\BOOKMARK [1][-]{section.5}{V Evaluation and Lessons learnt}{}% 10
+\BOOKMARK [1][-]{section.6}{VI Conclusion and future work}{}% 11
+\BOOKMARK [1][-]{section*.2}{References}{}% 12
