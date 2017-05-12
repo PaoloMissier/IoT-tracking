@@ -322,7 +322,7 @@
 % not capitalized unless they are the first or last word of the title.
 % Linebreaks \\ can be used within to get better formatting as desired.
 % Do not put math or special symbols in the title.
-\title{Towards a decentralized, trustless infrastructure for brokered data traffic metering to enable IoT data marketplaces}
+\title{Mind My Value: a decentralized infrastructure for fair and trusted IoT data pricing}
 
 
 % author names and affiliations
@@ -431,15 +431,16 @@ Finally, we evaluate the flexbility of our solution, i.e., the ability for smart
 
 \section{Brokered IoT data as tradeable assets}
 
-Initially, we are going to assume a baseline scenario in which ground rules for governance of a marketplace are set in advance, data exchanges are mediated by brokers, a brokered message constitutes a unit value of digital goods, whose value is determined solely by the type of the message, and the marketplace is controlled by a trusted authority that is able to ensure its fairness.
+Initially, we are going to assume a baseline scenario in which ground rules for governance of a marketplace are set in advance, data exchanges are mediated by brokers, a brokered message constitutes a unit value of digital goods whose value is determined solely by the type of the message, and the marketplace is controlled by a trusted authority that is able to ensure its fairness.
 
-Our reference architecture for brokered IoT data exchanges is sketched in Fig. \note{xx}
+Fig. \ref{fig:reference-architecture} architecture for brokered IoT data exchanges is sketched in Fig. \note{xx}
 
 \begin{figure}
 \fbox{basic brokered data exchanges	-- fig may be redundant}
 \caption{Brokered data exchanges.}
-\label{fig:BDE}
+\label{fig:reference-architecture}
 \end{figure}
+
 
 In line with common IoT network architectures \note{[... on using brokers for data exchanges…]}, we assume that data produced by edge devices $ P $ are routed to consumers $ C $, which we may refer to as \textit{Value Added Services} (VAS), through message brokers. Concretely, in our prototype we have used MQTT… \note{[...standard etc. …]}
 
@@ -474,7 +475,7 @@ Our goal is to monitor the traffic through each of the brokers, to the extent ne
 In the next section we describe a centralised model where settlement is performed by a trusted element in the IoT architecture.
 We are then going to show how removing the assumption that the settlement element is trusted exposes the model to potential attacks, and how introducing settlement through smart contracts helps addressing such attacks.
 
-\section{Granular traffic metering through trusted brokers}
+\section{Granular traffic metering}
 
 \subsection{Traffic cubes}
 
@@ -509,7 +510,7 @@ Note that, under the same trust assumptions, settlement extends easily to a more
 	\label{fig:cubes-in-context}
 \end{figure}
 
-\subsection{Removing trust using blockchain and smart contracts}
+\section{Removing trust using blockchain and smart contracts}
 
 Any marketplace where the reward model is based on message counts is vulnerable to malicious behaviour by any of the participants. Specifically, the suppliers (the publishers) have an incentive to claim to have produced more messages than in reality, while conversely, subscribers have an incentive to under-report the number of messages they receive.
 
@@ -525,14 +526,24 @@ This  approach provides at the same time transparency and accountability, becaus
 
 Our initial, and partial, Proof of Concept realisation of this approach aims to show the potential of smart contracts technology in this setting. Methods for addressing disputes are briefly discussed in the last section, but are still at the experimental stage.
 
-\note{[ explain the concept of eth transactions as extension of bitcoin transaction]}
 
-\note{[say what is a transaction in this setting -- ie between a marketplace coordinator and the settlement service, how it works in practice, how much it costs.  Traffic cube are the message payload…]}
+\subsection{Blockchain and Smart Contracts}
+
+\note{FIXME}
+
+Blockchain is essentially a distributed ledger of information (e.g., a transaction from A to B in the bitcoin world), a copy of which cannot be arbitrarily altered without being spotted and for which consistency of each information can be achieved in a decentralized and distributed way, without requiring trust in any third party. These properties, that in the bitcoin world provides a very strong business case (e.g., removing transaction costs associated to clearinghouse functionalities when transferring money), can also provide a trust case for exchanging access to different assets, without requiring trust among parties.
+
+Decentralized Applications (DApps) use assets and services from different sources, not controlled by only one entity (in contrast to the traditional centralized client/server web). Using smart contracts and off-chain information makes more practical to develop new DApps. s-Health apps can be seen as a particular type of DApps. Bitcoin is the first DApp built on top of the blockchain: it is a digital and interoperable currency (i.e., it does not require conversion across the world), using the blockchain infrastructure and some complex cryptographic algorithms, to achieve (nearly) zero transaction fees while avoiding the double-spending problem (e.g., possibility to spend a given amount twice) and without requiring to trust in any third party to police this risk. Thinking about the value of different assets, bitcoin and alt-coin (i.e., bitcoin plus metadata) can provide an interoperable and open cross-domain incentives platform for redistributing the value created from assets sharing, transparently covering the interests of all the involved assets providers.
+
+Blockchain has been later leveraged to manage Smart Contracts, small pieces of software that encode a set of conditions and actions that a machine can interpret and that can be executed as expected using the blockchain infrastructure without third party involvement or supervision \cite{Buterin2014}. These functionalities can be interesting when it comes to give permission to access different assets (datasets and devices) only for specific purposes.
+
+Blockchain is usually adopted by Decentralized Autonomous Organizations (DAOs), which require neither written statements nor physical governance bodies, to run on code expressed by a set of Smart Contracts. This concept is interesting for organizations where different stakeholders can vote and agree on the rules for sharing their assets, e.g., for particular social benefits or research purpose, thus deciding how their rewards should be distributed while influencing and supporting the creation of specific s-Health services. Through DAOs, the principles, rules and benefits deriving from data sharing can be distributedly enforced without requiring any trusted third party. While this is a powerful concept to achieve autonomy and avoid misuse, particular attention is required in order to properly encode the right human assisted governance structure in the DAOs. This might require a governance body that supervises the rules implemented as DAO by an open developers community, following a rigorous, open, transparent and accounted review process.
 
 
-\section{Initial proof-of-concept realisation}
 
-\note{Proof of Concept using Eth}
+\subsection{Initial proof-of-concept realisation}
+
+\note{ANDREA}
 
 
 \authornote{We need reference to ETH architecture, with APIs call and a snippet of the code. We can add some numbers on how much this will cost to run and consequently set up a minimum cost for each data in order to keep infrastructure sustainable.
@@ -542,6 +553,19 @@ Logic: “data” is a “count cube”. The platform generates a stream of thes
 \section{Evaluation and Lessons learnt}
 
 \authornote{
+\note{new from Michele}
+
+	\begin{itemize}
+\item test assuming no need of settlement, value are the same
+\item Test different time periods for cube generation, fine grained vs to larger interval, up to daily
+\item Invariance wrt to period for cube computation 
+\item Dependency wrt to number of sources and VAS (not addressed here)
+	\end{itemize}
+}
+
+
+\authornote{
+\note{old list}
 	\begin{itemize}
 		\item Are smart contracts an adequate implementation model to realise a fair marketplace?
 \item Are there limitations in the reconciliation phase?
@@ -549,7 +573,17 @@ Logic: “data” is a “count cube”. The platform generates a stream of thes
 \item Scalability: how the cubes decouple the data flow rates from the transaction frequency
 \item Data marketplace model is preliminary and not validated on real world use cases. It is based on minimal data semantics (ie the topic) and has no notion of more sophisticated contract models.
 	\end{itemize}
+}
 
+
+\authornote{
+\note{lessons learnt}
+
+	\begin{itemize}
+\item event vs time series, costs and requirements
+\item Liability of oracolize model for trust; requirements of new interfaces
+\item Volatility of market and price
+	\end{itemize}
 }
 
 
@@ -567,7 +601,8 @@ Logic: “data” is a “count cube”. The platform generates a stream of thes
 
 The authors would like to thank...
 
-
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,pimrc17}
 
 
 
@@ -593,13 +628,6 @@ The authors would like to thank...
 % <OR> manually copy in the resultant .bbl file
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
-\begin{thebibliography}{1}
-
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
-
-\end{thebibliography}
 
 
 
