@@ -490,65 +490,48 @@ A publisher may choose to subscribe to this specific topic, or to any  living\_r
 Note incidentally that the model includes the case, not shown in the figure, where a VAS may aggregate data from multiple $ p_i $s and then publish this value-added data, enabling other VAS to license it. 
 In this case, a VAS is both a consumer and a producer.
 
+\subsection{Centralised Traffic metering}
+
 This model enables many-many agreements between any subsets of $P$ and $C$, with pricing that is determined by $T$.
 Suppose the broker is trusted with \textit{metering} all traffic, that is, monitoring and logging all message flows for a time interval $W$, and suppose that a number of agreements are active between pairs of $p_i$ and $c_j$ during $W$.
 Let 
 \[N_{ijk}(W) = \mathit{count}(p_i, c_j, t_k)\]
 denote the number of messages about topic $t_k$ that originated from $p_i$ and reached $c_j$ during $W$.
-Ideally, at the end of $W$ the broker will be able to determine the reward that $p_i$ is due cost by each $c_j$, as a simple function of $N_{ijk}(W)$ and unit costs $\mathit{val}(t_k)$:
+Ideally, at the end of $W$ the broker will be able to determine the reward that $p_i$ is due by each $c_j$, as a simple function of $N_{ijk}(W)$ and unit costs $\mathit{val}(t_k)$:
 \begin{equation}
 \mathit{reward}(p_i, W) = \sum_{t_k \in T, c_j \in C} N_{ijk}(W) \cdot \mathit{val}(t_k)
 \label{eq:reward}
 \end{equation}
-
-Thus, in this ideal scenario data flows easily translate into a set of payment settlement transactions involving pairs $(p_i, c_j)$.
-However, the scenario becomes more challenging if we remove the assumption that the broker is the only central element that is responsible for settling payments.
-In the next section we present an extended model where individual participants may be metering the portions of data flows that are visible to them, and settlement occurs by collecting and analysing the reports from each participant, at the end of each time perdio $W$.
+(note that $N_{ijk}(W = 0$ if $c_j$ does not subscribe to $t_k$).
 
 \subsection{Traffic cubes}
 
+Thus, in this ideal scenario data flows easily translate into a set of payment settlement transactions involving pairs $(p_i, c_j)$.
+In our testbed we realise this capability by extending a Mosquitto MQTT broker so it logs each message routing event as a tuple into a \textit{TrackerDB} database:
+$ \langle p_i, c_j, t_k \rangle $
 
-\authornote{ LEFTOVERS \\
-	
-	Firstly, we enable networks elements close to the publishers and to the subscribers, i.e., gateways and VAS respectively, to systematically generate summary metadata about the data flows. 
-	Each of these summaries is necessarily partial and incomplete, as it reflects the local view of each participant in the data exchanges.
-	%
-	Secondly, we use emerging consensus-based distributed transaction ledgers, specifically blockchain and Smart Contract technology, to periodically collect each of these summaries and use them to verify 
-	
-	to create a transparent and open audit trail of granular data flow through the network, as well as of smart contracts to enforce marketplace rules, resolve disputes, and settle payments.
-}
-
-
-As we have seen, in our model the reward for a producer $ P_i $ is determined only by the number of messages that flow from $ P_i $ to each of its subscribers $ C_j $ and each topic $ T_k $.
-In order to ascribe credit to each producer for traffic exchanged in a window $ W = [t_1, t_2] $ is therefore sufficient, in principle, to maintain a count $ N_{ijk} $ of such messages for each combination of provider $ P_i $, consumer $ C_j $, and topic $ T_k $ that are observed within $ W $.
-Thus, for each $ W $ we want to generate a report consisting of a set of 4-tuples:
-\[  \langle P_i, C_j, T_k, N_{ijk} \rangle  \]
-We denote this set of counts as a \textit{traffic cube}, borrowing terminology from OLAP database practice where a ''cube`` is a table with $ N $ attributes, in which the first $ N-1 $ attributes are  dimensions in a database schema (in our case, these are the Producers, Consumers, and Topics) and the last is an aggregation over values in the database for each combination of the dimensions -- in our case, a count().
-Thus, a traffic cube contains a summary  of all data flows observed by a broker. Notice that these cubes only contain metadata, ie the counts, but they disregard the content of the messages.
-
-\subsection{Basic architecture}
-
-Using this simple aggregation as a model, we extend a  MQTT-based IoT platform to provide the traffic monitoring capability that underpins reward settlement and thus basic marketplace functionality, as shown in Fig. \ref{fig:cubes}.
+At the end of each $W$, the log is aggregated over $p_i, c_j, t_k$, resulting in a set of tuples:
+\begin{equation}\label{eq:cube}
+\mathit{cube}(W) = \{ \langle p_i, c_j, t_k, N_{ijk}(W) \rangle \}
+\end{equation}
+We denote this  as a \textit{traffic cube}, borrowing terminology from OLAP database practice where a  ``cube'' is a table with $ N $ attributes, in which the first $ N-1 $ attributes are  dimensions in a database schema (in our case, these are the Producers, Consumers, and Topics) and the last is an aggregation over values in the database for each combination of the dimensions -- in our case, a count().
+Thus, a traffic cube contains a summary  of all data flows observed by a broker. Notice that these cubes only contain \textit{metadata}, i.e., the counts, but they disregard the content of the messages.
+%
+Cubes are used for settlement either by the broker itself, or by a trusted third party service. Fig. \note{xx} summarises this basic architecture, as it is realised in our testbed. 
+We use a Cassandra NoSQL database for the \textit{TrackerDB}, to ensure scalability. 
+A traffic reporting service generates traffic cubes on demand by querying the \textit{TrackerDB}, in response to requests issued by client applications (including possibly independent third party clients). The service is accessible through a REST interface.
 
 \begin{figure}
-	\fbox{Vaughn's arch figure}
-	\caption{Generating traffic cubes}
+	\fbox{Basic cubes figure}
+	\caption{Broker-generated traffic cubes}
 	\label{fig:cubes}
 \end{figure}
 
-Firstly, we enhance the MQTT broker continuously logs a summary of each message it observes into a dedicated database, which we call \textit{TrackerDB}.  In our initial prototyping we have used the open source Mosquitto MQTT broker and a Cassandra NoSQL database to ensure scalability. 
+In this centralised scenario settlement is straightforward, as we have assumed that the settlement service has complete visibility of the entire traffic over time, and that the cubes are complete and correct.
+Note that, under the same trust assumptions, settlement extends easily to a more realistic scenario where multiple brokers are deployed, each enhanced with the same logging capabilities and local traffic reporting service.
 
-Secondly, a traffic reporting service generates cubes on demand by querying the \textit{TrackerDB}, in response to requests issued by client applications (including possibly independent third party clients). The service is accessible through a REST interface. A request that only specifies a window $ W $ will return the most general traffic cube involving all producers, consumers, and topics. Clients may optionally also define a slice through this potentially large cube, by specifying a subset of the available producers, consumers, and topics.
-
-Finally, a settlement service uses the cubes provided by the traffic reporting service to create, for each window $ W $, a set of payment transactions from each consumer to each producer, based on the reward model (\ref{eq:reward}).
-In the baseline scenario we have been presenting, where we have assumed there is only one broker, which is a trusted component, setllement is straightforward, as the settlement service has complete visibility of the entire traffic over time, and it can assume that the cubes are complete and correct.
-Note that, under the same trust assumptions, settlement extends easily to a more realistic scenario where multiple brokers are deployed, each enhanced with the same logging capabilities and local traffic reporting service, as in Fig. \ref{fig:cubes-in-context}.
-
-\begin{figure}
-	\fbox{Cubes in context}
-	\caption{REDO}
-	\label{fig:cubes-in-context}
-\end{figure}
+This centralised scenario becomes challenging, however, if we remove the assumption that the broker is the only central element that is responsible for settling payments.
+We now present an extended model where individual participants may be metering the portions of data flows that are visible to them, and settlement occurs by collecting and analysing the reports from each participant, at the end of each time period $W$.
 
 \section{Removing trust using blockchain and smart contracts}
 
@@ -557,19 +540,39 @@ Any marketplace where the reward model is based on message counts is vulnerable 
 If we remove the assumption that the broker(s) are trusted, we must also accept that they may be prepared to collude with any of the participants, and thus deliver traffic cubes that may not be correct or complete.
 Discovering such collusions may not be possible when the broker is the only source of traffic counts available to the settlement service.  At the same time, resolving any disputes amongst pairs of participants requires a public and irrefutable record of the reported traffic.
 
-We propose a two-steps approach to address both these problems.
-Firstly, we remove the assumption that traffic cubes are generated by the broker alone, and instead require each marketplace participant to provide to the settlement service their own view of the data traffic they have sent (publishers) and received (subscribers).
-Note that each such view, even when it is faithful and not malicious, will not be complete, as it can only reflect the partial traffic information as viewed by each publisher and each subscriber.
-Secondly, we use Smart Contracts to realise the settlement service itself, in such a way that every traffic cube received by any of the participants is posted on a blockchain as part of a transaction.
+To address these problems we rely on two over-arching principles: (1) personal responsibility of each participant in the marketplace, which shall report their own counts of messages sent (publishers) or received (subscribers), and (2) transparency, whereby these reports are posted as blockchain transactions, immutable and verifiable.
+In practice, we propose a two-steps approach.
+%
+Firstly, we remove the assumption that traffic cubes are generated by the broker alone, and instead enable networks elements close to the publishers and to the subscribers, i.e., gateways and VAS respectively, to generate the cubes.
+Note however that these new cubes reflect the \textit{local} view of each participant in the data exchanges, and are therefore necessarily partial and incomplete, as each participant, unlike the broker, has no visibility of the end-to-end data flows. 
+We must therefore modify our definition of cubes slightly, and we denote these as \textit{unilateral} traffic cubes.
+
+Specifically, a publisher's unilateral cube $\mathit{u\_cube_p}$ has the form
+\[
+\mathit{u\_cube_p}(W, p_i)  =  \{ \langle p_i, t_k, N_{ik}(W)\}
+\]
+for all $t_k \in T$, where $N_{ik}(W)$ is the count of messages with topic $t_k$ sent by $p_i$ during $W$.
+
+Unlike a publisher's cube, we may assume that a subscriber's unilateral cube $\mathit{u\_cube_s}$ also contains information about publishers, as they are known to each $c_j$ at the receiving end.
+Thus, these have the form of a regular cube, but they will only contain the tuples that pertain to a single $c_j$:
+\[
+\mathit{u\_cube_s}(W, c_j)  =  \{ \langle p_i, c_j, t_k, N_{ijk}(W)\}
+\]
+for all $t_k \in T$, $p_i \in P$.
+
+The second element of our approach is the use of emerging consensus-based distributed transaction ledgers, specifically blockchain and Smart Contract technology, to realise the settlement service.
+Briefly, Smart Contracts extend the standard blockchain transaction model by adding the capability to execute arbitrary code, which operates on data structures contained in the transaction itself. 
+In this case, a transaction that is initiated at the end of each window $W$ may operate on all partial cubes that participants make available at the end of $W$.
 
 This  approach provides at the same time transparency and accountability, because the content of the blockchain is public and can be inspected, and a way to address disputes, because for each window W, multiple (partial) views of each cube are made available to the settlement service.
 
-Our initial, and partial, Proof of Concept realisation of this approach aims to show the potential of smart contracts technology in this setting. Methods for addressing disputes are briefly discussed in the last section, but are still at the experimental stage.
-
+%Our initial, and partial, Proof of Concept realisation of this approach aims to show the potential of smart contracts technology in this setting. Methods for addressing disputes are briefly discussed in the last section, but are still at the experimental stage.
+%
+We now describe the approach in more detail, starting with essential background information about Blockchain and Smart Contracts.
 
 \subsection{Blockchain and Smart Contracts}
 
-\note{FIXME}
+\note{FIXME -- still a dump of Michele's text}
 
 Blockchain is essentially a distributed ledger of information (e.g., a transaction from A to B in the bitcoin world), a copy of which cannot be arbitrarily altered without being spotted and for which consistency of each information can be achieved in a decentralized and distributed way, without requiring trust in any third party. These properties, that in the bitcoin world provides a very strong business case (e.g., removing transaction costs associated to clearinghouse functionalities when transferring money), can also provide a trust case for exchanging access to different assets, without requiring trust among parties.
 
@@ -579,9 +582,11 @@ Blockchain has been later leveraged to manage Smart Contracts, small pieces of s
 
 Blockchain is usually adopted by Decentralized Autonomous Organizations (DAOs), which require neither written statements nor physical governance bodies, to run on code expressed by a set of Smart Contracts. This concept is interesting for organizations where different stakeholders can vote and agree on the rules for sharing their assets, e.g., for particular social benefits or research purpose, thus deciding how their rewards should be distributed while influencing and supporting the creation of specific s-Health services. Through DAOs, the principles, rules and benefits deriving from data sharing can be distributedly enforced without requiring any trusted third party. While this is a powerful concept to achieve autonomy and avoid misuse, particular attention is required in order to properly encode the right human assisted governance structure in the DAOs. This might require a governance body that supervises the rules implemented as DAO by an open developers community, following a rigorous, open, transparent and accounted review process.
 
+\subsection{Settlement using unilateral traffic cubes}
 
+\note{TODO}
 
-\subsection{Initial proof-of-concept realisation}
+\section{Initial proof-of-concept realisation}
 
 \note{ANDREA}
 
