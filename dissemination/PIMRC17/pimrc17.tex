@@ -499,23 +499,31 @@ Let
 denote the number of messages about topic $t_k$ that originated from $p_i$ and reached $c_j$ during $W$.
 Ideally, at the end of $W$ the broker will be able to determine the reward that $p_i$ is due by each $c_j$, as a simple function of $N_{ijk}(W)$ and unit costs $\mathit{val}(t_k)$:
 \begin{equation}
-\mathit{reward}(p_i, W) = \sum_{t_k \in T, c_j \in C} N_{ijk}(W) \cdot \mathit{val}(t_k)
+\mathit{reward}(p_i, W) = \sum_{\substack{t_k \in T \\ c_j \in C}} N_{ijk}(W) \cdot \mathit{val}(t_k)
 \label{eq:reward}
 \end{equation}
 (note that $N_{ijk}(W = 0$ if $c_j$ does not subscribe to $t_k$).
 
-\subsection{Traffic cubes}
+\subsection{Traffic cubes and settlement}
 
 Thus, in this ideal scenario data flows easily translate into a set of payment settlement transactions involving pairs $(p_i, c_j)$.
 In our testbed we realise this capability by extending a Mosquitto MQTT broker so it logs each message routing event as a tuple into a \textit{TrackerDB} database:
 $ \langle p_i, c_j, t_k \rangle $
 
-At the end of each $W$, the log is aggregated over $p_i, c_j, t_k$, resulting in a set of tuples:
+At the end of each $W$, the log is aggregated over each $p_i \in P, c_j \in C, t_k \in T$, resulting in a set of tuples that we call a \textit{traffic cube}:
 \begin{equation}\label{eq:cube}
-\mathit{cube}(W) = \{ \langle p_i, c_j, t_k, N_{ijk}(W) \rangle \}
+\mathit{cube}(W) = \{ \langle p_i, c_j, t_k, N_{ijk}(W) \rangle \}_{p_i \in P, c_j \in C, t_k \in T}
 \end{equation}
-We denote this  as a \textit{traffic cube}, borrowing terminology from OLAP database practice where a  ``cube'' is a table with $ N $ attributes, in which the first $ N-1 $ attributes are  dimensions in a database schema (in our case, these are the Producers, Consumers, and Topics) and the last is an aggregation over values in the database for each combination of the dimensions -- in our case, a count().
-Thus, a traffic cube contains a summary  of all data flows observed by a broker. Notice that these cubes only contain \textit{metadata}, i.e., the counts, but they disregard the content of the messages.
+Here we borrow our terminology from OLAP database practice where a  ``cube'' is a table with $ N $ attributes, in which the first $ N-1 $ attributes are  dimensions in a database schema (in our case, these are the Producers, Consumers, and Topics) and the last is an aggregation over values in the database for each combination of the dimensions -- in our case, a count().
+We use a matrix indexing notation to refer to specific cells in the cube, i.e.:
+%where some of the $i,j,k$ are fixed, to denote specific slices of the cube, for example:
+\[ \mathit{cube}(W)[p_i, c_j, t_k] = N_{ijk}(W) \] 
+%denotes the set $  \{ \langle p_i, c_j, t_k, N_{ijk}(W) \rangle \}_{c_j \in C, t_k \in T} $ of all tuples for a set $p_i$.
+%Similarly, \[ \mathit{cube}(W)[p_i, -, t_k]\] 
+%is the set 
+%$  \{ \langle p_i, c_j, t_k, N_{ijk}(W) \rangle \}_{c_j \in C} $, and so forth.
+
+A traffic cube contains a summary  of all data flows observed by a broker. Notice that these cubes only contain \textit{metadata}, i.e., the counts, but they disregard the content of the messages.
 %
 Cubes are used for settlement either by the broker itself, or by a trusted third party service. Fig. \note{xx} summarises this basic architecture, as it is realised in our testbed. 
 We use a Cassandra NoSQL database for the \textit{TrackerDB}, to ensure scalability. 
@@ -527,50 +535,98 @@ A traffic reporting service generates traffic cubes on demand by querying the \t
 	\label{fig:cubes}
 \end{figure}
 
-In this centralised scenario settlement is straightforward, as we have assumed that the settlement service has complete visibility of the entire traffic over time, and that the cubes are complete and correct.
+\textit{Settlement} is the process of calculating a set of balances $ \mathit{bal}(c_j, p_i, W) $, that is, the fractions of total reward owed by each $c_j$ to each $p_i$ at the end of each $W$:
+\begin{equation}
+\mathit{bal}(c_j, p_i, W) = \sum_{t_k \in T} N_{ijk}(W) \cdot \mathit{val}(t_k)
+\label{eq:balance}
+\end{equation}
+
+In the centralised scenario we have considered so far, settlement is straightforward, as we have assumed that we have complete visibility of the entire traffic over time, and that the cubes are complete and correct.
 Note that, under the same trust assumptions, settlement extends easily to a more realistic scenario where multiple brokers are deployed, each enhanced with the same logging capabilities and local traffic reporting service.
 
 This centralised scenario becomes challenging, however, if we remove the assumption that the broker is the only central element that is responsible for settling payments.
 We now present an extended model where individual participants may be metering the portions of data flows that are visible to them, and settlement occurs by collecting and analysing the reports from each participant, at the end of each time period $W$.
 
-\section{Removing trust using blockchain and smart contracts}
+\section{Removing the need  for trust}  \label{sec:no-trust}
 
-Any marketplace where the reward model is based on message counts is vulnerable to malicious behaviour by any of the participants. Specifically, the suppliers (the publishers) have an incentive to claim to have produced more messages than in reality, while conversely, subscribers have an incentive to under-report the number of messages they receive.
-
+Any marketplace where the reward model is based on message counts is vulnerable to malicious behaviour by any of the participants. Specifically, the suppliers (the publishers) have an incentive to claim to have produced more messages than they have in reality, while conversely, subscribers have an incentive to under-report the number of messages they receive.
+%
 If we remove the assumption that the broker(s) are trusted, we must also accept that they may be prepared to collude with any of the participants, and thus deliver traffic cubes that may not be correct or complete.
 Discovering such collusions may not be possible when the broker is the only source of traffic counts available to the settlement service.  At the same time, resolving any disputes amongst pairs of participants requires a public and irrefutable record of the reported traffic.
 
-To address these problems we rely on two over-arching principles: (1) personal responsibility of each participant in the marketplace, which shall report their own counts of messages sent (publishers) or received (subscribers), and (2) transparency, whereby these reports are posted as blockchain transactions, immutable and verifiable.
+To address these problems we rely on two over-arching principles: (1) personal responsibility of each participant in the marketplace, which shall report their own counts of messages sent (publishers) or received (subscribers), and (2) transparency, whereby these reports are posted as part of immutable and verifiable blockchain transactions.
 In practice, we propose a two-steps approach.
 %
+
 Firstly, we remove the assumption that traffic cubes are generated by the broker alone, and instead enable networks elements close to the publishers and to the subscribers, i.e., gateways and VAS respectively, to generate the cubes.
-Note however that these new cubes reflect the \textit{local} view of each participant in the data exchanges, and are therefore necessarily partial and incomplete, as each participant, unlike the broker, has no visibility of the end-to-end data flows. 
-We must therefore modify our definition of cubes slightly, and we denote these as \textit{unilateral} traffic cubes.
-
-Specifically, a publisher's unilateral cube $\mathit{u\_cube_p}$ has the form
-\[
-\mathit{u\_cube_p}(W, p_i)  =  \{ \langle p_i, t_k, N_{ik}(W)\}
-\]
-for all $t_k \in T$, where $N_{ik}(W)$ is the count of messages with topic $t_k$ sent by $p_i$ during $W$.
-
-Unlike a publisher's cube, we may assume that a subscriber's unilateral cube $\mathit{u\_cube_s}$ also contains information about publishers, as they are known to each $c_j$ at the receiving end.
-Thus, these have the form of a regular cube, but they will only contain the tuples that pertain to a single $c_j$:
-\[
-\mathit{u\_cube_s}(W, c_j)  =  \{ \langle p_i, c_j, t_k, N_{ijk}(W)\}
-\]
-for all $t_k \in T$, $p_i \in P$.
-
-The second element of our approach is the use of emerging consensus-based distributed transaction ledgers, specifically blockchain and Smart Contract technology, to realise the settlement service.
-Briefly, Smart Contracts extend the standard blockchain transaction model by adding the capability to execute arbitrary code, which operates on data structures contained in the transaction itself. 
-In this case, a transaction that is initiated at the end of each window $W$ may operate on all partial cubes that participants make available at the end of $W$.
-
+%
+Secondly, we adopt emerging consensus-based distributed transaction ledgers, specifically blockchain and Smart Contract technology, to realise the settlement service.
+As we explain in more detail later (Sec. \ref{sec:blockchain}), Smart Contracts extend the standard blockchain transaction model by adding the capability to execute arbitrary code, which operates on data structures contained in the transaction itself. 
+In this case, a transaction that is initiated at the end of each window $W$ may operate on the traffic cubes that participants make available at the end of $W$.
 This  approach provides at the same time transparency and accountability, because the content of the blockchain is public and can be inspected, and a way to address disputes, because for each window W, multiple (partial) views of each cube are made available to the settlement service.
 
-%Our initial, and partial, Proof of Concept realisation of this approach aims to show the potential of smart contracts technology in this setting. Methods for addressing disputes are briefly discussed in the last section, but are still at the experimental stage.
-%
-We now describe the approach in more detail, starting with essential background information about Blockchain and Smart Contracts.
+\subsection{Unilateral traffic cubes} \label{sec:u-cubes}
 
-\subsection{Blockchain and Smart Contracts}
+Traffic cubes that are generated by the broker summarise the entire traffic during $W$.
+In contrast, traffic summaries generated by marketplace participants reflect the \textit{local} view of each participant in the data exchanges, and are therefore necessarily partial and incomplete, as each participant, unlike the broker, has no visibility of the end-to-end data flows. 
+We must therefore modify our definition of cubes slightly, and we denote these as \textit{unilateral} traffic cubes.
+
+Specifically, assuming that a producer does not know which VAS subscribe to its stream, a publisher will produce a \textit{publisher's cube} $\mathit{cube^p}$ of the form
+\[
+\mathit{cube}^p(W, p_i)  =  \{ \langle t_k,  N^s_{ik}(W) \rangle \}_{t_k \in T}
+\]
+where $N^s_{ik}(W)$ is the count of messages with topic $t_k$ sent by $p_i$ during $W$.
+ Note that a publisher's cube is a slice of a complete traffic cube, for a specific producer and with the consumer dimension removed from it.
+
+Subscribers, in contrast, know the source of the messages they receive. We are therefore going to assume that a subscriber will produce summary reports that include the publisher dimension, but which only contain the tuples that pertain to a single $c_j$. We refer to this as a \textit{subscriber's cube}, $ \mathit{cube^s} $.
+
+Let 
+\[  \mathit{sub}(t_k) \subseteq C \]
+denote the set of subscribers to $t_k$.
+We define:
+\[
+\mathit{cube^s}(W, c_j)  =  \{ \langle p_i, t_k, N_{ijk}(W) | c_j \in \mathit{sub}(t_k)\}_{p_i \in P, t_k \in T}
+\]
+
+
+\subsection{Validation of unilateral cubes}
+
+A number of scenarios may unfold in this new setting where multiple unilateral reports are generated and collected for settlement.
+Firstly, let us assume that each $p_i$ and $c_j$ each dutifully produce  $ \mathit{cube}^p(W, p_i) $ and $ \mathit{cube^s}(W, c_j)  $, respectively. 
+As each of these cubes provides a partial view of the same complete cube that would have been generated centrally by a broker, we expect that the values found in these cubes must somehow be consistent with each other.
+Specifically, note that each message from $p_i$ with topic $t_k$ will be received by each $c_j \in \mathit{sub}(t_k)$.
+Thus, if $p_i$ sends 
+$ \mathit{cube}^p(W, p_i)[t_k]  = N^s_{ik}(W)$ messages during $W$, then every $c_j \in \mathit{sub}(t_k)$ will have received the same number of messages from $p_i$. 
+In other words, for any $p_i \in P, c_j \in C, t_k \in T$, the following constraint must hold:
+\begin{equation} \label{eq:cubes-consistency}
+\mathit{cube^s}(W, c_j)[p_i, t_k] = 
+\begin{cases}
+\mathit{cube}^p(W, p_i)[t_k] \quad \text{ if } c_j \in \mathit{sub}(t_k) \\
+0 \text{ otherwise }
+\end{cases}
+\end{equation}
+
+We say that the set of unilateral cubes $ \{ \mathit{cube}^p(W, p_i) \}_{p_i \in P}\cup \{\mathit{cube^s}(W, c_j) \}_{c_j \in C}$ are \textit{consistent} if and only if the cubes satisfy constraint (\ref{eq:cubes-consistency}).
+
+A second scenario unfolds when only some of the $p_i$ and $c_j$, but not all, produce their cubes at the end of $W$.
+In this case, there will be some  $ \mathit{cube}^p(W, p_i) $ with values that are not found in any corresponding $ \mathit{cube^s}(W, c_j) $, and vice versa.
+
+We may use (\ref{eq:cubes-consistency}) to propagate the available cube values for all combinations of  $p_i$ and $c_j$.
+
+\note{TBC}
+
+\subsection{Settlement with unilateral cubes}
+
+\authornote{when the cubes are consistent as defined above, we can settle just like in the centralised case.
+
+same when cube counts propagation (TBD above) can be performed successfully.
+
+trouble is when inconsistencies are spotted
+}
+
+\subsection{Blockchain and Smart Contracts}  \label{sec:blockchain}
+
+The second element of our approach is based on the use of emergin Blockchain and Smart Contracts tecnhology.
 
 \note{FIXME -- still a dump of Michele's text}
 
