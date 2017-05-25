@@ -1,0 +1,42 @@
+\usepackage{amssymb,amsmath}
+
+%% PM Define authornote command for comments
+\newcommand{\authornote}[1] {
+    \begin{center}
+        \framebox{
+            {\begin{minipage}[t]{0.9\linewidth}
+                \raggedright  \textbf{[PM]}~ \scriptsize #1 \normalsize
+            \end{minipage}}
+    }
+    \end{center}
+}
+
+\usepackage{color}
+\definecolor{highlight}{rgb}{1,1,0.6}
+\definecolor{link}{rgb}{0.5,0.0,0.0}
+\definecolor{cite}{rgb}{0.0,0.0,0.6}
+\definecolor{url} {rgb}{0.3,0.0,0.3}
+\definecolor{grey}{rgb}{0.3,0.3,0.3}
+
+
+\usepackage[pdftex]{hyperref}
+\hypersetup{%
+	%pdftitle={\myTitle}, %
+	pdfauthor={blind submission}, %
+	%pdfkeywords={\programname},%
+	bookmarksnumbered, %
+	pdfstartview={c}, %
+	colorlinks,%
+	citecolor=black, %
+	filecolor=black, %
+	linkcolor=black, %
+	urlcolor=black}
+
+\usepackage{soul}
+% % annotations environments % % 
+\newcommand{\note}[1]{\textit{\textcolor{red}{\{#1\}}}}
+\sethlcolor{highlight}
+
+\newcommand{\comment}[2]{\hl{#1} {\color{red}\textit{\{#2\}}}}
+
+
