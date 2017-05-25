@@ -451,6 +451,18 @@ In our initial evaluation we show that smart contracts are indeed a viable optio
 
 \subsection{Related work}
 
+Perera et al. \cite{Perera2014} outline a vision of a near future for Smart Cities, where data streams emanating from pervasive Internet of Things sensors are organised according to an emerging \textit{Sensing as a Service} (SaaS) model, itself a derivative of the more general ``Everything as a Service'' (XAAS) cloud-based model for data exchange \cite{5719575}.
+The SaaS model consists of four conceptual layers: sensors and their owners, sensor publishers, service providers, and sensor data consumers. 
+Although the paper does not address specific technological approaches, several of the scenarios it identifies apply well to our own vision of a IoT data marketplace, where data flows are viewed as tradeable assets.
+
+%\note{Banerjee, P., Friedrich, R., Bash, C., Goldsack, P., Huberman, B., Manley, J., … Veitch, A. (2011). Everything as a Service: Powering the New Information Economy. Computer, 44(3), 36–43. https://doi.org/10.1109/MC.2011.67}
+%\note{Perera, C., Zaslavsky, A., Christen, P., & Georgakopoulos, D. (2014). Sensing as a service model for smart cities supported by Internet of Things. Transactions on Emerging Telecommunications Technologies, 25(1), 81–93. https://doi.org/10.1002/ett.2704}
+
+A few proposals have emerged recently to take advantage of emerging marketplace opportunities for real-time data streams.
+The MARSA platform \cite{Cao:2016:MMR:2926746.2883611} is designed specifically to deal with real-time data streams by interacting with existing IoT platforms.
+The motivation for this work is very similar to ours, namely to provide a marketplace where owners have an incentive to trade their data, for either personal or community benefit.
+The many technical requirements that emerge from analysis of data marketplace potential translate into a complex architecture, which includes data flow orchestration, participants registration, data contract management, and payment. 
+
 \note{TODO}
 	
 \section{Brokered IoT data as tradeable assets}
@@ -477,9 +489,10 @@ In our testbed deployment we use MQTT brokers, and the gateways generate message
 
 
 \begin{figure}
-	\fbox{THE reference figure}
-	\caption{Data and metadata flows and blockchain-based Smart Contracts.}
-	\label{fig:reference-architecture}
+	\centering
+	\includegraphics[width=\columnwidth]{figures/IoT-tracking-arch-2}
+	\caption{Reference architecture for decentralised IoT data traffic metering based on blockchain and Smart Contracts}
+	\label{fig:iot-tracking-arch-2}
 \end{figure}
 
 In the standard pub/sub model, publishers and subscribers are unaware of one another, and their interaction is entirely mediated by the broker. 
