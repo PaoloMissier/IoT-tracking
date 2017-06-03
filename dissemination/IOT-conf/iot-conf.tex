@@ -110,35 +110,43 @@ Increasingly, such data are considered valuable digital assets that could be tra
 
 \note{remove this ref from here -- it is now in related work}
 
-Data producers may be, for example, wearables (accelerometers, glucose monitors, heart monitors, smart energy meters in the home), personal, vehicle or home monitoring sensors, etc.
+\textcolor{blue}{Data producers} may be, for example, wearables (accelerometers, glucose monitors, heart monitors, smart energy meters in the home), personal, vehicle or home monitoring sensors, etc.
 These IoT devices generate various types of data streams, at different rates, which may be of interest to a variety of consumers, typically analytics applications that may operate over data that is aggregated from multiple streams and over time, or on a per-individual basis.
 We refer to these consumers generically as Value Added Services (VAS).
 
 In the health sector, for example, individuals' activity levels and fitness data, as recorded by smart phones or dedicated fitness devices, may be of interest to health care providers as well as health insurance companies, even if only in anonymised and aggregate form.
 %
-In public transport, the density of personal travel card swipes over time at individual metro stations in London will be of interest not only to the transportation authority, but also to taxi companies who need to decide how to position their cars outside metro stations, i.e., in situations where passenger traffic patterns deviate from the predictable norm.
+In public transport, the density of personal travel card swipes over time at individual metro stations in London will be %of interest
+useful not only to the transportation authority, but also to taxi companies%who need to decide how to position their cars outside metro stations, i.e., in situations where passenger traffic patterns deviate from the predictable norm.
+. Therefore, the latter might be interested in buying such data together with footfall data--collected, for example, through an IoT infrastructure--and leverage them to decide how to position their cars outside metro stations, i.e., in situations where passenger traffic patterns deviate from the predictable norm.
 %
  Similarly, aggregate smart metering is shown to enable providers to optimise the delivery of commodity services, eg water, energy.  \note{CITE}.
 %
-As a final sports example, today it is possible to quantify an athlete's effort during a competition using a number of wearable devices, from bio-harness to accelerometers, to video feeds. 
+As a final \textcolor{blue}{sports} example, today it is possible to quantify an athlete's effort during a competition using a number of wearable devices, from bio-harness to accelerometers, to video feeds. 
 It is easy to imagine that, in the near future, athletes may be able to license these feeds to followers who are interested in tracking their competition online.
 
-Underlying all these examples is the emergent idea that data streams produced by IoT devices that belong to individuals or organisations are increasingly viewed as \textit{tradeable assets} with a potential market value.
+Underlying all these examples is the emergent idea that data streams produced by IoT devices that belong to individuals or organisations are increasingly viewed as \textit{tradeable assets} with a potential market value associated to a secondary use of such data.
 %
 Indeed,  a number of models are emerging on how to price online data, and data marketplaces already exist in a number of scenarios \note{CITE}.
 %
-In this paper we explore the idea of a marketplace specifically for IoT data, which enables device owners not only to control the distribution of the data produced by their devices, but also to trade them with third parties.
+In this paper, %we explore the idea of a 
+we envision a marketplace specifically for IoT data, which enables device owners not only to control the distribution of the data produced by their devices, but also to trade them with third parties.\ag{wrt Michele's note, I don't think we ``explore some of the building blocks'', rather we ``explore possible architectural models and propose a reference architecture'' }
 %
-Specifically, we focus on a ``IoT Big Data trading'' scenario where high Velocity, high Volume and potentially high Variety data streams flow from IoT edge devices, the producers, to VAS, typically embodied as cloud services located in the core network.
-
+\textcolor{blue}{Specifically, we focus on a ``IoT Big Data trading'' scenario where high Velocity, high Volume and potentially high Variety data streams flow from IoT edge devices, the producers, to VAS, typically embodied as cloud services located in the core network.}\ag{IMHO the last sentence can be completely removed.}
 As in any marketplace, IoT data trading should be governed by an agreed-upon set of rules, set in advance, which determine what kinds of contract and transactions are acceptable, and stipulate sanctions when the rules are violated.
 %
-While we acknowledge that contractual agreements must be stipulated between the individuals or organisations that own or control the devices and the VASs, in this work we are only concerned with the study of the underpinning technology that makes it possible to realise IoT data trading, by enhancing the current IoT infrastructure and regardless of specific pricing and contract models.
+While we acknowledge that contractual agreements must be stipulated between %the 
+individuals or organisations that own or control the devices and the VASs, in this work we %are only concerned with the study of 
+focus on the underpinning technology that %makes it possible to realise 
+enable IoT data trading by enhancing the current IoT infrastructure%regardless of specific pricing and contract models.,
+, and analyse its feasibility by quantifying the actual value of both data and transactions. 
 
-The main novel element of our work is that we challenge the common assumption that a marketplace must be controlled by a trusted authority, in charge of certifying the identity of the participants, and ensuring fairness. 
+The main novel element of our work is that we challenge the common assumption that a marketplace must be controlled by a trusted authority, in charge of certifying the identity of the participants%, 
+ and ensuring %fairness.
+fair value distribution. 
 In particular, data brokers typically play the role of trusted network components that are controlled by a marketplace authority.
 %
-In contrast, we envision a decentralized and self-regulating marketplace where rules are automatically enforced,  fairness of the transactions guaranteed, and sanctions imposed in response to violations.
+In contrast, we envision a decentralised and self-regulating marketplace where rules are automatically enforced, fairness of the transactions guaranteed, and sanctions imposed in response to violations.
 %
 
 \note{use this to refer to emerging business models for data marketplaces -- \cite{Stahl2016} Stahl, F., Schomm, F., Vossen, G., \& Vomfell, L. (2016). A classification framework for data marketplaces. Vietnam Journal of Computer Science, 3(3), 137–143. https://doi.org/10.1007/s40595-016-0064-2}
@@ -147,24 +155,32 @@ In contrast, we envision a decentralized and self-regulating marketplace where r
 	A comprehensive survey of industry-ready IoT technology -- good to support the claim that there are a lot of sensor types out there, but ``marketplace''  here just means, HW that is on the market...}
 
 %
-An 2012 survey of data vendors \cite{Schomm2013} includes 46 data suppliers. While the definition of data marketplace used in the paper is generic (``a platform on which anybody can upload and maintain data sets, with license-regulated access to and use of the data'') and geared towards static data, like Microsoft’s Azure Data Market, it should be possible to extend the classification of marketplace types to \textit{data in movement}, and IoT data streams in particular, which is our focus.
+An 2012 survey of data vendors \cite{Schomm2013} includes 46 data suppliers. While the definition of data marketplace used in the paper is generic (``a platform on which anybody can upload and maintain data sets, with license-regulated access to and use of the data'') and geared towards static data, like Microsoft's Azure Data Market, it should be possible to extend the classification of marketplace types to \textit{data in movement}, and IoT data streams in particular, which is our focus.
 
 \note{general background -- can't find a place for this, it's one of many possible examples. \cite{7113786} Islam, S. M. R., Kwak, D., Kabir, M. H., Hossain, M., \& Kwak, K. S. (2015). The Internet of Things for Health Care: A Comprehensive Survey. IEEE Access, 3, 678–708. https://doi.org/10.1109/ACCESS.2015.2437951}
 
+\subsection{Contributions}\ag{This should be included the previous section}
 
+%In the rest of the paper we present our approach to addressing some of the challenges that emerge when trying to realise such a trust-less IoT data marketplace.
 
+%Our first contribution is a data architecture for tracking data flows through brokers, using a publish-subscribe pattern, or through network servers, to achieve granular metering of IoT data exchanges.
 
-\subsection{Contributions}
+%Secondly, we explore the use of blockchain technology and \textit{Smart Contracts} \cite{SMART-CONTRACTS} to remove the need for centralised trust. We discuss the challenges and limitations of using Smart Contracts for automatic dispute resolution.
 
-In the rest of the paper we present our approach to addressing some of the challenges that emerge when trying to realise such a trust-less IoT data marketplace.
+%Finally, we present a prototype realisation of the marketplace, using MQTT brokers for granular data exchange with added traffic metering capabilities, and the Ethereum Smart Contracts technology for enforcing the contracts definition and providing dispute resolution capabilities.
 
-Our first contribution is a data architecture for tracking data flows through brokers, using a publish-subscribe pattern, or through network servers, to achieve granular metering of IoT data exchanges.
+%In our initial evaluation we show that smart contracts are indeed a viable option for validation of contract compliance, and assess its capability to handle a stream of blockchain transactions at varying arrival rate.
 
-Secondly, we explore the use of blockchain technology and \textit{Smart Contracts} \cite{SMART-CONTRACTS} to remove the need for centralised trust. We discuss the challenges and limitations of using Smart Contracts for automatic dispute resolution.
+The paper presents an approach to addressing some of the challenges arising when trying to realise such a decentralised trust IoT data marketplace, by putting forth the following contributions:
+\begin{itemize}
+\item{We present an architecture for tracking data flows through a typical IoT infrastructure, which embodies a methodology to achieve granular metering of IoT data exchanges.}
+\item{We explore the use of blockchain technology and smart contracts \cite{SMART-CONTRACTS} to remove the need for a centralised trust, account for data exchanges, achieve settllement, and resolve conflicts. Therefore, we discuss the challenges and lesson learnt from using smart contracts for automatic dispute resolution.}
+\item{We evaluate our approach with a realistic prototype of a marketplace, using an MQTT broker for granular data exchange and added traffic metering capabilities, and the Ethereum smart contracts technology for enforcing the contracts definition and providing dispute resolution capabilities. We demonstrate the feasibility of the approach by determining the price of digital assets--with respect to the number and frequency of transactions--that would make it economically sustainable.\ag{check coherence with evaluation section.}}
+}
+\end{itemize}
 
-Finally, we present a prototype realisation of the marketplace, using MQTT brokers for granular data exchange with added traffic metering capabilities, and the Ethereum Smart Contracts technology for enforcing the contracts definition and providing dispute resolution capabilities.
-
-In our initial evaluation we show that smart contracts are indeed a viable option for validation of contract compliance, and assess its capability to handle a stream of blockchain transactions at varying arrival rate.
+The results of our evaluation shows that smart contracts are indeed a viable option for the validation of contract compliance, and assess its capability to handle a stream of blockchain transactions at varying arrival rate.
+\ag{Probably add something else to wrap up the section. Also, probably move the text above in the last contribution point}
 
 \subsection{Background and Related work}
 
@@ -217,56 +233,50 @@ The many technical requirements that emerge from analysis of data marketplace po
 While these components do address complex marketplace requirements, our main challenge, namely to remove the need for a central trusted authority to manage the marketplace and ensure its fairness, remains unique to our work.
 
 Secondly, Misura, K., \& Zagar \cite{7765669} focus on a query-based mechanism, whereby devices register their data supply capabilities to a broker along with a number of properties, and consumers express interest in data streams by querying those properties. The broker then connects the supplier stream to the consumer, and monitors usage. 
-This is relevant work, as this type of matching of consumer data requirements to suppliers capabilities is more sophisticated than simple topic subscription.
-In our future work we plan to move away from fine-grained data subscription and towards complex data contracts (bundles), as discussed briefly at the end of the paper.
-
+This is relevant work, as this type of matching of consumer data requirements to suppliers capabilities is more sophisticated than simple topic subscription. Our work is complementary to this  and also contributes to remove the trust from the broker for monitoring usage.
+In our future work. we plan to move away from a fine-grained data subscription and towards complex data contracts (bundles), as discussed briefly at the end of the paper.
 %\note{ Misura, K., \& Zagar, M. (2016). Data marketplace for Internet of Things. In 2016 International Conference on Smart Systems and Technologies (SST) (pp. 255–260). IEEE. https://doi.org/10.1109/SST.2016.7765669}
-
-
-%\note{\cite{7146004} Blazquez, A., Tsiatsis, V., \& Vandikas, K. (2015). Performance Evaluation of OpenID Connect for an IoT Information Marketplace. In 2015 IEEE 81st Vehicular Technology Conference (VTC Spring) (pp. 1–6). IEEE. https://doi.org/10.1109/VTCSpring.2015.7146004}
-
-	
-\section{Brokered IoT data as tradeable assets}
+%\note{\cite{7146004} Blazquez, A., Tsiatsis, V., \& Vandikas, K. (2015). Performance Evaluation of OpenID Connect for an IoT Information Marketplace. In 2015 IEEE 81st Vehicular Technology Conference (VTC Spring) (pp. 1–6). IEEE. https://doi.org/10.1109/VTCSpring.2015.7146004}	
+\textcolor{blue}{\section{Brokered IoT data as tradeable assets}}
 
 We denote the set of producers (IoT devices) and consumers (VAS) that participate in the marketplace as $P = \{p_1 \dots p_n \}$ and $C = \{ c_1 \dots c_m \}$, respectively.
-	In line with common IoT platforms practices, we are going to assume that data exchanges between any $p_i$ and any $c_j$ are mediated by one ore more brokers. 
+In line with common %IoT platforms practices, 
+IoT infrastructures, we are going to assume that data exchanges between any $p_i$ and any $c_j$ are mediated by one ore more brokers. 
 This follows a commonly used publish/subscribe model for data streams, whereby the $p_i$ act as publishers and the $c_j$ are subscribers.
 A set $T = \{ t_1 \dots t_r \}$ of topics is agreed upon by all participants (i.e., publishers and subscribers), 
 %
-We also assume, in line with common practice, that topics are organised into a hierarchy, with '/\#' used to mean ''all topics``. 
-For example, leaf-level topics may be ''heart rate``,''GPS track``, ''glucose reading``, ''energy reading`` and so forth. Note that topics are the only type of descriptive metadata associated with the messages. 
+We also assume %, in line with common practice, 
+that topics are organised into a hierarchy, with `/\#' used to mean ``all topics''. 
+For example, leaf-level topics may be ``heart rate'', ``GPS track'', ``glucose reading'', ``energy reading'', and so forth. Note that topics are the only type of descriptive metadata associated with the messages. 
 %
 Each data stream generated by each $p_i$ can be segmented into discrete messages, and each message has an associated topic $t_k$.
 
-In our marketplace model, a contractual agreement between $p_i$ and $c_j$ is defined by a set $T_{ij} \subset T$ of topics and a time window $ W = [w_s, w_e] $, with the interpretation that $p_i$ agrees to let all its messages tagged with any $t \in T_{ij}$ reach $c_j$ for the duration of $W$, and $c_j$ agrees to pay a corresponding data licensing fee. 
-
-While a variety of pricing models have recently been proposed for digital assets in emerging data marketplace scenarios \note{CITE}, discussing how the marketplace sets the data prices is beyond the scope of this work. 
-Instead, we are simply going to assume that each individual message is a digital asset with a constant unit value $\mathit{val}(t_k)$, which is determined solely by the message's topic $t_k$.
-
-This setting is represented in \note{some part of...} Fig. \ref{fig:reference-architecture}, where for simplicity we show one single broker that manages all $c_j$ subscriptions and thus is responsible for routing message from each $p_i$.
+In our marketplace model, a contractual agreement between $p_i$ and $c_j$ is defined by a set $T_{ij} \subset T$ of topics and a time window $ W = [w_s, w_e] $, with the interpretation that $p_i$ agrees to let all its messages tagged with any $t \in T_{ij}$ reach $c_j$ for the duration of $W$, and $c_j$ agrees to pay a corresponding data exchange fee. 
+%While a variety of pricing models have recently been proposed for digital assets in emerging data marketplace scenarios \note{CITE}, discussing how the marketplace sets the data prices is beyond the scope of this work. Instead, we are simply going to assume that each individual message is a digital asset with a constant unit value $\mathit{val}(t_k)$, which is determined solely by the message's topic $t_k$.
+A variety of pricing models have recently been proposed for digital assets in emerging data marketplace scenario \note{CITE}. However, here we aim to determine the minimum price to make the decentralised trust infrastructure economically sustainable, whereas the pricing models might consider this as a baseline. We assume that each individual message is a digital asset with a constant unit value $\mathit{val}(t_k)$, which is determined solely by the message's topic $t_k$. In a broker-based architecture, a broker component manages all $c_j$ subscriptions and thus is responsible for routing message from each $p_i$. Gateways are responsible for mapping raw device data streams to a publisheable message stream, including generating appropriate topics.
+%This setting is represented in \note{some part of...} Fig. \ref{fig:reference-architecture}, where for simplicity we show one single broker that manages all $c_j$ subscriptions and thus is responsible for routing message from each $p_i$.
 %
-Gateways are responsible for mapping raw device data streams to a publisheable message stream, including generating appropriate topics.
-In our testbed deployment we use MQTT brokers, and the gateways generate messages by encapsulating either a batch of the raw data stream or an aggregation of it, depending on the type of stream, into the MQTT payload.
 
+In our testbed deployment we use MQTT brokers, and the gateways generate messages by encapsulating either a batch of the raw data stream or an aggregation of it, depending on the type of stream, into the MQTT payload.\ag{The last sentence can be removed}
 
-\begin{figure}
-	\centering
-	\includegraphics[width=\columnwidth]{figures/IoT-tracking-arch-2}
-	\caption{Reference architecture for decentralised IoT data traffic metering based on blockchain and Smart Contracts}
-	\label{fig:iot-tracking-arch-2}
-\end{figure}
+%\begin{figure}
+%	\centering
+%	\includegraphics[width=\columnwidth]{figures/IoT-tracking-arch-2}
+%	\caption{Reference architecture for decentralised IoT data traffic metering based on blockchain and Smart Contracts}
+%	\label{fig:iot-tracking-arch-2}
+%\end{figure}
 
 In the standard pub/sub model, publishers and subscribers are unaware of one another, and their interaction is entirely mediated by the broker. 
-To enable explicit marketplace interactions, we implement a variation of the model whereby every message topic embeds the publisher's ID, which in combinatio with MQTT's topic regular expressions capability enables a subscriber to selectively choose the stream they intend to license.
+\textcolor{blue}{To enable explicit marketplace} interactions, we propose a variation of the model whereby every message topic embeds the publisher's ID, which in combination with MQTT's topic regular expressions capability enables a subscriber to selectively choose the stream they intend to license.
 For example, device ``1234'' may publish messages about a specific room's temperature using topic  \#/temperature/1234/living\_room\_temperature. 
-A publisher may choose to subscribe to this specific topic, or to any  living\_room\_temperature message using expression \#/temperature/*/living\_room\_temperature, or to any generic temperature message from ``1234'' or from any subscriber.
+A subscriber may choose to subscribe to this specific topic, or to any  living\_room\_temperature message using expression \#/temperature/*/living\_room\_temperature, or to any generic temperature message from ``1234'' or from any publisher.
 
 Note incidentally that the model includes the case, not shown in the figure, where a VAS may aggregate data from multiple $ p_i $s and then publish this value-added data, enabling other VAS to license it. 
 In this case, a VAS is both a consumer and a producer.
 
 \subsection{Centralised Traffic metering}
 
-This model enables many-many agreements between any subsets of $P$ and $C$, with pricing that is determined by $T$.
+This model enables many-to-many agreements between any subsets of $P$ and $C$, with pricing that is determined by $T$.
 Suppose the broker is trusted with \textit{metering} all traffic, that is, monitoring and logging all message flows for a time interval $W$, and suppose that a number of agreements are active between pairs of $p_i$ and $c_j$ during $W$.
 Let 
 \[N_{ijk}(W) = \mathit{count}(p_i, c_j, t_k)\]
@@ -276,19 +286,19 @@ Ideally, at the end of $W$ the broker will be able to determine the reward that 
 \mathit{reward}(p_i, W) = \sum_{\substack{t_k \in T \\ c_j \in C}} N_{ijk}(W) \cdot \mathit{val}(t_k)
 \label{eq:reward}
 \end{equation}
-(note that $N_{ijk}(W = 0$ if $c_j$ does not subscribe to $t_k$).
+%(note that $N_{ijk}(W = 0$ if $c_j$ does not subscribe to $t_k$).
+with $N_{ijk}(W) = 0$ if $c_j$ does not subscribe to $t_k$.
 
-\subsection{Traffic cubes and settlement}
-
+\textcolor{blue}{\subsection{Traffic cubes and settlement}}
 Thus, in this ideal scenario data flows easily translate into a set of payment settlement transactions involving pairs $(p_i, c_j)$.
-In our testbed we realise this capability by extending a Mosquitto MQTT broker so it logs each message routing event as a tuple into a \textit{TrackerDB} database:
+In our testbed we realise this capability by extending a Mosquitto MQTT broker so it logs each message routing event as a tuple into a \textit{TrackerDB} database\ag{Implementation details should not be here}:
 $ \langle p_i, c_j, t_k \rangle $
 
 At the end of each $W$, the log is aggregated over each $p_i \in P, c_j \in C, t_k \in T$, resulting in a set of tuples that we call a \textit{traffic cube}:
 \begin{equation}\label{eq:cube}
 \mathit{cube}(W) = \{ \langle p_i, c_j, t_k, N_{ijk}(W) \rangle \}_{p_i \in P, c_j \in C, t_k \in T}
 \end{equation}
-Here we borrow our terminology from OLAP database practice where a  ``cube'' is a table with $ N $ attributes, in which the first $ N-1 $ attributes are  dimensions in a database schema (in our case, these are the Producers, Consumers, and Topics) and the last is an aggregation over values in the database for each combination of the dimensions -- in our case, a count().
+Here we borrow our terminology from \textcolor{blue}{OLAP} database practice where a  ``cube'' is a table with $ N $ attributes, in which the first $ N-1 $ attributes are  dimensions in a database schema (in our case, these are the Producers, \textcolor{blue}{Consumers}, and Topics) and the last is an aggregation over values in the database for each combination of the dimensions -- in our case, a count().
 We use a matrix indexing notation to refer to specific cells in the cube, i.e.:
 %where some of the $i,j,k$ are fixed, to denote specific slices of the cube, for example:
 \[ \mathit{cube}(W)[p_i, c_j, t_k] = N_{ijk}(W) \] 
@@ -301,7 +311,7 @@ A traffic cube contains a summary  of all data flows observed by a broker. Notic
 %
 Cubes are used for settlement either by the broker itself, or by a trusted third party service. Fig. \note{xx} summarises this basic architecture, as it is realised in our testbed. 
 We use a Cassandra NoSQL database for the \textit{TrackerDB}, to ensure scalability. 
-A traffic reporting service generates traffic cubes on demand by querying the \textit{TrackerDB}, in response to requests issued by client applications (including possibly independent third party clients). The service is accessible through a REST interface.
+A traffic reporting service generates traffic cubes on demand by querying the \textit{TrackerDB}, in response to requests issued by client applications (including possibly independent third party clients). The service is accessible through a REST interface.\ag{Implementation details and figure should not be here.}
 
 \begin{figure}
 	\fbox{Basic cubes figure}
@@ -317,8 +327,8 @@ A traffic reporting service generates traffic cubes on demand by querying the \t
 
 In the centralised scenario we have considered so far, settlement is straightforward, as we have assumed that we have complete visibility of the entire traffic over time, and that the cubes are complete and correct.
 Note that, under the same trust assumptions, settlement extends easily to a more realistic scenario where multiple brokers are deployed, each enhanced with the same logging capabilities and local traffic reporting service.
-
-This centralised scenario becomes challenging, however, if we remove the assumption that the broker is the only central element that is responsible for settling payments.
+%This centralised scenario becomes challenging, however, 
+Hovever, this centralised scenario becomes challenging if we remove the assumption that the broker is the only central element that is responsible for settling payments and the only one knowing who receive what data.
 We now present an extended model where individual participants may be metering the portions of data flows that are visible to them, and settlement occurs by collecting and analysing the reports from each participant, at the end of each time period $W$.
 
 \section{Removing the need  for trust in the data flow network}  \label{sec:no-trust}
@@ -328,7 +338,7 @@ Any marketplace where the reward model is based on message counts is vulnerable 
 If we remove the assumption that the broker(s) are trusted, we must also accept that they may be prepared to collude with any of the participants, and thus deliver traffic cubes that may not be correct or complete.
 Discovering such collusions may not be possible when the broker is the only source of traffic counts available to the settlement service.  At the same time, resolving any disputes amongst pairs of participants requires a public and irrefutable record of the reported traffic.
 
-To address these problems we rely on two over-arching principles: (1) personal responsibility of each participant in the marketplace, which shall report their own counts of messages sent (publishers) or received (subscribers), and (2) transparency, whereby these reports are posted as part of immutable and verifiable blockchain transactions.
+To address these problems we rely on two over-arching principles: (1) \textcolor{blue}{personal responsibility} of each participant in the marketplace, which shall report their own counts of messages sent (publishers) or received (subscribers), and (2) transparency, whereby these reports are posted as part of immutable and verifiable blockchain transactions.
 In practice, we propose a two-steps approach.
 %
 
@@ -350,15 +360,24 @@ We assume that a producer does not know which VAS subscribe to its stream, while
 Let $\mathit{sub}(t_k) \subseteq C $ denote the set of subscribers to $t_k$.
 
 A \textit{publisher's cube} $\mathit{cube^p}$ is a slice of a complete traffic cube, for a specific producer $p_i$ and without the consumer dimension:
-\[
+\textcolor{green}{\[
 \mathit{cube}^p(W, p_i)  =  \{ \langle t_k,  N^s_{ik}(W) \rangle \}_{t_k \in T}
-\]
+\]}
 where $N^s_{ik}(W)$ is the count of messages with topic $t_k$ sent by $p_i$ during $W$.
 
 As subscribers know the source of the messages they receive, we may assume that a subscriber will produce summary reports that include the publisher dimension, but which only contain the tuples that pertain to a single $c_j$. We refer to this as a \textit{subscriber's cube}, $ \mathit{cube^s} $, defined as follows:
 \[
 \mathit{cube^s}(W, c_j)  =  \{ \langle p_i, t_k, N_{ijk}(W) \rangle | c_j \in \mathit{sub}(t_k)\}_{p_i \in P, t_k \in T}
 \]
+
+\begin{figure*}[!ht]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figures/IoT-tracking-arch-2}
+	\caption{Reference architecture for decentralised IoT data traffic metering based on blockchain and Smart Contracts}
+	\label{fig:iot-tracking-arch-2}
+\end{figure*}
+
+Figure 1 concretely illustrates this setting. To remove the need for a centralised trust, we push it towards the borders of the data flow network by defining two trusted zones. The first trusted zone includes all the elements lying at the edge of the network infrastructure, such as the IoT devices (producers, Pi) and the gateways (Gi), whereas the second one includes the VASs (consumers, Ci). The latter range from   monitoring, to health applications, assets tracking, smart city applications, etc. IoT data are still routed towards the VASs through brokers—using a publish-subscribe pattern—or network servers. However, we now assume that a new, independent component, namely the IoT data tracking component\ag{check naming wrt implementation section}, receives the unilateral cubes by gateways and VASs. Finally, a Smart Contract deployed on a blockchain periodically accesses the traffic cubes to realize settlement services and resolve possible conflicts.
 
 \subsection{Consistency and settlement with unilateral cubes}
 
@@ -373,13 +392,13 @@ The pub/sub model implies that the number of messages sent by $p_i$ with topic $
 We can capture this constraint formally using our cubes notation, as follows.
 %
 For each $ p_i \in P, t_k \in T, c_j \in \mathit{sub}(t_k)$:
-\begin{equation}\label{eq:cubes-consistency}
+\textcolor{green}{\begin{equation}\label{eq:cubes-consistency}
 \begin{split}
 & \mathit{cube}^p(W, p_i)[t_k] = N^s_{ik}(W) = \\
 & \mathit{cube}(W)[p_i, t_k, c_j]  = N_{ijk}(W) = \\
 & \mathit{cube^s}(W, c_j)[p_i, t_k]
 \end{split}
-\end{equation}
+\end{equation}}
 
 %\begin{definition}
 We say that the set (\ref{eq:all-cubes}) of all unilateral cubes is \textit{consistent} at $W$, if and only their contents satisfy constraint (\ref{eq:cubes-consistency}).
