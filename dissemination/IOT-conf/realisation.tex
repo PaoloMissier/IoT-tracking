@@ -2,20 +2,12 @@
 
 
 \subsection{Background notions: Blockchain and Smart Contract}  \label{sec:blockchain}
-Blockchain is essentially a distributed ledger of information (e.g., a transaction from A to B in the bitcoin world), a copy of which cannot be arbitrarily altered without being spotted and for which consistency of each information can be achieved through a decentralized and distributed consensus, without requiring trust in any third party but instead, through large and flat pool of so-called miners using cryptographic primitives [add reference to satoshi paper].
-Blockchain has been later leveraged to manage Smart Contracts, small pieces of software that encode a set of conditions and actions that a machine can interpret and that can be executed as expected using the blockchain infrastructure without third party involvement or supervision [18]. Smart contracts represent therefore a well-suited decentralized tool to implement Traffic Cube and Settlement functionalities. Being one of the most adopted and well-supported by the developer community, we decide to use Ethereum Smart Contract implementation.
+Blockchain is essentially a distributed ledger of information (e.g., a transaction from A to B in the bitcoin world), a copy of which cannot be arbitrarily altered without being spotted and for which consistency of each information can be achieved through a decentralized and distributed consensus, without requiring trust in any third party but instead, through large and flat pool of so-called miners using cryptographic primitives~\cite{nakamoto2008bitcoin}.
+Blockchain has been later leveraged to manage Smart Contracts, small pieces of software that encode a set of conditions and actions that a machine can interpret and that can be executed as expected using the blockchain infrastructure without third party involvement or supervision~\cite{Buterin2014}. Smart contracts represent therefore a well-suited decentralized tool to implement Traffic Cube and Settlement functionalities. Being one of the most adopted and well-supported by the developer community, we decide to use Ethereum Smart Contract implementation\footnote{https://www.ethereum.org}.
 
 In the Ethereum network, any node uses a virtual machine (EVM), which can execute code of arbitrary algorithmic complexity, to execute smart contracts, the integrity of whose is always guaranteed. A smart contract can perform various state updates and account balancing.  
 Executing a smart contract results in one or more transactions to be validated. Each transaction has a cost (e.g., fee) associated, which translates into incentive for any miner within the network to independently execute it. 
 More specifically, any operation being performed within a transaction consumes a fixed amount of Gas. Miners fees are therefore proportional to the amount of Gas used. Gas price is measured in terms of Ether (the Ethereum cryptocurrency). Every transaction specifies the gas price a smart contract is willing to pay for its execution, thus, the total fee paid for a transaction is the result of Gas amount multiplied by the Gas selected price.
-
-
-\note{cite in blockchain section}
-
-\note{	\cite{Swan}  Swan, M. (n.d.). Blockchain : blueprint for a new economy.}
-
-\note{\cite{Buterin2014} Buterin, V. (2014). A next-generation smart contract and decentralized application platform. Retrieved from http://buyxpr.com/build/pdfs/EthereumWhitePaper.pdf}
-
 
 %The second element of our approach is based on the use of emergin Blockchain and Smart Contracts tecnhology.
 
@@ -37,69 +29,62 @@ More specifically, any operation being performed within a transaction consumes a
 %Logic: “data” is a “count cube”. The platform generates a stream of these cubes at a certain rate, which is tunable using the window size on the TrackerDB. The arrival rate of the cubes determines the frequency at which contracts are executed, and therefore the cost over time.
 %}
 \subsection{Implementation}
-The generation of unilateral cubes can rely on different implementation choices made within the Data Producers (DP) and VAS Trusted Zones. This doesn’t affect the properties of the Traffic Cube and Settlement, because liability is pushed at the edge. Section X provides some detail on how unilateral cube generation can be implemented. 
+\label{sec:implementation}
+The generation of unilateral cubes can rely on different implementation choices made within the Data Producers (DP) and VAS Trusted Zones. This does not affect the properties of the Traffic Cube and Settlement, because liability is pushed at the edge. Section~\ref{sec:no-trust} provides some detail on how unilateral cube generation can be implemented. 
 Here we instead focus on detailed implementation of the Traffic Cube and Settlement functionalities using smart contracts. 
-We developed them using Solidity, the Ethereum’s scripting language. To implement the contracts we assigned an Ethereum account to each DP and VAS. We connected these accounts to our private Ethereum test network, deployed on a single node with 6-core Intel Xeon E5-2640 and 16GB of RAM. We wrote, deployed and evaluated smart contracts in the network by using the Ethereum web browser based IDE REMIX, connected to our private chain through RPC protocol. In our implementation, accounts prepare and send the transactions to the blockchain to instances of Geth through RPC. To measure gas consumption, we used the debug tool provided by Remix and we observed the difference in the account balance before and after invoking the contract to measure the transaction cost.
+We developed them using Solidity, the Ethereum's scripting language. To implement the contracts we assigned an Ethereum account to each DP and VAS. We connected these accounts to our private Ethereum test network, deployed on a single node with 6-core Intel Xeon E5-2640 and 16GB of RAM. We wrote, deployed and evaluated smart contracts in the network by using the Ethereum web browser based IDE REMIX, connected to our private chain through RPC protocol. In our implementation, accounts prepare and send the transactions to the blockchain to instances of Geth\footnote{https://github.com/ethereum/go-ethereum/wiki } through RPC. To measure gas consumption, we used the debug tool provided by Remix and we observed the difference in the account balance before and after invoking the contract to measure the transaction cost.
 
 A limitation of Ethereum smart contracts is that they cannot directly access off-chain data about real-world state and events. In our case this represents a challenge in acquiring unilateral cubes value. More precisely, smart contracts are independently executed by any node in the chain, thus, each execution needs to retrieve such information from an off-chain source independently, without any assurance of the information integrity.
-To overcome this limit, the concept of "oracle" has been introduced. Simply speaking, an oracle is a special contract that serves data requests from traditional contracts, by sourcing them from designated data feeds. 
-Two options are possible for implementing oracles. The first one is relying on existing proxy services. Oraclize provides a "programmable" oracle that can interact with any datasource selected among a predefined set of standard channels. In addition Oraclize provides an authenticity proof by means of a TLSNotary proof[cite] which guarantees the authenticity and integrity of the retrieved data. These functionalities come at a cost. For each off-chain query, Oraclize requires a fee which includes a commission, ranging from 0.01\$ to 0.04\$, and a refund of the Gas used to perform the transaction. 
+To overcome this limit, the concept of \emph{oracle} has been introduced. Simply speaking, an oracle is a special contract that serves data requests from traditional contracts, by sourcing them from designated data feeds. 
+Two options are possible for implementing oracles. The first one is relying on existing proxy services. Oraclize\footnote{http://www.oraclize.it} provides a \emph{programmable} oracle that can interact with any datasource selected among a predefined set of standard channels. In addition Oraclize provides an authenticity proof by means of a TLSNotary proof which guarantees the authenticity and integrity of the retrieved data. These functionalities come at a cost. For each off-chain query, Oraclize requires a fee which includes a commission, ranging from 0.01\$ to 0.04\$, and a refund of the Gas used to perform the transaction. 
 The other option is when each party of the contract, Data Producer and VAS, independently update their unilateral cubes by pulling their values from cubes generator located within their Trusted Zones and then creating a transaction which embeds the cubes in the blockchain. This way any node executing the smart contract will have the same copy of that cube. As a result, costs associated to the use of an external oracle service, such as Oraclize, can be saved. Because in our model responsibility and liability of producing faulty cubes is placed to Data Producers and VASs, this option well suffices to our needs.
-Figure XX shows pseudo-code of our settlement contract. For the sake of simplicity, this snippet of code only accounts for the single Data Producer and the single VAS scenario, although generalization are straightforward.
-The contract first requests the involved parties to provide their unilateral cubes; then it uses this information to perform the actual settlement, by combining the two unilateral cubes. If the processed combined cube is consistent then a payment to the producer is performed, otherwise, a dispute resolution mechanism should be invoked.
 
-	\note{new from Michele}
-\begin{verbatim}
-	
-function callback(queryID, result)\{
-
-
-if (msg.sender != oraclize_cbAddress()) \{
-
-
-just to be sure the calling address is the Oraclize authorized one
-throw;
-
-
-\}
-
-
-if(queryID == firstQuery)\{
-
-
-producer = result;
-
-
-secondQuery = update(url, maxGas);
-
-
-\}
-
-
-else if(queryID == secondQuery)\{
-
-
-consumer = result;
-
-
-if(Compare(producer, consumer)==0)\{
-
-
-transfer(producerAddress, dataPrice * result);  
-
-
-\}
-
-
-else dispute_resolution();
-
-\end{verbatim}
-
-
+Algorithm~\ref{settlement_contract} shows pseudo-code of our settlement contract. For the sake of simplicity, this snippet of code only accounts for the single Data Producer and the single VAS scenario, although generalization are straightforward.
+The contract first requests the involved parties to provide their unilateral cubes; then it uses this information to perform the actual settlement, by combining the two unilateral cubes. If the processed combined cube is consistent then a payment to the producer is performed, otherwise, a dispute resolution mechanism should be invoked\footnote{Our implementation simply reports the detected inequalities}.
+%
+\begin{algorithm}
+	\caption{Cube settlement contract pseudo-code}\label{settlement_contract}
+\begin{algorithmic}
+	\IF{sender $\neq$ authorizedAddress}
+	\STATE throw
+	\IF{queryId $=$ producerQuery}
+	\STATE producer $\gets$ unilateralCube
+	\STATE vasQuery $\gets$ update()
+	\ELSIF{queryId $=$ vasQuery}
+	\STATE vas $\gets$ unilateralCube
+	\IF {producer $=$ vas}
+	\STATE transfer(producerAccount, dataPrice, cube)
+	\ELSE
+	\STATE disputeResolution()
+	\ENDIF
+	\ENDIF
+	\ENDIF
+\end{algorithmic}
+\end{algorithm}
+%
 When a dispute resolution is invoked, payments are retained from being performed due to impossibility to clearly identify the correct unilateral cube. However a reputation mechanism can be implemented in order to penalize both parties involved in a given settlement transaction and to ultimately promote honest behaviour. As it is not expected that reputation computation will require off-chain interaction~\cite{schaub2016trustless,carboni2015feedback}, we are confident that while not considering its implementation in this phase this will not significantly affect the overall contract execution costs.
 
-\section{Evaluation and Lessons learnt}  \label{sec:evaluaton}
+Table~\ref{tab:execution_costl} shows the execution cost of cube settlement operations expressed in Gas without and with Oraclize respectively. The most expensive operation to be perforemd is the \emph{contract deployment}, consuming from 175000 Gas without Oraclize to 2061490 Gas with Oraclize. The difference between these values is due to the higher number of functionalities implemented within Oraclize's API that the contract has to deploy. Both the \emph{update} and \emph{callback} operations have a higher cost due to the Oraclize's fee, whereas the \emph{transfer} operation has the same cost.
 
+\begin{table}[]
+	\centering
+	\caption{Execution cost of cube settlment contract operations.}
+	\label{tab:execution_costl}
+	\resizebox{.4\textwidth}{!}{%
+		\begin{tabular}{l|l|l|}
+			\cline{2-3}
+			& \multicolumn{2}{c|}{\textbf{Gas used}} \\ \hline
+			\multicolumn{1}{|l|}{\textbf{Operation}} & w/o Oraclize & w Oraclize \\ \hline
+			\multicolumn{1}{|l|}{Contract deployment} & 175000 & 2061490 \\ \hline
+			\multicolumn{1}{|l|}{Update} & 41000 & 120000 \\ \hline
+			\multicolumn{1}{|l|}{Callback} & 23000 & 70000 \\ \hline
+			\multicolumn{1}{|l|}{Transfer} & 21000 & 21000 \\ \hline
+		\end{tabular}%
+	}
+\end{table}
+
+\section{Evaluation and Lessons learnt}
+\label{sec:evaluation}
 Aim of this section is to quantify the cost of the smart contract described above and the associated cube settlement operations. By considering the scenario in which one VAS consumes the data of one Data Producer, we evaluate how the cost of performing such contract changes depending on the number of data exchanged and the number of settlements transactions required. Considering different quantity of exchanged data reflect the different purpose of the exchange (event-based data rather than real-time series acquisition). Nevertheless the reason for considering a variation in the number of required settlement needs some clarification. The most natural strategy will be to perform the settlement at the end of each contractually agreed data exchange, however in the early stage of an hypothetical market place where new producers and VASs join without necessarily trusting each other nor having an already established reputation, two situations might occur:
 \begin{itemize}
 	\item {Data producers and VASs have low reputation hence their trust level is low and the risk of claiming wrong unilateral cubes high. In this case, by performing more than one cube settlement, in an initial rump-up phase of a given data exchange will allow them to mutually increase their reputation and trust;}
@@ -111,46 +96,60 @@ Aim of this section is to quantify the cost of the smart contract described abov
 By evaluating the cost of performing the settlement operations we are able to define the minimum price that VASs should pay for each consumed data in order to sustain the settlement infrastructure and eventually generate profit for the Data Producers.
 
 We define the minimum data price as the amount of Ether needed to at least cover the cost of contract deployment and transactions for performing cubes settlement operations. This means that if a producer sells data at the minimum price, its profit will be zero. 
-At the time of writing one Ether costs 220\$, however, its price is still very volatile as shown in Figure [eth price].
+At the time of writing one Ether costs 220\$, however, its price is still very volatile\footnote{https://etherscan.io/chart/etherprice}.
 
-\begin{figure}
+As result, transaction cost may frequently vary, thus leading to uncertainty about the economic feasibility of a specific application. We analysed the capability of Ethereum to support a stable transaction cost by tuning the Gas price. The main drawback when setting a low gas price is the increase of time required before a transaction is validated. Assuming a range of gas price between 0.9 Gwei and 20 Gwei (0.0000000009 and 0.00000002 Ether respectively), as minimum and average reported by the Ethereum network in 2017, the time required for a transaction to be validated in the chain varies from 2 minutes to 14 seconds\footnote{https://etherscan.io/chart}. As explained before, even in the case of multiple settlements, we do not expect that meaningful data exchange will last less than 2 minutes, thus we consider a viable choice to select the current minimum Gas price.
+
+
+Figure~\ref{fig:overall} shows a general overview of the minimum data price by varying the frequency of cubes clearance operations and the amount of transferred data. The price is directly proportional to the increase of the number of cubes settlement performed while inversely proportional to the increase of data amount exchanged. Clearly, the more the data a VAS purchases, the less impacts the cost of performing cubes settlement. Depending on the type of data exchanged and trustworthiness of involved parties using this figure clearly shows how an optimal settlement strategy can always be found to dynamically adapt the number of settlement operations.
+
+\begin{figure*}[t]
 	\centering
-	\includegraphics[width=\columnwidth]{figures/price}
-	\caption{Ether price chart}
-\label{fig:EthPrice}
-\end{figure}
+	\subfigure[Cube settlement cost]{
+		\includegraphics[width=.31\textwidth]{figures/feeNew-crop}
+		\label{fig:overall}
+	}%
+	\subfigure[Cost without Oraclize]{
+		\includegraphics[width=.31\textwidth]{figures/resultSimple2-crop}
+		\label{fig:noOraclize}
+	}%
+	\subfigure[Cost with Oraclize]{
+		\includegraphics[width=.31\textwidth]{figures/resultOraclize2-crop}
+		\label{fig:withOraclize}
+	}%
+	\caption{Cost of performing cube settlement operations for different data transfer rate.}
+	\label{fig:all}
+\end{figure*}
 
-As result, transaction cost may frequently vary, thus leading to uncertainty about the economic feasibility of a specific application. We analysed the capability of Ethereum to support a stable transaction cost by tuning the Gas price. The main drawback when setting a low gas price is the increase of time required before a transaction is validated. Assuming a range of gas price between 0.9 Gwei and 20 Gwei (0.0000000009 and 0.00000002 Ether respectively), as minimum and average reported by the Ethereum network in 2017, the time required for a transaction to be validated in the chain varies from 2 minutes to 14 seconds\footnote{https://etherscan.io/chart}. As explained before, even in the case of multiple settlements, we don’t expect that meaningful data exchange will last less than 2 minutes, thus we consider a viable choice to select the current minimum Gas price.
-
-
-Figure 2 shows a general overview of the minimum data price by varying the frequency of cubes clearance operations and the amount of transferred data. The price is directly proportional to the increase of the number of cubes settlement performed while inversely proportional to the increase of data amount exchanged. Clearly, the more the data a VAS purchases, the less impacts the cost of performing cubes settlement. Depending on the type of data exchanged and trustworthiness of involved parties using this figure clearly shows how an optimal settlement strategy can always be found to dynamically adapt the number of settlement operations.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=\columnwidth]{figures/resultOraclize2-eps-converted-to}
-	\caption{Without Oraclize}
-	\label{fig:noOraclize}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=\columnwidth]{figures/resultOraclize2-eps-converted-to}
-	\caption{With Oraclize}
-	\label{fig:withOraclize}
-\end{figure}
-
-Figures XXX show the total cost of performing 1 or 5 cubes settlement operations for a fixed amount of transferred data, when considering a gas price ranging from 0.9 Gwei to 20 Gwei.
-More specifically, figure XXa shows the case when each party of the contract use its oracle implementation, while figure XXb shows the case when Oraclize functionalities are used. 
+Figures~\ref{fig:noOraclize} and~\ref{fig:withOraclize} show the total cost of performing 1 or 5 cubes settlement operations for a fixed amount of transferred data, when considering a gas price ranging from 0.9 Gwei to 20 Gwei.
+More specifically, figure~\ref{fig:noOraclize} shows the case when each party of the contract use its oracle implementation, while figure~\ref{fig:withOraclize} shows the case when Oraclize functionalities are used. 
 It worth noticing the large costs increase (on average 4 times more), due to the commission and refund of the Gas used to perform the transaction to be paid to Oraclize. 
 Without Oraclize, the cost of a single cube settlement transaction ranges from 0.000099 Ether to 0.0022 Ether when the gas price selected is 0.9 Gwei and 20 Gwei respectively. The more amount of data is transferred, the less impact the transaction cost has per single data. In fact, when performing a cube settlement operation spread over 2000 data, its cost ranges from 0.00000012 Ether to 0.0000028 Ether. Alternatively, when performing 5 cube settlement over 2000 data, their cost ranges from 0.0000003 Ether to 0.000007 Ether.
-
-\note{Add oraclize graph description}
+%1.26e-07	3.15e-07	2.8e-06	7e-06
+When using Oraclize, the cost of a single cube settlement transaction ranges from 0.00036 Ether to 0.008 Ether when the gas price selected is 0.9 Gwei and 20 Gwei respectively. When performing a cube settlement operation spread over 2000 data, its cost ranges from 0.0.0000011 Ether to 0.0.000024 Ether. Alternatively, when performing 5 cube settlement over the same amount of data, their cost ranges from 0.0000018 Ether to 0.00004 Ether.
+%\note{Add oraclize graph description}
+%1.1081205e-06	1.8299205e-06	2.46249e-05	4.06649e-05
 
 In order to derive a profitable data price, we can consider two examples: 1) an air quality monitoring application running on a Low Power Wide Area Network (LPWAN), such as Lora, that generates data every hour, resulting in 24 measurements per day; 2) a heart rate monitoring application (e.g., fitbit), with sampling frequency of 1 second, 1 minute.  
-Assuming that the cost of performing settlement operations has to be equal to 2\% of the price for that data amount.and that only one cube settlement is performed per day, Table X shows that data price ranges from 0.000001\$ to 0.00028\$ depending on the gas price selected. 
-Table XXX shows estimated data price for different use cases, such as a heart rate monitoring application (e.g., fitbit), with sampling frequency of 1 second, 1 minute and 1 hour.   
+Assuming that the cost of performing settlement operations has to be equal to 2\% of the price for that data amount and that only one cube settlement is performed per day, Table~\ref{tab:data_price} shows that data price ranges from 0.00001\$ to 0.156\$ depending on data transfer rate and on the data feed type selected. 
+%More specifically, Table~\ref{tab:data_price} shows estimated data price for different use cases, such as a heart rate monitoring application (e.g., fitbit), with sampling frequency of 1 second (high data rate), 1 minute (medium data rate) and 1 hour (low data rate).   
 
-
+\begin{table}[]
+	\centering
+	\caption{Estimated data price for different use cases.}
+	\resizebox{.47\textwidth}{!}{%
+		\begin{tabular}{r|c|r|r|r|}
+			\cline{2-5}
+			\multicolumn{1}{l|}{} & \multicolumn{4}{c|}{\textbf{Data price}} \\ \cline{2-5} 
+			\multicolumn{1}{l|}{} & \multicolumn{2}{c|}{w/o Oraclize} & \multicolumn{2}{c|}{w Oraclize} \\ \hline
+			\multicolumn{1}{|c|}{\textbf{Data rate}} & ETH & \multicolumn{1}{c|}{USD} & \multicolumn{1}{c|}{ETH} & \multicolumn{1}{c|}{USD} \\ \hline
+			\multicolumn{1}{|r|}{high} & \multicolumn{1}{r|}{0.00000005} & 0.000012 & 0.00000021 & 0.000046 \\ \hline
+			\multicolumn{1}{|r|}{medium} & \multicolumn{1}{r|}{0.00000347} & 0.000756 & 0.00001256 & 0.002756 \\ \hline
+			\multicolumn{1}{|r|}{low} & \multicolumn{1}{r|}{0.00020625} & 0.045375 & 0.00075187 & 0.165412 \\ \hline
+		\end{tabular}%
+	}
+	\label{tab:data_price}
+\end{table}
 
 %\authornote{
 %\note{new from Michele}
