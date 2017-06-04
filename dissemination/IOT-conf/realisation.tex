@@ -40,7 +40,7 @@ Two options are possible for implementing oracles. The first one is relying on e
 The other option is when each party of the contract, Data Producer and VAS, independently update their unilateral cubes by pulling their values from cubes generator located within their Trusted Zones and then creating a transaction which embeds the cubes in the blockchain. This way any node executing the smart contract will have the same copy of that cube. As a result, costs associated to the use of an external oracle service, such as Oraclize, can be saved. Because in our model responsibility and liability of producing faulty cubes is placed to Data Producers and VASs, this option well suffices to our needs.
 
 Algorithm~\ref{settlement_contract} shows pseudo-code of our settlement contract. For the sake of simplicity, this snippet of code only accounts for the single Data Producer and the single VAS scenario, although generalization are straightforward.
-The contract first requests the involved parties to provide their unilateral cubes; then it uses this information to perform the actual settlement, by combining the two unilateral cubes. If the processed combined cube is consistent then a payment to the producer is performed, otherwise, a dispute resolution mechanism should be invoked.
+The contract first requests the involved parties to provide their unilateral cubes; then it uses this information to perform the actual settlement, by combining the two unilateral cubes. If the processed combined cube is consistent then a payment to the producer is performed, otherwise, a dispute resolution mechanism should be invoked\footnote{Our implementation simply reports the detected inequalities}.
 %
 \begin{algorithm}
 	\caption{Cube settlement contract pseudo-code}\label{settlement_contract}
@@ -63,6 +63,25 @@ The contract first requests the involved parties to provide their unilateral cub
 \end{algorithm}
 %
 When a dispute resolution is invoked, payments are retained from being performed due to impossibility to clearly identify the correct unilateral cube. However a reputation mechanism can be implemented in order to penalize both parties involved in a given settlement transaction and to ultimately promote honest behaviour. As it is not expected that reputation computation will require off-chain interaction~\cite{schaub2016trustless,carboni2015feedback}, we are confident that while not considering its implementation in this phase this will not significantly affect the overall contract execution costs.
+
+Table~\ref{tab:execution_costl} shows the execution cost of cube settlement operations expressed in Gas without and with Oraclize respectively. The most expensive operation to be perforemd is the \emph{contract deployment}, consuming from 175000 Gas without Oraclize to 2061490 Gas with Oraclize. The difference between these values is due to the higher number of functionalities implemented within Oraclize's API that the contract has to deploy. Both the \emph{update} and \emph{callback} operations have a higher cost due to the Oraclize's fee, whereas the \emph{transfer} operation has the same cost.
+
+\begin{table}[]
+	\centering
+	\caption{Execution cost of cube settlment contract operations.}
+	\label{tab:execution_costl}
+	\resizebox{.4\textwidth}{!}{%
+		\begin{tabular}{l|l|l|}
+			\cline{2-3}
+			& \multicolumn{2}{c|}{\textbf{Gas used}} \\ \hline
+			\multicolumn{1}{|l|}{\textbf{Operation}} & w/o Oraclize & w Oraclize \\ \hline
+			\multicolumn{1}{|l|}{Contract deployment} & 175000 & 2061490 \\ \hline
+			\multicolumn{1}{|l|}{Update} & 41000 & 120000 \\ \hline
+			\multicolumn{1}{|l|}{Callback} & 23000 & 70000 \\ \hline
+			\multicolumn{1}{|l|}{Transfer} & 21000 & 21000 \\ \hline
+		\end{tabular}%
+	}
+\end{table}
 
 \section{Evaluation and Lessons learnt}
 \label{sec:evaluation}
@@ -121,9 +140,9 @@ Assuming that the cost of performing settlement operations has to be equal to 2\
 	\resizebox{.47\textwidth}{!}{%
 		\begin{tabular}{r|c|r|r|r|}
 			\cline{2-5}
-			\multicolumn{1}{l|}{} & \multicolumn{4}{c|}{Data price} \\ \cline{2-5} 
-			\multicolumn{1}{l|}{} & \multicolumn{2}{c|}{No Oraclize} & \multicolumn{2}{c|}{With Oraclize} \\ \hline
-			\multicolumn{1}{|c|}{Data rate} & ETH & \multicolumn{1}{c|}{USD} & \multicolumn{1}{c|}{ETH} & \multicolumn{1}{c|}{USD} \\ \hline
+			\multicolumn{1}{l|}{} & \multicolumn{4}{c|}{\textbf{Data price}} \\ \cline{2-5} 
+			\multicolumn{1}{l|}{} & \multicolumn{2}{c|}{w/o Oraclize} & \multicolumn{2}{c|}{w Oraclize} \\ \hline
+			\multicolumn{1}{|c|}{\textbf{Data rate}} & ETH & \multicolumn{1}{c|}{USD} & \multicolumn{1}{c|}{ETH} & \multicolumn{1}{c|}{USD} \\ \hline
 			\multicolumn{1}{|r|}{high} & \multicolumn{1}{r|}{0.00000005} & 0.000012 & 0.00000021 & 0.000046 \\ \hline
 			\multicolumn{1}{|r|}{medium} & \multicolumn{1}{r|}{0.00000347} & 0.000756 & 0.00001256 & 0.002756 \\ \hline
 			\multicolumn{1}{|r|}{low} & \multicolumn{1}{r|}{0.00020625} & 0.045375 & 0.00075187 & 0.165412 \\ \hline
