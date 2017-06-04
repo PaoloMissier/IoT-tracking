@@ -1,7 +1,21 @@
 \section{Initial proof-of-concept realisation}  \label{eq:realisation}
 
+\note{PM: below are the spare bits of implementation that I removed from the first part}
 
-\subsection{Background notions: Blockchain and Smart Contract}  \label{sec:blockchain}
+\authornote{During normal operation, the broker In our testbed we by extending a Mosquitto MQTT broker so it logs each message routing event as a tuple into a \textit{TrackerDB} database
+	$ \langle p_i, c_j, t_k \rangle $
+}
+
+\authornote{We use a Cassandra NoSQL database for the \textit{TrackerDB}, to ensure scalability. 
+	A traffic reporting service generates traffic cubes on demand by querying the \textit{TrackerDB}, in response to requests issued by client applications (including possibly independent third party clients). The service is accessible through a REST interface.}
+
+\authornote{In our testbed deployment we use MQTT brokers, and the gateways generate messages by encapsulating either a batch of the raw data stream or an aggregation of it, depending on the type of stream, into the MQTT payload.}
+	
+	
+	
+
+
+\subsection{Blockchain and Smart Contracts}  \label{sec:blockchain}
 Blockchain is essentially a distributed ledger of information (e.g., a transaction from A to B in the bitcoin world), a copy of which cannot be arbitrarily altered without being spotted and for which consistency of each information can be achieved through a decentralized and distributed consensus, without requiring trust in any third party but instead, through large and flat pool of so-called miners using cryptographic primitives~\cite{nakamoto2008bitcoin}.
 Blockchain has been later leveraged to manage Smart Contracts, small pieces of software that encode a set of conditions and actions that a machine can interpret and that can be executed as expected using the blockchain infrastructure without third party involvement or supervision~\cite{Buterin2014}. Smart contracts represent therefore a well-suited decentralized tool to implement Traffic Cube and Settlement functionalities. Being one of the most adopted and well-supported by the developer community, we decide to use Ethereum Smart Contract implementation\footnote{https://www.ethereum.org}.
 
