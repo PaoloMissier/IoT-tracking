@@ -149,7 +149,7 @@ When using Oraclize, the cost of a single cube settlement transaction ranges fro
 %\note{Add oraclize graph description}
 %1.1081205e-06	1.8299205e-06	2.46249e-05	4.06649e-05
 
-In order to derive a profitable data price, we can assume that the cost of performing settlement operations has to be equal to 2\% of the price for that data amount and that only 1 cube settlement is performed per day. We consider two examples: 1) an air quality monitoring application, with low data rate, running on a Low Power Wide Area Network (LPWAN), such as Lora, that generates data every hour, resulting in 24 measurements per day; 2) a heart rate monitoring application (e.g., fitbit), with sampling frequency of 1 second and 1 minute corresponding to a high and medium data rate respectively.  
+In order to derive a profitable data price, we can assume that the cost of performing settlement operations has to be equal to 2\% of the price for that data amount and that only 1 cube settlement is performed per day. We consider two examples: 1) an air quality monitoring application, with low data rate, running on a Low Power Wide Area Network (LPWAN), such as Lora, that generates data every hour, resulting in 24 measurements per day; 2) a heart rate monitoring application (e.g., Fitbit), with sampling frequency of 1 second and 1 minute corresponding to a high and medium data rate respectively.  
 Table~\ref{tab:data_price} shows that data price ranges from 5.73e-8 Ether (\$ 1.26e-5) to 7.52e-4 Ether (\$ 0.165) depending on data transfer rate and on the data feed type selected. 
 %More specifically, Table~\ref{tab:data_price} shows estimated data price for different use cases, such as a heart rate monitoring application (e.g., fitbit), with sampling frequency of 1 second (high data rate), 1 minute (medium data rate) and 1 hour (low data rate).   
 
@@ -169,6 +169,11 @@ Table~\ref{tab:data_price} shows that data price ranges from 5.73e-8 Ether (\$ 1
 	}
 	\label{tab:data_price}
 \end{table}
+
+\section{Discussion}
+\label{sec:discussion}
+The analysis above helped us to identify the feasibility of building a decentralized open and transparent accounting infrastructure, useful to create a fair data marketplace, where data price can evolve depending on data quality, demand and offer. To minimise the shared costs of running such an infrastructure, we observed how the Gas price can be tweaked at the cost of a lower transaction rate, leveraging the lack of real-time requirements for the settlement operations. Moreover we demonstrated how the cubes architecture allow for scalability by reducing the settlement transaction frequency.
+Nevertheless we recognised that the estimated infrastructure costs are related to the current inflation in the Ether value, due to the large number of general purpose smart contracts nowadays taking place (i.e., the Ether price increased of over 20 times in just one year). While we plan to perform similar analysis using different blockchain implementations (e.g. hyperledger, https://www.hyperledger.org), we still recommend how the creation of a decentralized marketplace should require to fork a new dedicated Ethereum network, dealing only with settlement contracts, and lower incentive fees for the miners. While keeping it open, we are confident that, due to the large amount of IoT data exchanges such a market will support, a viable business opportunity for miners will still exist even at lower transaction and incentive fees.
 
 %\authornote{
 %\note{new from Michele}
