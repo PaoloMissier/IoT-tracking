@@ -112,14 +112,14 @@ By evaluating the cost of performing the settlement operations we are able to de
 We define the minimum data price as the amount of Ether needed to at least cover the cost of contract deployment and transactions for performing cubes settlement operations. This means that if a producer sells data at the minimum price, its profit will be zero. 
 At the time of writing one Ether costs 220\$, however, its price is still very volatile\footnote{https://etherscan.io/chart/etherprice}.
 
-As result, transaction cost may frequently vary, thus leading to uncertainty about the economic feasibility of a specific application. We analysed the capability of Ethereum to support a stable transaction cost by tuning the Gas price. The main drawback when setting a low gas price is the increase of time required before a transaction is validated. Assuming a range of gas price between 0.9 Gwei and 20 Gwei (0.0000000009 and 0.00000002 Ether respectively), as minimum and average reported by the Ethereum network in 2017, the time required for a transaction to be validated in the chain varies from 2 minutes to 14 seconds\footnote{https://etherscan.io/chart}. As explained before, even in the case of multiple settlements, we do not expect that meaningful data exchange will last less than 2 minutes, thus we consider a viable choice to select the current minimum Gas price.
+As result, transaction cost may frequently vary, thus leading to uncertainty about the economic feasibility of a specific application. We analysed the capability of Ethereum to support a stable transaction cost by tuning the Gas price. The main drawback when setting a low gas price is the increase of time required before a transaction is validated. Assuming a range of gas price between 0.9 Gwei and 20 Gwei (9e-10 and 2e-8 Ether respectively), as minimum and average reported by the Ethereum network in 2017, the time required for a transaction to be validated in the chain varies from 2 minutes to 14 seconds\footnote{https://etherscan.io/chart}. As explained before, even in the case of multiple settlements, we do not expect that meaningful data exchange will last less than 2 minutes, thus we consider a viable choice to select the current minimum Gas price.
 
 
 Figure~\ref{fig:overall} shows a general overview of the minimum data price by varying the frequency of cubes clearance operations and the amount of transferred data. The price is directly proportional to the increase of the number of cubes settlement performed while inversely proportional to the increase of data amount exchanged. Clearly, the more the data a VAS purchases, the less impacts the cost of performing cubes settlement. Depending on the type of data exchanged and trustworthiness of involved parties using this figure clearly shows how an optimal settlement strategy can always be found to dynamically adapt the number of settlement operations.
 
 \begin{figure*}[t]
 	\centering
-	\subfigure[Cube settlement cost]{
+	\subfigure[Minimum data price]{
 		\includegraphics[width=.31\textwidth]{figures/feeNew-crop}
 		\label{fig:overall}
 	}%
@@ -138,28 +138,28 @@ Figure~\ref{fig:overall} shows a general overview of the minimum data price by v
 Figures~\ref{fig:noOraclize} and~\ref{fig:withOraclize} show the total cost of performing 1 or 5 cubes settlement operations for a fixed amount of transferred data, when considering a gas price ranging from 0.9 Gwei to 20 Gwei.
 More specifically, figure~\ref{fig:noOraclize} shows the case when each party of the contract use its oracle implementation, while figure~\ref{fig:withOraclize} shows the case when Oraclize functionalities are used. 
 It worth noticing the large costs increase (on average 4 times more), due to the commission and refund of the Gas used to perform the transaction to be paid to Oraclize. 
-Without Oraclize, the cost of a single cube settlement transaction ranges from 0.000099 Ether to 0.0022 Ether when the gas price selected is 0.9 Gwei and 20 Gwei respectively. The more amount of data is transferred, the less impact the transaction cost has per single data. In fact, when performing a cube settlement operation spread over 2000 data, its cost ranges from 0.00000012 Ether to 0.0000028 Ether. Alternatively, when performing 5 cube settlement over 2000 data, their cost ranges from 0.0000003 Ether to 0.000007 Ether.
+Without Oraclize, the cost of a single cube settlement transaction ranges from 9.90e-5 Ether to 2.20e-3 Ether when the gas price selected is 0.9 Gwei and 20 Gwei respectively. The more amount of data is transferred, the less impact the transaction cost has per single data. In fact, when performing a cube settlement operation spread over 2000 data, its cost ranges from 1.26e-7 Ether to 2.8e-6 Ether. Alternatively, when performing 5 cube settlement over 2000 data, their cost ranges from 3.15e-7 Ether to 7e-6 Ether.
 %1.26e-07	3.15e-07	2.8e-06	7e-06
-When using Oraclize, the cost of a single cube settlement transaction ranges from 0.00036 Ether to 0.008 Ether when the gas price selected is 0.9 Gwei and 20 Gwei respectively. When performing a cube settlement operation spread over 2000 data, its cost ranges from 0.0.0000011 Ether to 0.0.000024 Ether. Alternatively, when performing 5 cube settlement over the same amount of data, their cost ranges from 0.0000018 Ether to 0.00004 Ether.
+When using Oraclize, the cost of a single cube settlement transaction ranges from 3.61e-4 Ether to 8.02e-3 Ether when the gas price selected is 0.9 Gwei and 20 Gwei respectively. When performing a cube settlement operation spread over 2000 data, its cost ranges from 1.11e-6 Ether to 2.46e-5 Ether. Alternatively, when performing 5 cube settlement over the same amount of data, their cost ranges from 1.83e-6 Ether to 4.07e-5 Ether.
 %\note{Add oraclize graph description}
 %1.1081205e-06	1.8299205e-06	2.46249e-05	4.06649e-05
 
 In order to derive a profitable data price, we can consider two examples: 1) an air quality monitoring application running on a Low Power Wide Area Network (LPWAN), such as Lora, that generates data every hour, resulting in 24 measurements per day; 2) a heart rate monitoring application (e.g., fitbit), with sampling frequency of 1 second, 1 minute.  
-Assuming that the cost of performing settlement operations has to be equal to 2\% of the price for that data amount and that only one cube settlement is performed per day, Table~\ref{tab:data_price} shows that data price ranges from 0.00001\$ to 0.156\$ depending on data transfer rate and on the data feed type selected. 
+Assuming that the cost of performing settlement operations has to be equal to 2\% of the price for that data amount and that only one cube settlement is performed per day, Table~\ref{tab:data_price} shows that data price ranges from 0.00001\$ to 0.165\$ depending on data transfer rate and on the data feed type selected. 
 %More specifically, Table~\ref{tab:data_price} shows estimated data price for different use cases, such as a heart rate monitoring application (e.g., fitbit), with sampling frequency of 1 second (high data rate), 1 minute (medium data rate) and 1 hour (low data rate).   
 
 \begin{table}[]
 	\centering
 	\caption{Estimated data price for different use cases.}
-	\resizebox{.47\textwidth}{!}{%
+	\resizebox{.4\textwidth}{!}{%
 		\begin{tabular}{r|c|r|r|r|}
 			\cline{2-5}
 			\multicolumn{1}{l|}{} & \multicolumn{4}{c|}{\textbf{Data price}} \\ \cline{2-5} 
 			\multicolumn{1}{l|}{} & \multicolumn{2}{c|}{w/o Oraclize} & \multicolumn{2}{c|}{w Oraclize} \\ \hline
 			\multicolumn{1}{|c|}{\textbf{Data rate}} & ETH & \multicolumn{1}{c|}{USD} & \multicolumn{1}{c|}{ETH} & \multicolumn{1}{c|}{USD} \\ \hline
-			\multicolumn{1}{|r|}{high} & \multicolumn{1}{r|}{0.00000005} & 0.000012 & 0.00000021 & 0.000046 \\ \hline
-			\multicolumn{1}{|r|}{medium} & \multicolumn{1}{r|}{0.00000347} & 0.000756 & 0.00001256 & 0.002756 \\ \hline
-			\multicolumn{1}{|r|}{low} & \multicolumn{1}{r|}{0.00020625} & 0.045375 & 0.00075187 & 0.165412 \\ \hline
+			\multicolumn{1}{|r|}{high} & \multicolumn{1}{r|}{5.73e-8} & 1.26e-5 & 2.09e-7 & 4.59e-5 \\ \hline
+			\multicolumn{1}{|r|}{medium} & \multicolumn{1}{r|}{3.44e-6} & 7.56e-4 & 1.25e-5 & 2.76e-3 \\ \hline
+			\multicolumn{1}{|r|}{low} & \multicolumn{1}{r|}{2.06e-4} & 4.54e-2 & 7.52e-4 & 1.65e-1 \\ \hline
 		\end{tabular}%
 	}
 	\label{tab:data_price}
