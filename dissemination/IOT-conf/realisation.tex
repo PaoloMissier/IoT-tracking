@@ -1,15 +1,15 @@
 \section{Initial proof-of-concept realisation}  \label{eq:realisation}
 
-\note{PM: below are the spare bits of implementation that I removed from the first part}
-
-\authornote{During normal operation, the broker In our testbed we by extending a Mosquitto MQTT broker so it logs each message routing event as a tuple into a \textit{TrackerDB} database
-	$ \langle p_i, c_j, t_k \rangle $
-}
-
-\authornote{We use a Cassandra NoSQL database for the \textit{TrackerDB}, to ensure scalability. 
-	A traffic reporting service generates traffic cubes on demand by querying the \textit{TrackerDB}, in response to requests issued by client applications (including possibly independent third party clients). The service is accessible through a REST interface.}
-
-\authornote{In our testbed deployment we use MQTT brokers, and the gateways generate messages by encapsulating either a batch of the raw data stream or an aggregation of it, depending on the type of stream, into the MQTT payload.}
+%\note{PM: below are the spare bits of implementation that I removed from the first part}
+%
+%\authornote{During normal operation, the broker In our testbed we by extending a Mosquitto MQTT broker so it logs each message routing event as a tuple into a \textit{TrackerDB} database
+%	$ \langle p_i, c_j, t_k \rangle $
+%}
+%
+%\authornote{We use a Cassandra NoSQL database for the \textit{TrackerDB}, to ensure scalability. 
+%	A traffic reporting service generates traffic cubes on demand by querying the \textit{TrackerDB}, in response to requests issued by client applications (including possibly independent third party clients). The service is accessible through a REST interface.}
+%
+%\authornote{In our testbed deployment we use MQTT brokers, and the gateways generate messages by encapsulating either a batch of the raw data stream or an aggregation of it, depending on the type of stream, into the MQTT payload.}
 	
 	
 	
@@ -45,7 +45,12 @@ More specifically, any operation being performed within a transaction consumes a
 \subsection{Implementation}
 \label{sec:implementation}
 The generation of unilateral cubes can rely on different implementation choices made within the Data Producers (DP) and VAS Trusted Zones. This does not affect the properties of the Traffic Cube and Settlement, because liability is pushed at the edge. Section~\ref{sec:no-trust} provides some detail on how unilateral cube generation can be implemented. 
-Here we instead focus on detailed implementation of the Traffic Cube and Settlement functionalities using smart contracts. 
+In our testbed deployment we use a Cassandra NoSQL database for the \textit{TrackerDB}, to ensure scalability. 
+A traffic reporting service generates traffic cubes on demand by querying the \textit{TrackerDB}, in response to requests issued by client applications (including possibly independent third party clients). The service is accessible through a REST interface.
+%by extending a Mosquitto MQTT broker so it logs each message routing event as a tuple into a \textit{TrackerDB} database $ \langle p_i, c_j, t_k \rangle $
+We use MQTT brokers, and the gateways generate messages by encapsulating either a batch of the raw data stream or an aggregation of it, depending on the type of stream, into the MQTT payload.
+
+In the following, we instead focus on detailed implementation of the Traffic Cube and Settlement functionalities using smart contracts. 
 We developed them using Solidity, the Ethereum's scripting language. To implement the contracts we assigned an Ethereum account to each DP and VAS. We connected these accounts to our private Ethereum test network, deployed on a single node with 6-core Intel Xeon E5-2640 and 16GB of RAM. We wrote, deployed and evaluated smart contracts in the network by using the Ethereum web browser based IDE REMIX, connected to our private chain through RPC protocol. In our implementation, accounts prepare and send the transactions to the blockchain to instances of Geth\footnote{https://github.com/ethereum/go-ethereum/wiki } through RPC. To measure gas consumption, we used the debug tool provided by Remix and we observed the difference in the account balance before and after invoking the contract to measure the transaction cost.
 
 A limitation of Ethereum smart contracts is that they cannot directly access off-chain data about real-world state and events. In our case this represents a challenge in acquiring unilateral cubes value. More precisely, smart contracts are independently executed by any node in the chain, thus, each execution needs to retrieve such information from an off-chain source independently, without any assurance of the information integrity.
@@ -53,11 +58,11 @@ To overcome this limit, the concept of \emph{oracle} has been introduced. Simply
 Two options are possible for implementing oracles. The first one is relying on existing proxy services. Oraclize\footnote{http://www.oraclize.it} provides a \emph{programmable} oracle that can interact with any datasource selected among a predefined set of standard channels. In addition Oraclize provides an authenticity proof by means of a TLSNotary proof which guarantees the authenticity and integrity of the retrieved data. These functionalities come at a cost. For each off-chain query, Oraclize requires a fee which includes a commission, ranging from 0.01\$ to 0.04\$, and a refund of the Gas used to perform the transaction. 
 The other option is when each party of the contract, Data Producer and VAS, independently update their unilateral cubes by pulling their values from cubes generator located within their Trusted Zones and then creating a transaction which embeds the cubes in the blockchain. This way any node executing the smart contract will have the same copy of that cube. As a result, costs associated to the use of an external oracle service, such as Oraclize, can be saved. Because in our model responsibility and liability of producing faulty cubes is placed to Data Producers and VASs, this option well suffices to our needs.
 
-Algorithm~\ref{settlement_contract} shows pseudo-code of our settlement contract. For the sake of simplicity, this snippet of code only accounts for the single Data Producer and the single VAS scenario, although generalization are straightforward.
+Pseudocode~\ref{settlement_contract} shows pseudo-code of our settlement contract. For the sake of simplicity, this snippet of code only accounts for the single Data Producer and the single VAS scenario, although generalization are straightforward.
 The contract first requests the involved parties to provide their unilateral cubes; then it uses this information to perform the actual settlement, by combining the two unilateral cubes. If the processed combined cube is consistent then a payment to the producer is performed, otherwise, a dispute resolution mechanism should be invoked\footnote{Our implementation simply reports the detected inequalities}.
 %
 \begin{algorithm}
-	\caption{Cube settlement contract pseudo-code}\label{settlement_contract}
+	\caption{Cube settlement contract}\label{settlement_contract}
 \begin{algorithmic}
 	\IF{sender $\neq$ authorizedAddress}
 	\STATE throw
@@ -99,7 +104,7 @@ Table~\ref{tab:execution_costl} shows the execution cost of cube settlement oper
 
 \section{Evaluation and Lessons learnt}
 \label{sec:evaluation}
-Aim of this section is to quantify the cost of the smart contract described above and the associated cube settlement operations. By considering the scenario in which one VAS consumes the data of one Data Producer, we evaluate how the cost of performing such contract changes depending on the number of data exchanged and the number of settlements transactions required. Considering different quantity of exchanged data reflect the different purpose of the exchange (event-based data rather than real-time series acquisition). Nevertheless the reason for considering a variation in the number of required settlement needs some clarification. The most natural strategy will be to perform the settlement at the end of each contractually agreed data exchange, however in the early stage of an hypothetical market place where new producers and VASs join without necessarily trusting each other nor having an already established reputation, two situations might occur:
+Aim of this section is to quantify the cost of the smart contract described above and the associated cube settlement operations. By considering the scenario in which one VAS consumes the data of one Data Producer, we evaluate how the cost of performing such contract affects the data price when the number of data exchanged and the number of settlements transactions required changes. Considering different quantity of exchanged data reflect the different purpose of the exchange (event-based data rather than real-time series acquisition). Nevertheless the reason for considering a variation in the number of required settlement needs some clarification. The most natural strategy will be to perform the settlement at the end of each contractually agreed data exchange, however in the early stage of an hypothetical market place where new producers and VASs join without necessarily trusting each other nor having an already established reputation, two situations might occur:
 \begin{itemize}
 	\item {Data producers and VASs have low reputation hence their trust level is low and the risk of claiming wrong unilateral cubes high. In this case, by performing more than one cube settlement, in an initial rump-up phase of a given data exchange will allow them to mutually increase their reputation and trust;}
 	\item {Data producers and VASs have already high reputation hence they are expected to act honestly. In this case cube settlements may occur with a lower rate, eventually only at the end of a data exchange phase, because the risk of producing faulty cubes is mitigated.}
@@ -138,17 +143,17 @@ Figure~\ref{fig:overall} shows a general overview of the minimum data price by v
 Figures~\ref{fig:noOraclize} and~\ref{fig:withOraclize} show the total cost of performing 1 or 5 cubes settlement operations for a fixed amount of transferred data, when considering a gas price ranging from 0.9 Gwei to 20 Gwei.
 More specifically, figure~\ref{fig:noOraclize} shows the case when each party of the contract use its oracle implementation, while figure~\ref{fig:withOraclize} shows the case when Oraclize functionalities are used. 
 It worth noticing the large costs increase (on average 4 times more), due to the commission and refund of the Gas used to perform the transaction to be paid to Oraclize. 
-Without Oraclize, the cost of a single cube settlement transaction ranges from 9.90e-5 Ether to 2.20e-3 Ether when the gas price selected is 0.9 Gwei and 20 Gwei respectively. The more amount of data is transferred, the less impact the transaction cost has per single data. In fact, when performing a cube settlement operation spread over 2000 data, its cost ranges from 1.26e-7 Ether to 2.8e-6 Ether. Alternatively, when performing 5 cube settlement over 2000 data, their cost ranges from 3.15e-7 Ether to 7e-6 Ether.
+Without Oraclize, the cost of a single cube settlement transaction ranges from 9.9e-5 (\$ 2.18e-2) Ether to 2.2e-3 Ether (\$ 4.84e-1) when the gas price selected is 0.9 Gwei and 20 Gwei respectively. The more amount of data is transferred, the less impact the transaction cost has per single data. In fact, when performing a cube settlement operation spread over 2000 data, its cost ranges from 1.26e-7 Ether (\$ 2.77e-5) to 2.8e-6 Ether (\$ 6.16e-4). Alternatively, when performing 5 cube settlement over 2000 data, their cost ranges from 3.15e-7 Ether (\$ 6.93e-5) to 7e-6 Ether (\$ 1.54e-3).
 %1.26e-07	3.15e-07	2.8e-06	7e-06
-When using Oraclize, the cost of a single cube settlement transaction ranges from 3.61e-4 Ether to 8.02e-3 Ether when the gas price selected is 0.9 Gwei and 20 Gwei respectively. When performing a cube settlement operation spread over 2000 data, its cost ranges from 1.11e-6 Ether to 2.46e-5 Ether. Alternatively, when performing 5 cube settlement over the same amount of data, their cost ranges from 1.83e-6 Ether to 4.07e-5 Ether.
+When using Oraclize, the cost of a single cube settlement transaction ranges from 3.61e-4 Ether (\$ 7.94e-2) to 8.02e-3 Ether (\$ 1.76) when the gas price selected is 0.9 Gwei and 20 Gwei respectively. When performing a cube settlement operation spread over 2000 data, its cost ranges from 1.11e-6 Ether (\$ 2.44e-4) to 2.46e-5 Ether (\$ 5.42e-3). Alternatively, when performing 5 cube settlement over the same amount of data, their cost ranges from 1.83e-6 Ether (\$ 4.03e-4) to 4.07e-5 Ether (\$ 8.95e-3).
 %\note{Add oraclize graph description}
 %1.1081205e-06	1.8299205e-06	2.46249e-05	4.06649e-05
 
-In order to derive a profitable data price, we can consider two examples: 1) an air quality monitoring application running on a Low Power Wide Area Network (LPWAN), such as Lora, that generates data every hour, resulting in 24 measurements per day; 2) a heart rate monitoring application (e.g., fitbit), with sampling frequency of 1 second, 1 minute.  
-Assuming that the cost of performing settlement operations has to be equal to 2\% of the price for that data amount and that only one cube settlement is performed per day, Table~\ref{tab:data_price} shows that data price ranges from 0.00001\$ to 0.165\$ depending on data transfer rate and on the data feed type selected. 
+In order to derive a profitable data price, we can assume that the cost of performing settlement operations has to be equal to 2\% of the price for that data amount and that only 1 cube settlement is performed per day. We consider two examples: 1) an air quality monitoring application, with low data rate, running on a Low Power Wide Area Network (LPWAN), such as Lora, that generates data every hour, resulting in 24 measurements per day; 2) a heart rate monitoring application (e.g., fitbit), with sampling frequency of 1 second and 1 minute corresponding to a high and medium data rate respectively.  
+Table~\ref{tab:data_price} shows that data price ranges from 5.73e-8 Ether (\$ 1.26e-5) to 7.52e-4 Ether (\$ 0.165) depending on data transfer rate and on the data feed type selected. 
 %More specifically, Table~\ref{tab:data_price} shows estimated data price for different use cases, such as a heart rate monitoring application (e.g., fitbit), with sampling frequency of 1 second (high data rate), 1 minute (medium data rate) and 1 hour (low data rate).   
 
-\begin{table}[]
+\begin{table}[!hbp]
 	\centering
 	\caption{Estimated data price for different use cases.}
 	\resizebox{.4\textwidth}{!}{%
