@@ -42,6 +42,7 @@ More specifically, any operation being performed within a transaction consumes a
 %\authornote{We need reference to ETH architecture, with APIs call and a snippet of the code. We can add some numbers on how much this will cost to run and consequently set up a minimum cost for each data in order to keep infrastructure sustainable.
 %Logic: “data” is a “count cube”. The platform generates a stream of these cubes at a certain rate, which is tunable using the window size on the TrackerDB. The arrival rate of the cubes determines the frequency at which contracts are executed, and therefore the cost over time.
 %}
+\vspace{-10pt}
 \subsection{Implementation}
 \label{sec:implementation}
 The generation of unilateral cubes can rely on different implementation choices made within the Data Producers (DP) and VAS Trusted Zones. This does not affect the properties of the Traffic Cube and Settlement, because liability is pushed at the edge. Section~\ref{sec:no-trust} provides some detail on how unilateral cube generation can be implemented. 
@@ -89,6 +90,7 @@ Table~\ref{tab:execution_costl} shows the execution cost of cube settlement oper
 	\centering
 	\caption{Execution cost of cube settlment contract operations.}
 	\label{tab:execution_costl}
+	\tiny 
 	\resizebox{.4\textwidth}{!}{%
 		\begin{tabular}{l|l|l|}
 			\cline{2-3}
@@ -101,13 +103,15 @@ Table~\ref{tab:execution_costl} shows the execution cost of cube settlement oper
 		\end{tabular}%
 	}
 \end{table}
+\vspace{-10pt}
 
 \section{Evaluation and Lessons learnt}
 \label{sec:evaluation}
 Aim of this section is to quantify the cost of the smart contract described above and the associated cube settlement operations. By considering the scenario in which one VAS consumes the data of one Data Producer, we evaluate how the cost of performing such contract affects the data price when the number of data exchanged and the number of settlements transactions required changes. Considering different quantity of exchanged data reflect the different purpose of the exchange (event-based data rather than real-time series acquisition). Nevertheless the reason for considering a variation in the number of required settlement needs some clarification. The most natural strategy will be to perform the settlement at the end of each contractually agreed data exchange, however in the early stage of an hypothetical market place where new producers and VASs join without necessarily trusting each other nor having an already established reputation, two situations might occur:
 \begin{itemize}
-	\item {Data producers and VASs have low reputation hence their trust level is low and the risk of claiming wrong unilateral cubes high. In this case, by performing more than one cube settlement, in an initial rump-up phase of a given data exchange will allow them to mutually increase their reputation and trust;}
-	\item {Data producers and VASs have already high reputation hence they are expected to act honestly. In this case cube settlements may occur with a lower rate, eventually only at the end of a data exchange phase, because the risk of producing faulty cubes is mitigated.}
+	\item Data producers and VASs have low reputation hence their trust level is low and the risk of claiming wrong unilateral cubes high. In this case, by performing more than one cube settlement, in an initial rump-up phase of a given data exchange will allow them to mutually increase their reputation and trust;
+	\vspace{-10pt}
+	\item Data producers and VASs have already high reputation hence they are expected to act honestly. In this case cube settlements may occur with a lower rate, eventually only at the end of a data exchange phase, because the risk of producing faulty cubes is mitigated.
 \end{itemize}
 %1- 
 %2- 
@@ -115,9 +119,9 @@ Aim of this section is to quantify the cost of the smart contract described abov
 By evaluating the cost of performing the settlement operations we are able to define the minimum price that VASs should pay for each consumed data in order to sustain the settlement infrastructure and eventually generate profit for the Data Producers.
 
 We define the minimum data price as the amount of Ether needed to at least cover the cost of contract deployment and transactions for performing cubes settlement operations. This means that if a producer sells data at the minimum price, its profit will be zero. 
-At the time of writing one Ether costs 220\$, however, its price is still very volatile\footnote{https://etherscan.io/chart/etherprice}.
+At the time of writing one Ether costs 220\$, however, its price is still very volatile (\url{etherscan.io/chart/etherprice}).
 
-As result, transaction cost may frequently vary, thus leading to uncertainty about the economic feasibility of a specific application. We analysed the capability of Ethereum to support a stable transaction cost by tuning the Gas price. The main drawback when setting a low gas price is the increase of time required before a transaction is validated. Assuming a range of gas price between 0.9 Gwei and 20 Gwei (9e-10 and 2e-8 Ether respectively), as minimum and average reported by the Ethereum network in 2017, the time required for a transaction to be validated in the chain varies from 2 minutes to 14 seconds\footnote{https://etherscan.io/chart}. As explained before, even in the case of multiple settlements, we do not expect that meaningful data exchange will last less than 2 minutes, thus we consider a viable choice to select the current minimum Gas price.
+As result, transaction cost may frequently vary, thus leading to uncertainty about the economic feasibility of a specific application. We analysed the capability of Ethereum to support a stable transaction cost by tuning the Gas price. The main drawback when setting a low gas price is the increase of time required before a transaction is validated. Assuming a range of gas price between 0.9 Gwei and 20 Gwei (9e-10 and 2e-8 Ether respectively), as minimum and average reported by the Ethereum network in 2017, the time required for a transaction to be validated in the chain varies from 2 minutes to 14 seconds (\url{etherscan.io/chart}). As explained before, even in the case of multiple settlements, we do not expect that meaningful data exchange will last less than 2 minutes, thus we consider a viable choice to select the current minimum Gas price.
 
 
 Figure~\ref{fig:overall} shows a general overview of the minimum data price by varying the frequency of cubes clearance operations and the amount of transferred data. The price is directly proportional to the increase of the number of cubes settlement performed while inversely proportional to the increase of data amount exchanged. Clearly, the more the data a VAS purchases, the less impacts the cost of performing cubes settlement. Depending on the type of data exchanged and trustworthiness of involved parties using this figure clearly shows how an optimal settlement strategy can always be found to dynamically adapt the number of settlement operations.
@@ -172,7 +176,7 @@ Table~\ref{tab:data_price} shows that data price ranges from 5.73e-8 Ether (\$ 1
 \subsection{Discussion}
 \label{sec:discussion}
 The analysis above helped us to identify the feasibility of building a decentralized open and transparent accounting infrastructure, useful to create a fair data marketplace, where data price can evolve depending on data quality, demand and offer. To minimise the shared costs of running such an infrastructure, we observed how the Gas price can be tweaked at the cost of a lower transaction rate, leveraging the lack of real-time requirements for the settlement operations. Moreover we demonstrated how the cubes architecture allow for scalability by reducing the settlement transaction frequency.
-Nevertheless we recognised that the estimated infrastructure costs are related to the current inflation in the Ether value, due to the large number of general purpose smart contracts nowadays taking place (i.e., the Ether price increased of over 20 times in just one year). While we plan to perform similar analysis using different blockchain implementations (e.g. hyperledger\footnote{https://www.hyperledger.org}), we still recommend how the creation of a decentralized marketplace should require to fork a new dedicated Ethereum network, dealing only with settlement contracts, and lower incentive fees for the miners. While keeping it open, we are confident that, due to the large amount of IoT data exchanges such a market will support, a viable business opportunity for miners will still exist even at lower transaction and incentive fees.
+Nevertheless, we recognise that the estimated infrastructure costs are related to the current inflation in the Ether value, due to the large number of existing general purpose smart contracts (i.e., the Ether price increased of over 20 times in just one year). While we plan to perform similar analysis using different blockchain implementations like hyperledger (\url{hyperledger.org}), we anticipate that a decentralized marketplace will require to fork a new dedicated Ethereum network, dedicated to contract settlement, with lower incentive fees for the miners. While keeping it open, we are confident that, due to the large amount of IoT data exchanges such a market will support, a viable business opportunity for miners will still exist even at lower transaction and incentive fees.
 
 %\authornote{
 %\note{new from Michele}

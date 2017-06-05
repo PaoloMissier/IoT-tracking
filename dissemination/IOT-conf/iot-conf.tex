@@ -290,7 +290,7 @@ At the end of each $W$, the log is aggregated over each $p_i \in P, c_j \in C, t
 \mathit{cube}(W) = \{ \langle p_i, c_j, t_k, N_{ijk}(W) \rangle \}_{p_i \in P, c_j \in C, t_k \in T}
 \end{equation}
 
-Here we borrow our terminology from standard database practice (OLAP, or Online Analytical data Processing), where a  ``cube'' is a table with $ N $ attributes, in which the first $ N-1 $ attributes are  dimensions in a database schema (in our case, these are the Producers, \textcolor{blue}{Consumers}, and Topics) and the last is an aggregation over values in the database for each combination of the dimensions -- in our case, a count().
+Here we borrow our terminology from standard database practice (OLAP, or Online Analytical data Processing), where a  ``cube'' is a table with $ N $ attributes, in which the first $ N-1 $ attributes are  dimensions in a database schema (in our case, these are the Producers, Consumers (the VAS), and Topics) and the last is an aggregation over values in the database for each combination of the dimensions -- in our case, a count().
 We use a matrix indexing notation to refer to specific cells in the cube, i.e.:
 \[ \mathit{cube}(W)[p_i, c_j, t_k] = N_{ijk}(W) \] 
 These cubes contain summaries of all data flows observed by a broker. Notice that they only contain \textit{metadata}, i.e., the counts, but not the content of the messages.
@@ -316,7 +316,7 @@ In this case, fee settlement must rely on data traffic counts that are calculate
 further complication that participants cannot be trusted to generate complete and correct cubes.
 This de-centralised scenario is illustrated in Fig. \ref{fig:iot-tracking-arch-2} and discussed in the next Section.
 
-\section{Removing the need  for trust in the data flow network}  \label{sec:no-trust}
+\section{Removing the need  for trust in the network}  \label{sec:no-trust}
 
 A marketplace where the reward model is based on message counts is vulnerable to malicious behaviour.
 Specifically, producers have an incentive to claim to have produced more messages than they have in reality, while conversely, consumers (the VAS) have an incentive to under-report the number of messages they receive.
@@ -324,10 +324,8 @@ Specifically, producers have an incentive to claim to have produced more message
 When we remove the assumption that the brokers are trusted, we must also accept that the brokers may collude with any of the participants, and thus deliver traffic cubes that may not be correct or complete.
 Discovering such collusions may not be possible when the broker is the only source of traffic counts available to the settlement service.  At the same time, resolving any disputes amongst pairs of participants requires a public and irrefutable record of the reported traffic.
 
-To address these problems, we rely on two over-arching principles: (1) \textcolor{blue}{personal responsibility} 
-%\note{Michele says: hence why we define edge trusted zones, with reference to figure 1. not sure how/where to say this??}
-of each participant in the marketplace, which shall report their own counts of messages sent (publishers) or received (subscribers), 
-and (2) transparency, whereby these reports are posted as part of immutable and verifiable blockchain transactions.
+To address these problems, we rely on two over-arching principles: (1) personal responsibility of each participant in the marketplace, which shall report their own counts of messages sent (publishers) or received (subscribers) using \textit{edge trusted zones} (see Fig.\ref{fig:iot-tracking-arch-2} and description below),
+ and (2) transparency, whereby these reports are posted as part of immutable and verifiable blockchain transactions.
 These principles translate into a two-steps approach.
 %
 
@@ -363,7 +361,7 @@ As subscribers know the source of the messages they receive, we may assume that 
 
 \begin{figure*}[!ht]
 	\centering
-	\includegraphics[width=0.7\textwidth]{figures/IoT-tracking-arch-2}
+	\includegraphics[width=0.6\textwidth]{figures/IoT-tracking-arch-2}
 	\caption{Reference architecture for decentralised IoT data traffic metering based on blockchain and Smart Contracts}
 	\label{fig:iot-tracking-arch-2}
 \end{figure*}
@@ -372,7 +370,7 @@ Figure 1 concretely illustrates this setting. To remove the need for a centralis
 The first trusted zone includes all the elements at the edge of the network infrastructure, such as the IoT devices $P$ and the gateways $ G_i $, whereas the second one includes $ C $.
 %The latter range from monitoring, to health applications, assets tracking, smart city applications, etc.
 IoT data are still routed towards the VASs through brokers--using a publish-subscribe pattern--or network servers.
-However, we now assume that a new, independent IoT data tracking component \ag{check naming wrt implementation section} receives the unilateral cubes by gateways and VASs.
+However, we now assume that a new, independent IoT data tracking component receives the unilateral cubes by gateways and VASs.
 Finally, a Smart Contract deployed on a blockchain periodically accesses the traffic cubes to realize settlement services and resolve possible conflicts.
 
 \subsection{Consistency and settlement with unilateral cubes}
@@ -395,7 +393,7 @@ For each $ p_i \in P, t_k \in T, c_j \in \mathit{sub}(t_k)$:
 & \mathit{cube^s}(W, c_j)[p_i, t_k]
 \end{split}
 \end{equation}
-
+%\vspace{-10pt}
 %\begin{definition}
 We say that the set (\ref{eq:all-cubes}) of all unilateral cubes is \textit{consistent} at $W$, if and only their contents satisfy constraint (\ref{eq:cubes-consistency}).
 %\begin{end}
@@ -403,7 +401,7 @@ We use this definition as a basis for settlement of message exchanges within eac
 %
 Specifically, in our architecture we  now assume that a new, independent component receives all cubes in (\ref{eq:all-cubes}) at the end of each $W$, and checks their consistency using (\ref{eq:cubes-consistency}). 
 In the next section we discuss a practical implementation of this idea, where this new component is realised as a Ethereum Smart Contract and unilateral cubes are posted publicly as part of blockchain transactions. As explained in more detail later, a Smart Contract is a script that operates on the blockchain.   
-It can be viewed as a third party trusted service, because its implementation is transparent and agreed upon by all marketplace participants. \note{there seem to be repetitions here  -- see previous section}
+It can be viewed as a third party trusted service, because its implementation is transparent and agreed upon by all marketplace participants.
 
 In this decentralised scenario, such a settlement service must be able to deal with two inter-dependent issues, namely (a) \textit{completeness} and (b) \textit{consistency} of the set (\ref{eq:all-cubes}) of all cubes.
 
@@ -439,7 +437,7 @@ In our initial implementation, described next, the settlement service simply rep
 %%%%
 
 \section{Conclusion and future work}
-Our initial work encourages us to further develop the idea of a decentralized data marketplace, where benefits such as interoperability, transparency and fairness are achievable and cost affordable. However we recognized that the cube settlement component is a very important but still only one building block of such an infrastructure, in which less-critical centralized and decentralized elements will have to be combined. In future we plan to experiment and test the effectiveness of the reputation based reconciliation strategy and to develop the complete architecture for a trusted and transparent data marketplace. This will include Data Producers and VASs discovery service, contract creation and discovery platform and the definition of an open governance model associated to it, promoting public and open creation and review of settlement contracts (similar to the github model\footnote{https://github.com}).
+Our initial work encourages us to further develop the idea of a decentralized data marketplace, where benefits such as interoperability, transparency and fairness are achievable and cost affordable. However we recognized that the cube settlement component is a very important but still only one building block of such an infrastructure, in which less-critical centralized and decentralized elements will have to be combined. In future we plan to experiment and test the effectiveness of the reputation based reconciliation strategy and to develop the complete architecture for a trusted and transparent data marketplace. This will include Data Producers and VASs discovery service, contract creation and discovery platform and the definition of an open governance model associated to it, promoting public and open creation and review of settlement contracts (similar to the github model, https://github.com).
 
 
 
@@ -452,10 +450,11 @@ Our initial work encourages us to further develop the idea of a decentralized da
 
 %The authors would like to thank...
 
-\bibliographystyle{IEEEtran}
-\bibliography{IEEEabrv,iot-conf}
+%\bibliographystyle{IEEEtran}
+%\bibliography{IEEEabrv,iot-conf}
 
-
+\small %\footnotesize
+\input{iot-conf-static.bbl}
 
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
