@@ -324,7 +324,8 @@ Specifically, producers have an incentive to claim to have produced more message
 When we remove the assumption that the brokers are trusted, we must also accept that the brokers may collude with any of the participants, and thus deliver traffic cubes that may not be correct or complete.
 Discovering such collusions may not be possible when the broker is the only source of traffic counts available to the settlement service.  At the same time, resolving any disputes amongst pairs of participants requires a public and irrefutable record of the reported traffic.
 
-To address these problems, we rely on two over-arching principles: (1) \textcolor{blue}{personal responsibility} \note{Michele says: hence why we define edge trusted zones, with reference to figure 1. not sure how/where to say this??}
+To address these problems, we rely on two over-arching principles: (1) \textcolor{blue}{personal responsibility} 
+%\note{Michele says: hence why we define edge trusted zones, with reference to figure 1. not sure how/where to say this??}
 of each participant in the marketplace, which shall report their own counts of messages sent (publishers) or received (subscribers), 
 and (2) transparency, whereby these reports are posted as part of immutable and verifiable blockchain transactions.
 These principles translate into a two-steps approach.
@@ -438,7 +439,7 @@ In our initial implementation, described next, the settlement service simply rep
 %%%%
 
 \section{Conclusion and future work}
-Our initial work encourages us to further develop the idea of a decentralized data marketplace, where benefits such as interoperability, transparency and fairness are achievable and cost affordable. However we recognized that the cube settlement component is a very important but still only one building block of such an infrastructure, in which less-critical centralized and decentralized elements will have to be combined. In future we plan to experiment and test the effectiveness of the reputation based reconciliation strategy and to develop the complete architecture for a trusted and transparent data marketplace. This will include Data Producers and VASs discovery service, contract creation and discovery platform and the definition of an open governance model associated to it, promoting public and open creation and review of settlement contracts (similar to the github model, https://github.com).
+Our initial work encourages us to further develop the idea of a decentralized data marketplace, where benefits such as interoperability, transparency and fairness are achievable and cost affordable. However we recognized that the cube settlement component is a very important but still only one building block of such an infrastructure, in which less-critical centralized and decentralized elements will have to be combined. In future we plan to experiment and test the effectiveness of the reputation based reconciliation strategy and to develop the complete architecture for a trusted and transparent data marketplace. This will include Data Producers and VASs discovery service, contract creation and discovery platform and the definition of an open governance model associated to it, promoting public and open creation and review of settlement contracts (similar to the github model\footnote{https://github.com}).
 
 
 
