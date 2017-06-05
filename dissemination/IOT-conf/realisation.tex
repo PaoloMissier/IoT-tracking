@@ -148,12 +148,7 @@ Without Oraclize, the cost of a single cube settlement transaction ranges from 9
 When using Oraclize, the cost of a single cube settlement transaction ranges from 3.61e-4 Ether (\$ 7.94e-2) to 8.02e-3 Ether (\$ 1.76) when the gas price selected is 0.9 Gwei and 20 Gwei respectively. When performing a cube settlement operation spread over 2000 data, its cost ranges from 1.11e-6 Ether (\$ 2.44e-4) to 2.46e-5 Ether (\$ 5.42e-3). Alternatively, when performing 5 cube settlement over the same amount of data, their cost ranges from 1.83e-6 Ether (\$ 4.03e-4) to 4.07e-5 Ether (\$ 8.95e-3).
 %\note{Add oraclize graph description}
 %1.1081205e-06	1.8299205e-06	2.46249e-05	4.06649e-05
-
-In order to derive a profitable data price, we can assume that the cost of performing settlement operations has to be equal to 2\% of the price for that data amount and that only 1 cube settlement is performed per day. We consider two examples: 1) an air quality monitoring application, with low data rate, running on a Low Power Wide Area Network (LPWAN), such as Lora, that generates data every hour, resulting in 24 measurements per day; 2) a heart rate monitoring application (e.g., Fitbit), with sampling frequency of 1 second and 1 minute corresponding to a high and medium data rate respectively.  
-Table~\ref{tab:data_price} shows that data price ranges from 5.73e-8 Ether (\$ 1.26e-5) to 7.52e-4 Ether (\$ 0.165) depending on data transfer rate and on the data feed type selected. 
-%More specifically, Table~\ref{tab:data_price} shows estimated data price for different use cases, such as a heart rate monitoring application (e.g., fitbit), with sampling frequency of 1 second (high data rate), 1 minute (medium data rate) and 1 hour (low data rate).   
-
-\begin{table}[!hbp]
+\begin{table}[!htp]
 	\centering
 	\caption{Estimated data price for different use cases.}
 	\resizebox{.4\textwidth}{!}{%
@@ -169,6 +164,10 @@ Table~\ref{tab:data_price} shows that data price ranges from 5.73e-8 Ether (\$ 1
 	}
 	\label{tab:data_price}
 \end{table}
+
+In order to derive a profitable data price, we can assume that the cost of performing settlement operations has to be equal to 2\% of the price for that data amount and that only 1 cube settlement is performed per day. We consider two examples: 1) an air quality monitoring application, with low data rate, running on a Low Power Wide Area Network (LPWAN), such as Lora, that generates data every hour, resulting in 24 measurements per day; 2) a heart rate monitoring application (e.g., Fitbit), with sampling frequency of 1 second and 1 minute corresponding to a high and medium data rate respectively.  
+Table~\ref{tab:data_price} shows that data price ranges from 5.73e-8 Ether (\$ 1.26e-5) to 7.52e-4 Ether (\$ 0.165) depending on data transfer rate and on the data feed type selected. 
+%More specifically, Table~\ref{tab:data_price} shows estimated data price for different use cases, such as a heart rate monitoring application (e.g., fitbit), with sampling frequency of 1 second (high data rate), 1 minute (medium data rate) and 1 hour (low data rate).   
 
 \section{Discussion}
 \label{sec:discussion}
