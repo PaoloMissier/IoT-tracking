@@ -117,7 +117,7 @@ recommendation services to taxi companies.
 
 In response to this ``technology push'', new business models are indeed emerging \cite{Stahl2016,7765669} where data are viewed as tradeable digital assets. 
 In this paper we propose an initial technical architecture for a new kind of data marketplace that, in the long run, is designed to meet four main requirements.
-Firstly, the marketplace should be dynamic and flexible in order to enable the new and un-anticipated kind of business relationships just illustrated. It should be possible to quickly  establish and then fulfil contracts between one and possibly many data producers and the VAS, with guarantees of compliance and fairness.
+Firstly, the marketplace should be dynamic and flexible in order to enable the new and un-anticipated kind of business relationships just illustrated. It should be possible to quickly  establish and then fulfil contracts between one and possibly many producers and the VAS, with guarantees of compliance and fairness.
 
 Secondly, the marketplace should allow not only companies, but also individuals to offer their data. 
 %
@@ -129,7 +129,7 @@ There are examples in the UK today, where individuals get heavy discounts on sma
 Thirdly, the main asset traded in the marketplace are streams of IoT data. This is not usual: a 2012 survey of data vendors \cite{Schomm2013}, for example, includes 46 data suppliers, however the definition of data marketplace used in the paper is generic (``a platform on which anybody can upload and maintain data sets, with license-regulated access to and use of the data'') and geared towards static data, like Microsoft's Azure Data Market.
 In contrast, our requirement entails the typical ``Big Data'' challenges of high Volume, high Velocity, and high Variety of the streams.
 
-Finally, it should be possible to run a completely de-centralised marketplace which operates according to governance rules, which determine what kinds of contract and transactions are acceptable, and stipulate sanctions when the rules are violated. 
+Finally, it should be possible to run a completely decentralised marketplace which operates according to governance rules, which determine what kinds of contract and transactions are acceptable, and stipulate sanctions when the rules are violated. 
 However, contrary to current proposals, eg \cite{Cao:2016:MMR:2926746.2883611}, we are going to assume  there is no central trusted authority appointed to enforce those rules.
 In the paper we focus specifically on this novel aspect. We investigate the use of blockchain (distributed ledger), and specifically of Smart Contracts \cite{Buterin2014}, as a technology enabler for an authority-free, trusted data merketplace.
 
@@ -314,7 +314,7 @@ Note that, under the same trust assumptions, settlement extends easily to a more
 Hovever, settlement becomes challenging in an extended model where there is no assumption of trust in the broker.
 In this case, fee settlement must rely on data traffic counts that are calculated independently by each participant, based on the portions of data flows that are visible to each of them, with the 
 further complication that participants cannot be trusted to generate complete and correct cubes.
-This de-centralised scenario is illustrated in Fig. \ref{fig:iot-tracking-arch-2} and discussed in the next Section.
+This decentralised scenario is illustrated in Fig. \ref{fig:iot-tracking-arch-2} and discussed in the next Section.
 
 \section{Removing the need  for trust in the network}  \label{sec:no-trust}
 
@@ -346,7 +346,7 @@ Let us assume that a producer does not know which VAS subscribe to its stream, w
 
 Let $\mathit{sub}(t_k) \subseteq C $ denote the set of subscribers to $t_k$.
 %
-A \textit{publisher's cube} $\mathit{cube^p}$ is a slice of a complete traffic cube, for a specific producer $p_i$ and without the consumer dimension:
+A \textit{publisher's cube} $\mathit{cube}^p$ is a slice of a complete traffic cube, for a specific producer $p_i$ and without the consumer dimension:
 \[
 \mathit{cube}^p(W, p_i)  =  \{ \langle t_k,  N^s_{ik}(W) \rangle \}_{t_k \in T}
 \]
